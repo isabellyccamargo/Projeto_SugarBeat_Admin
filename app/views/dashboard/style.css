@@ -1,0 +1,88 @@
+/* Estilos Gerais */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background-color: #f0f0f0; /* Fundo leve */
+}
+
+.dashboard-container {
+    display: flex;
+    min-height: 100vh; /* Ocupa a altura total da tela */
+}
+
+/* SIDEBAR - MENU LATERAL */
+.sidebar {
+    width: 200px; /* Largura definida para a sidebar */
+    background-color: #795548; /* Cor marrom/dourada escura da imagem */
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+}
+
+/* Área do Logo (Topo) */
+.logo-area {
+    padding: 0 20px 30px;
+    height: 50px;
+}
+
+.logo-circle {
+    width: 30px;
+    height: 30px;
+    background-color: #fce4ec; /* Círculo claro */
+    border-radius: 50%;
+    margin-bottom: 20px;
+}
+
+/* Navegação do Menu */
+.sidebar-nav {
+    flex-grow: 1; /* Permite que ocupe o espaço central, empurrando o 'Sair' para baixo */
+}
+
+.nav-item {
+    display: block;
+    padding: 15px 20px;
+    text-decoration: none;
+    color: #fff;
+    font-size: 1.1em;
+    transition: background-color 0.3s;
+}
+
+.nav-item:hover {
+    background-color: #9a6a57; /* Cor mais clara ao passar o mouse */
+}
+
+.nav-item.active {
+    /* Define o estilo para o item ativo, como um fundo mais claro ou borda */
+    background-color: #bcaaa4; 
+    color: #5d4037; /* Cor do texto mais escura para contraste */
+    font-weight: bold;
+}
+
+/* Link Sair (Logout) */
+.sidebar-logout {
+    display: block;
+    padding: 15px 20px;
+    text-align: left;
+    color: #fff;
+    text-decoration: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-logout i {
+    margin-right: 10px;
+}
+
+.sidebar-logout:hover {
+    background-color: #9a6a57;
+}
+
+/* CONTEÚDO PRINCIPAL */
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #fdfae5; /* Cor de fundo creme/clara da imagem */
+    /* Adiciona uma sombra interna ou borda sutil se quiser simular a 'janela' */
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+}
