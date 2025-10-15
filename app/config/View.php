@@ -7,7 +7,7 @@ class View {
      * @param array $data Dados a serem passados para a view.
      */
     public static function render(string $viewPath, array $data = []) {
-        $fullPath = ROOT_PATH . '/app/view/' . $viewPath . '.php';
+        $fullPath = ROOT_PATH . '/app/views/' . $viewPath . '.php';
 
         if (file_exists($fullPath)) {
             // Extrai os dados, tornando as chaves do array variáveis na view
@@ -54,7 +54,7 @@ class View {
             $layoutFullPath = ROOT_PATH . '/app/' . $layoutPath . '.php';
         } else {
             // Caso contrário, usamos a lógica padrão para views de layout (dentro de app/view/)
-            $layoutFullPath = ROOT_PATH . '/app/view/' . $layoutPath . '.php';
+            $layoutFullPath = ROOT_PATH . '/app/views/' . $layoutPath . '.php';
         }
 
 

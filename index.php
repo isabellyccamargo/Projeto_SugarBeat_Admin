@@ -1,83 +1,104 @@
 <?php
 
+session_set_cookie_params([
+    'lifetime' => 0,          // 0 = Expira ao fechar o navegador
+    'path' => '/',            // Válido em todo o site
+    'domain' => '',           // Deixa o domínio padrão
+    'secure' => false,        // Use 'true' se estiver em HTTPS
+    'httponly' => true,       // Protege contra ataques XSS
+    'samesite' => 'Lax'       // Boa prática de segurança
+]);
+
+// 2. Opcional: Define o tempo máximo de inatividade no SERVIDOR (em segundos)
+//    Exemplo: 1440 segundos = 24 minutos.
+ini_set('session.gc_maxlifetime', 1440);
+
 session_start();
 
 // Define a constante da raiz para facilitar a inclusão de arquivos
 define('ROOT_PATH', __DIR__);
 
-// Inclui o núcleo do roteador
-require_once ROOT_PATH . '/app/config/Router.php';
-require_once ROOT_PATH . '/app/config/View.php'; // Helper para carregar views
+// =========================================================================
+// 1. AUTOLOADER DE CLASSES (DEVE SER DEFINIDO ANTES DE USAR QUALQUER CLASSE)
+// =========================================================================
+spl_autoload_register(function ($class) {
+    // Lista de diretórios que contêm as classes (ajuste conforme sua estrutura)
+    $directories = [
+        'controllers', // Para AuthController, ProdutoController, etc.
+        'models',
+        'repositories',
+        'services',
+        'config',
+        'factories'
+    ];
 
-// Inclui os controllers necessários
-require_once ROOT_PATH . '/app/controller/AuthController.php';
-require_once ROOT_PATH . '/app/controller/ProdutoController.php';
-require_once ROOT_PATH . '/app/controller/CategoriaController.php';
-require_once ROOT_PATH . '/app/controller/UsuarioController.php';
+    $filename = $class . '.php';
 
-// --- Lógica de Autenticação Inicial ---
+    foreach ($directories as $dir) {
+        // Tenta carregar a classe a partir de ROOT_PATH/app/{diretorio}/{Classe}.php
+       $path = ROOT_PATH . "/app/{$dir}/{$filename}";
 
-// Pega a URL solicitada (o Router::route() cuidará da limpeza, mas precisamos do caminho base)
-$requestUrl = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-// Remove o prefixo do projeto ('/sugarbeat') para obter a rota limpa
-$routePath = str_replace('/sugarbeat_admin', '', $requestUrl);
+        if (file_exists($path)) {
+            require_once $path;
+            return;
+        }
+    }
+});
 
-// Se a rota for a raiz ('/') ou estiver vazia, verifica o login e redireciona
-if ($routePath === '/' || $routePath === '') {
-    // Simula a verificação de login
-    if (isset($_SESSION['user_logged']) && $_SESSION['user_logged'] === true) {
-        // Logado: Redireciona para o Dashboard
-        header('Location: /sugarbeat_admin/dashboard');
-        exit;
-    } else {
-        // Não Logado: Redireciona para o Login
+
+// index.php (Seção 2. Lógica de Autenticação e Redirecionamento Inicial)
+
+// Pega a URL solicitada (inclui o /sugarbeat_admin e a rota)
+$requestUrl = $_SERVER['REQUEST_URI'];
+// Usamos str_contains (PHP 8+) ou strpos (PHP 7+) para checar as rotas públicas
+
+$isLoggedIn = isset($_SESSION['user_logged']) && $_SESSION['user_logged'] === true;
+
+// 1. REGRA PRINCIPAL: Se o usuário NÃO está logado.
+if (!$isLoggedIn) {
+    // Se a URL não contém '/login' e não contém '/logout'
+    if (!str_contains($requestUrl, '/login') && !str_contains($requestUrl, '/logout')) {
+        // Redireciona para o login e impede qualquer acesso a rotas protegidas
         header('Location: /sugarbeat_admin/login');
+        exit;
+    }
+} 
+// 2. REGRA DE CONFORTO: Se o usuário ESTÁ logado.
+else {
+    // Se estiver logado E tentar acessar LOGIN ou a RAIZ
+    if (str_contains($requestUrl, '/login') || $requestUrl === '/sugarbeat_admin/' || $requestUrl === '/sugarbeat_admin') {
+        // Impede que um usuário logado fique na tela de login
+        header('Location: /sugarbeat_admin/dashboard');
         exit;
     }
 }
 
-// --- Definição das Rotas (URLs Amigáveis) ---
 
-$router = new Router();
+$router = new Router(); 
 
-// ROTA: /login (NÃO PRECISA DE AUTENTICAÇÃO)
+// 🚨 CORREÇÃO CRÍTICA 🚨
+// ROTA RAIZ (Vazia): Mapeia a URL base ('') para o LOGIN. 
+// O Usuário logado será desviado para o dashboard pelo Bloco 2.
+$router->add('', 'AuthController', 'login'); 
+
+// ROTA: /login
 $router->add('login', 'AuthController', 'login');
 
 // ROTA: /logout
-// Protegida para garantir que apenas usuários logados possam sair.
-$router->add('logout', 'AuthController', 'logout', ['middleware' => 'AuthMiddleware']);
+$router->add('logout', 'AuthController', 'logout');
 
-// ROTA: /dashboard
-// Esta rota exige autenticação (middleware) - verifica se o usuário está logado antes de executar o controller
-$router->add('dashboard', 'AuthController', 'dashboard', ['middleware' => 'AuthMiddleware']);
-
-// ROTA: /produto (Listagem)
-// Amigável: /produto -> app/views/produtos/ListagemProduto.php. Protegida por middleware.
-$router->add('produto', 'ProdutoController', 'listar', ['middleware' => 'AuthMiddleware']);
-
-// ROTA: /produto/cadastro (Cadastro)
-// Amigável: /produto/cadastro -> app/views/produtos/CadastroProduto.php. Protegida por middleware.
-$router->add('produto/cadastro', 'ProdutoController', 'cadastro', ['middleware' => 'AuthMiddleware']);
-
-// --- Adicione mais rotas aqui, seguindo o padrão ---
-
-// ROTA: /categorias (Listagem). Protegida por middleware.
-$router->add('categoria', 'CategoriaController', 'listar', ['middleware' => 'AuthMiddleware']);
-
-// ROTA: /categoria/cadastro (Cadastro)
-// Amigável: /categoria/cadastro -> app/views/categoria/CadastroCategoria.php. Protegida por middleware.
-$router->add('categoria/cadastro', 'CategoriaController', 'cadastro', ['middleware' => 'AuthMiddleware']);
-
-// ROTA: /usuarios (Listagem). Protegida por middleware.
-$router->add('usuario', 'UsuarioController', 'listar', ['middleware' => 'AuthMiddleware']);
-
-// ROTA: /usuario/cadastro (Cadastro)
-// Amigável: /usuario/cadastro -> app/views/usuario/CadastroUsuario.php. Protegida por middleware.
-$router->add('usuario/cadastro', 'UsuarioController', 'cadastro', ['middleware' => 'AuthMiddleware']);
+// ROTA: /dashboard e as demais (PROTEGIDAS - SEM MIDDLEWARE)
+$router->add('dashboard', 'AuthController', 'dashboard');
+$router->add('produto', 'ProdutoController', 'listar');
+$router->add('produto/cadastro', 'ProdutoController', 'cadastro');
+$router->add('categoria', 'CategoriaController', 'listar');
+$router->add('categoria/cadastro', 'CategoriaController', 'cadastro');
+$router->add('usuario', 'UsuarioController', 'listar');
+$router->add('usuario/cadastro', 'UsuarioController', 'cadastro');
 
 
 // --- Executa a Rota ---
 
 $router->dispatch();
 
-?>
+

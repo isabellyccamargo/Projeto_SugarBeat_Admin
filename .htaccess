@@ -1,13 +1,15 @@
-#Liga o motor de reescrita
+# Arquivo: .htaccess
+
+# Liga o motor de reescrita
 RewriteEngine On
 
-#Define a pasta raiz (ajuste se necessário, mas para localhost/sugarbeat deve funcionar)
+# Define a pasta raiz (essencial quando em subdiretório)
 RewriteBase /sugarbeat_admin/
 
-#1. Se o arquivo ou diretório solicitado existir, usa-o (para assets como CSS, JS, imagens)
+# 1. Se o arquivo ou diretório solicitado existir, usa-o (para assets como CSS, JS, imagens)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-#2. Caso contrário, redireciona a requisição para index.php e passa a URL
-#O parâmetro QSA (Query String Append) garante que parâmetros GET sejam mantidos.
-RewriteRule ^(.*)$ index.php [QSA,L]
+# 2. Caso contrário, redireciona a requisição para index.php 
+#    A regra está mais concisa e funciona melhor com o RewriteBase.
+RewriteRule . index.php [L]
