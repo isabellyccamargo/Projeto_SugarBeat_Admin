@@ -1,117 +1,152 @@
-/* app/view/login/style.css */
-
-/* Variáveis de cores baseadas nas imagens */
 :root {
-    --bg-color: #F8F4EE; /* Cor de fundo creme/clara */
-    --box-color: #8C6A4B; /* Cor da caixa de login marrom */
-    --input-color: #A3846C; /* Cor dos campos de input */
-    --text-color: #FFFFFF; /* Cor do texto (Login, E-mail, Senha) */
-    --button-color: #C3997A; /* Cor do botão Acessar */
+    ---fontfamily: 'Calibri', 'Trebuchet MS', 'Segoe UI', sans-serif;
+    --cor-primaria: #3b2500ff;
+    --cor-secundaria: #fff0d0ff;
+    --cor-terceira: rgb(253, 230, 182);
+    --TamanhoFont-Titulo: 60px;
 }
 
+
+/* ======= ESTILO GERAL ======= */
 body {
-    background-color: var(--bg-color);
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
     margin: 0;
-}
-
-.login-container {
-    padding: 20px;
-}
-
-.login-box {
-    background-color: var(--box-color);
-    padding: 30px 40px;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 300px; /* Largura ajustada */
+    padding: 0;
+    font-family: var(--fontfamily);
+    height: 100vh;
     display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    background: url('/sugarbeat_admin/fotos/imglogin1.jpg') no-repeat center center/cover;
+    position: relative;
 }
 
-.login-circle {
+/* ======= CAMADA TRANSPARENTE (OVERLAY) ======= */
+body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    /* Marrom escuro com 50% transparência */
+    z-index: 0;
+}
+
+/* ======= CONTAINER CENTRAL ======= */
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    /* Garante que fique acima do overlay */
+}
+
+/* ======= CAIXA DE LOGIN ======= */
+.login-box {
+    background-color: var(--cor-primaria);
+    width: 400px;
+    padding: 40px 50px;
+    text-align: center;
+    border-radius: 10px;
+
+}
+
+/* ======= LOGO ======= */
+.login-logo {
     width: 60px;
     height: 60px;
-    background-color: var(--input-color); /* Usando a cor de input para o círculo superior */
+    background-color: var(--cor-terceira);
     border-radius: 50%;
-    margin-bottom: 15px;
+    margin: 0 auto 15px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
 
-.login-title {
-    color: var(--text-color);
-    font-size: 24px;
-    margin-bottom: 30px;
-}
-
-.login-form {
+.login-logo img {
     width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
+/* ======= TÍTULO ======= */
+.login-title {
+    color: white;
+    font-size: 30px;
+    margin-bottom: 30px;
+    font-weight: normal;
+
+    font-family: var(--fontfamily);
+}
+
+/* ======= CAMPOS ======= */
 .input-group {
+    text-align: left;
     margin-bottom: 20px;
 }
 
 .input-group label {
+    color: white;
     display: block;
-    color: var(--text-color);
     margin-bottom: 5px;
-    font-size: 14px;
+    font-size: 19px;
 }
 
-.input-group input[type="email"],
-.input-group input[type="password"] {
+.input-group input {
     width: 100%;
     padding: 10px;
-    background-color: var(--input-color);
+    background-color: var(--cor-terceira);
     border: none;
-    color: var(--text-color);
-    box-sizing: border-box;
+    outline: none;
+    font-size: 18px;
+    color: #000;
+    border-radius: 5px;
 }
 
+/* ======= CHECKBOX ======= */
 .show-password-container {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     margin-bottom: 25px;
+    font-size: 16px;
 }
 
-.show-password-container input[type="checkbox"] {
-    margin-right: 8px;
-    /* Estilização básica para o checkbox */
-    accent-color: var(--button-color); 
+.show-password-container input {
+    accent-color: var(--cor-terceira);
+    margin-right: 5px;
 }
 
 .show-password-label {
-    color: var(--text-color);
-    font-size: 13px;
-    user-select: none;
+    color: white;
 }
 
+/* ======= BOTÃO ======= */
 .access-button {
-    width: 100%;
-    padding: 10px;
-    background-color: var(--button-color);
-    color: var(--text-color);
+    background-color: var(--cor-terceira);
     border: none;
+    padding: 10px 0;
+    width: 160px;
+    font-size: 18px;
     cursor: pointer;
-    font-size: 16px;
-    margin-top: 15px;
+    color: var(--cor-primaria);
+    transition: 0.3s;
+    border-radius: 5px;
+    font-weight: bold;
 }
 
 .access-button:hover {
-    filter: brightness(1.1);
+    background-color: #f2d49e;
 }
 
+/* ======= ERRO ======= */
 .error-message {
-    color: #ffdddd; /* Vermelho claro para erro */
-    background-color: #a34e4e; /* Fundo vermelho escuro */
-    padding: 10px;
-    border-radius: 3px;
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 14px;
+    background-color: #f8d7da;
+    color: #842029;
+    padding: 8px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    font-size: 16px;
+    width: 405px;
 }
