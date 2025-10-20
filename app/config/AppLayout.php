@@ -64,16 +64,42 @@
 
         /* ======= LOGO ======= */
         .logo {
+            /* Mantém o estilo da bolinha, mas remove margem superior e inferior desnecessárias aqui */
             width: 50px;
             height: 50px;
             background-color: var(--cor-terceira);
             border-radius: 50%;
-            margin: 0 auto 15px auto;
+            margin: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            margin-top: 10px;
+        }
+
+        .logo__texto {
+            color: var(--cor-secundaria);
+            /* Cor clara, igual à do menu */
+            font-size: 1.5rem;
+            /* Tamanho do texto */
+            font-weight: 700;
+            /* Destaque */
+            font-family: var(--fontfamily);
+            /* Use uma das fontes que você importou */
+            font-size: 20px;
+        }
+
+        .logo-container {
+            display: flex;
+            /* Usa Flexbox para alinhar logo e texto */
+            align-items: center;
+            /* Centraliza verticalmente */
+            justify-content: center;
+            /* Centraliza horizontalmente o bloco inteiro */
+            padding: 10px 0;
+            /* Espaçamento em cima e embaixo */ 
+            gap: 10px;
+            /* Espaço entre a logo e o texto */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .logo img {
@@ -86,9 +112,9 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
-            margin-top: 50px;
+            margin-top: 20px;
             font-size: 20px;
-            text-align: center;
+            text-align: left;
             font-family: var(--fontfamily);
         }
 
@@ -107,7 +133,8 @@
 
         .menu a.menu__link--ativo {
             /* Cor de fundo igual a cor principal do dashboard na imagem */
-            background-color: rgb(248, 239, 218);;
+            background-color: rgb(248, 239, 218);
+            ;
             /* Cor do texto igual a cor escura (Cor-Primaria) */
             color: var(--cor-primaria);
             font-weight: 700;
@@ -119,7 +146,8 @@
         /* Opcional: Manter o estilo de 'ativo' mesmo no hover */
         .menu a.menu__link--ativo:hover {
             color: var(--cor-primaria);
-            background-color: rgb(248, 239, 218);;
+            background-color: rgb(248, 239, 218);
+            ;
         }
 
         .logout {
@@ -135,7 +163,7 @@
         }
 
         .logout:hover {
-            color:rgba(255, 250, 237, 1) ;
+            color: rgba(255, 250, 237, 1);
         }
 
         /* ====== CONTEÚDO PRINCIPAL ====== */
@@ -148,17 +176,18 @@
 
         /* ====== TOPO ====== */
         .topbar {
-            background-color: var(--cor-terceira);
+            background-color: var(--cor-primaria);
             padding: 15px 25px;
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            
+            height: 40px;
+
         }
 
         .topbar span {
             font-weight: bold;
-            color: var(--cor-primaria);
+            color: var(--cor-secundaria);
             font-size: 1.1rem;
         }
 
@@ -198,21 +227,26 @@
     <div class="container">
         <!-- ====== MENU LATERAL ====== -->
         <aside class="sidebar">
-            <div>
-                <div class="logo">
-                    <img src="/sugarbeat_admin/fotos/imgsite.jpg" alt="Logo da Empresa">
+           
+                <div>
+                    <div class="logo-container">
+                        <div class="logo">
+                            <img src="/sugarbeat_admin/fotos/imgsite.jpg" alt="Logo da Empresa">
+                        </div>
+                        <span class="logo__texto">SugarBeat Admin</span>
+                    </div>
+                    <nav class="menu">
+                        <nav class="menu">
+                            <a href="/sugarbeat_admin/dashboard" class="<?= is_active('/sugarbeat_admin/dashboard', $current_uri) ?>">Dashboard</a>
+                            <a href="/sugarbeat_admin/produto" class="<?= is_active('/sugarbeat_admin/produto', $current_uri) ?>">Produtos</a>
+                            <a href="/sugarbeat_admin/categoria" class="<?= is_active('/sugarbeat_admin/categoria', $current_uri) ?>">Categorias</a>
+                            <a href="/sugarbeat_admin/usuario" class="<?= is_active('/sugarbeat_admin/usuario', $current_uri) ?>">Usuários</a>
+                        </nav>
                 </div>
-                <nav class="menu">
-                    <a href="/sugarbeat_admin/dashboard" class="<?= is_active('/sugarbeat_admin/dashboard', $current_uri) ?>">Dashboard</a>
-                    <a href="/sugarbeat_admin/produto" class="<?= is_active('/sugarbeat_admin/produto', $current_uri) ?>">Produtos</a>
-                    <a href="/sugarbeat_admin/categoria" class="<?= is_active('/sugarbeat_admin/categoria', $current_uri) ?>">Categorias</a>
-                    <a href="/sugarbeat_admin/usuario" class="<?= is_active('/sugarbeat_admin/usuario', $current_uri) ?>">Usuários</a>
-                </nav>
-            </div>
 
-            <a href="/sugarbeat_admin/logout" class="logout">
-                ← Sair
-            </a>
+                <a href="/sugarbeat_admin/logout" class="logout">
+                    ← Sair
+                </a>
         </aside>
 
         <!-- ====== CONTEÚDO PRINCIPAL ====== -->
