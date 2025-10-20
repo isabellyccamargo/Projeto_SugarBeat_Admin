@@ -27,9 +27,26 @@ class ProdutoController
                 exit();
             }
         } else {
-            $produtos = $this->produtoService->listarTodosProdutos();
+            $produtosPorPagina = 8; // <<--- DEFINA AQUI QUANTOS PRODUTOS POR PÁGINA
+            
+            // Pega a página atual da URL (Query String ?page=X)
+            $paginaAtual = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
 
-            View::renderWithLayout('produto/ListagemProdutoView', 'config/AppLayout', ['produto' => $produtos]);
+            // Chama o novo método paginado
+            $dadosPaginacao = $this->produtoService->getProdutosPaginados($paginaAtual, $produtosPorPagina);
+            
+            // Corrige o nome da variável: no Controller original você usou 'produto' na View::render, mas na View
+            // você usou 'produtos'. O array 'produtos' deve estar na chave 'produtos'
+            $data = [
+                'produtos' => $dadosPaginacao['produtos'],
+                'pagina_atual' => $dadosPaginacao['pagina_atual'],
+                'total_paginas' => $dadosPaginacao['total_paginas'],
+                'produtos_por_pagina' => $produtosPorPagina,
+                'total_produtos' => $dadosPaginacao['total_produtos']
+            ];
+
+            // Renderiza a View, passando todos os dados necessários
+            View::renderWithLayout('produto/ListagemProdutoView', 'config/AppLayout', $data);
         }
     }
 

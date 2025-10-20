@@ -90,4 +90,43 @@ class ProdutoRepository implements IProdutoRepository
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         return $stmt->execute();
     }
+
+    public function countAll(): int
+    {
+        $stmt = $this->db->query("SELECT COUNT(*) FROM produto;");
+        return (int) $stmt->fetchColumn();
+    }
+
+    // NOVO MÉTODO 2: Busca produtos com Paginação
+    public function getPaginated(int $limit, int $offset): array
+    {
+        // Garante que a consulta está correta com LIMIT e OFFSET
+        $sql = "SELECT id_produto, nome, preco, imagem, id_categoria, estoque 
+                FROM produto 
+                ORDER BY id_produto DESC 
+                LIMIT :limit OFFSET :offset";
+        
+        $stmt = $this->db->prepare($sql);
+        
+        // Liga os valores como inteiros para segurança
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        
+        $stmt->execute();
+        
+        $produtosData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $produtos = [];
+
+        foreach ($produtosData as $data) {
+            $produtos[] = new Produto(
+                $data['id_produto'],
+                $data['nome'],
+                $data['preco'],
+                $data['imagem'],
+                $data['id_categoria'],
+                $data['estoque'] 
+            );
+        }
+        return $produtos;
+    }
 }

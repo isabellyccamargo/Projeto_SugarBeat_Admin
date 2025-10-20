@@ -201,4 +201,29 @@ class ProdutoService
 
         return ['success' => true, 'message' => 'Quantidade atualizada com sucesso.'];
     }
+
+    public function getProdutosPaginados(int $paginaAtual, int $produtosPorPagina): array
+    {
+        $totalProdutos = $this->produtoRepository->countAll();
+        
+        // Calcula o total de páginas
+        $totalPaginas = $produtosPorPagina > 0 ? ceil($totalProdutos / $produtosPorPagina) : 1;
+        
+        // Garante que a página atual é válida
+        $paginaAtual = max(1, min((int)$paginaAtual, $totalPaginas));
+        
+        // Calcula o OFFSET
+        $offset = ($paginaAtual - 1) * $produtosPorPagina;
+
+        // Busca a lista de produtos da página
+        $produtos = $this->produtoRepository->getPaginated($produtosPorPagina, $offset);
+
+        // Retorna um array com tudo o que o Controller precisa
+        return [
+            'produtos' => $produtos,
+            'pagina_atual' => $paginaAtual,
+            'total_paginas' => (int) $totalPaginas,
+            'total_produtos' => $totalProdutos
+        ];
+    }
 }
