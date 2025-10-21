@@ -1,0 +1,178 @@
+:root {
+    --fontfamily: 'Calibri', 'Trebuchet MS', 'Segoe UI', sans-serif;
+    --cor-primaria: #3b2500ff; 
+    --cor-secundaria: rgb(248, 239, 218); 
+    --cor-terceira: rgb(253, 230, 182); 
+    --cor-fundo-login-box: var(--cor-secundaria); 
+    --cor-texto-login-box: var(--cor-primaria);   
+    --cor-input-background: #ffffff;             
+    --cor-botao-background: var(--cor-primaria); 
+    --cor-botao-texto: white;                    
+    --cor-input-border: #d4c29d; 
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--fontfamily);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: url('/sugarbeat_admin/fotos/imglogin1.jpg') no-repeat center center/cover;
+    position: relative;
+}
+
+/*CAMADA TRANSPARENTE*/
+body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.7); 
+    z-index: 0;
+}
+
+/* CONTAINER CENTRAL */
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+/*CAIXA DE LOGIN*/
+.login-box {
+    background-color: var(--cor-fundo-login-box);
+    width: 400px;
+    padding: 40px 50px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.login-logo {
+    width: 60px; 
+    height: 60px; 
+    background-color: transparent; 
+    border: 1px solid var(--cor-primaria); 
+    border-radius: 50%;
+    margin: 0 auto 10px auto; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.login-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/*TÍTULOs */
+.login-title {
+    color: var(--cor-texto-login-box); 
+    font-size: 28px;
+    margin-bottom: 30px;
+    font-weight: normal;
+    font-family: var(--fontfamily);
+    
+}
+
+.logo-subtitle {
+    color: var(--cor-texto-login-box); 
+    font-size: 35px;
+    margin-bottom: 30px;
+    font-weight: normal;
+    font-family: var(--fontfamily);
+    font-weight: bold;
+}
+
+/*CAMPOS*/
+.input-group {
+    text-align: left;
+    margin-bottom: 20px;
+     position: relative; 
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.input-group .icon {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: var(--cor-texto-login-box);
+    font-size: 18px;
+    z-index: 2; 
+}
+
+.input-group label {
+    color: var(--cor-texto-login-box); 
+    display: block;
+    margin-bottom: 5px;
+    font-size: 19px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px 10px 10px 45px;
+    background-color: var(--cor-input-background);
+    border: 1px solid var(--cor-input-border);
+    outline: none;
+    font-size: 18px;
+    color: #000;
+    border-radius: 5px;
+    box-sizing: border-box; 
+}
+
+
+/*CHECKBOX */
+.show-password-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 25px;
+    font-size: 16px;
+}
+
+.show-password-container input {
+    accent-color: var(--cor-primaria);
+    margin-right: 5px;
+}
+
+.show-password-label {
+    color: var(--cor-texto-login-box);
+}
+
+/* BOTÃO */
+.access-button {
+    background-color: var(--cor-botao-background); 
+    border: none;
+    padding: 10px 0;
+    width: 160px;
+    font-size: 18px;
+    cursor: pointer;
+    color: var(--cor-secundaria); 
+    transition: 0.3s;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.access-button:hover {
+    background-color: #5a3d1d; 
+}
+
+/*ERRO*/
+.error-message {
+    background-color: #f8d7da;
+    color: #842029;
+    padding: 8px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    font-size: 16px;
+    width: 405px;
+    border: 1px solid #f5c2c7; 
+}   

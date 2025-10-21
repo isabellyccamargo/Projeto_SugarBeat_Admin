@@ -10,7 +10,7 @@
     <?php else: ?>
         <p>Nenhuma categoria encontrada.</p>
     <?php endif; ?>
-    <a href="/sugarbeat/categoria/cadastro" style="display: inline-block; padding: 8px 15px; background-color: #68d391; border: none; color: white; border-radius: 4px; text-decoration: none; cursor: pointer; margin-top: 10px;">
+    <a href="/sugarbeat_admin/categoria/cadastro" style="display: inline-block; padding: 8px 15px; background-color: #68d391; border: none; color: white; border-radius: 4px; text-decoration: none; cursor: pointer; margin-top: 10px;">
         Adicionar Categoria
     </a>
 </div>

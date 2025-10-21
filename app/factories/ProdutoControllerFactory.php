@@ -6,7 +6,9 @@ class ProdutoControllerFactory
     {
         $pdo = Connection::connect(); 
         $produtoRepository = new ProdutoRepository($pdo); 
+        $categoriaRepository = new CategoriaRepository($pdo); 
         $produtoService = new ProdutoService($produtoRepository); 
-        return new ProdutoController($produtoService);
+        $categoriaService = new CategoriaService($categoriaRepository); 
+        return new ProdutoController($produtoService, $categoriaService);
     }
 }

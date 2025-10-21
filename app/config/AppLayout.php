@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SugarBeat - Painel de Gerenciamento</title>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/png" href="/sugarbeat_admin/fotos/imgsite.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Ancizar+Serif:ital,wght@0,300..900;1,300..900&family=Bitter:ital,wght@0,100..900;1,100..900&family=Caudex:ital,wght@0,400;0,700;1,400;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Marcellus&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Padauk:wght@400;700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -64,7 +65,6 @@
 
         /* ======= LOGO ======= */
         .logo {
-            /* Mantém o estilo da bolinha, mas remove margem superior e inferior desnecessárias aqui */
             width: 50px;
             height: 50px;
             background-color: var(--cor-terceira);
@@ -78,27 +78,18 @@
 
         .logo__texto {
             color: var(--cor-secundaria);
-            /* Cor clara, igual à do menu */
             font-size: 1.5rem;
-            /* Tamanho do texto */
             font-weight: 700;
-            /* Destaque */
             font-family: var(--fontfamily);
-            /* Use uma das fontes que você importou */
             font-size: 20px;
         }
 
         .logo-container {
             display: flex;
-            /* Usa Flexbox para alinhar logo e texto */
             align-items: center;
-            /* Centraliza verticalmente */
             justify-content: center;
-            /* Centraliza horizontalmente o bloco inteiro */
             padding: 10px 0;
-            /* Espaçamento em cima e embaixo */ 
             gap: 10px;
-            /* Espaço entre a logo e o texto */
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
@@ -132,18 +123,12 @@
         }
 
         .menu a.menu__link--ativo {
-            /* Cor de fundo igual a cor principal do dashboard na imagem */
             background-color: rgb(248, 239, 218);
-            ;
-            /* Cor do texto igual a cor escura (Cor-Primaria) */
             color: var(--cor-primaria);
             font-weight: 700;
-            /* Deixa o texto mais forte */
             padding-left: 30px;
-            /* Um leve ajuste de padding para que o fundo fique bem destacado */
         }
-
-        /* Opcional: Manter o estilo de 'ativo' mesmo no hover */
+        
         .menu a.menu__link--ativo:hover {
             color: var(--cor-primaria);
             background-color: rgb(248, 239, 218);

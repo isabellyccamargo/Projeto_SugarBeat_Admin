@@ -13,8 +13,9 @@ class ProdutoRepository implements IProdutoRepository
 
     public function getById($id)
     {
-        $stmt = $this->db->prepare("SELECT id_produto, nome, preco, imagem, id_categoria, estoque FROM produto WHERE id_produto = :id");
-        
+        $stmt = $this->db->prepare("SELECT pro.id_produto, pro.nome, pro.preco, pro.imagem, cat.nome_categoria " .
+            "  FROM produto pro " .
+            " INNER JOIN categoria cat on cat.id_categoria = pro.id_categoria WHERE pro.id_produto = :id");
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         $produtoData = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -25,19 +26,17 @@ class ProdutoRepository implements IProdutoRepository
                 $produtoData['nome'],
                 $produtoData['preco'],
                 $produtoData['imagem'],
-                $produtoData['id_categoria'],
-                $produtoData['estoque']
+                $produtoData['nome_categoria']
             );
         }
-        
-        return null; 
     }
 
 
     public function getAll()
     {
-        $stmt = $this->db->query("SELECT id_produto, nome, preco, imagem, id_categoria, estoque FROM produto;");
-        
+        $stmt = $this->db->query("SELECT pro.id_produto, pro.nome, pro.preco, pro.imagem, cat.nome_categoria " .
+            "  FROM produto pro " .
+            " INNER JOIN categoria cat on cat.id_categoria = pro.id_categoria;");
         $produtosData = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $produtos = [];
 
@@ -47,8 +46,7 @@ class ProdutoRepository implements IProdutoRepository
                 $data['nome'],
                 $data['preco'],
                 $data['imagem'],
-                $data['id_categoria'],
-                $data['estoque'] 
+                $data['nome_categoria']
             );
         }
         return $produtos;
@@ -57,15 +55,15 @@ class ProdutoRepository implements IProdutoRepository
     public function save($produto)
     {
         $stmt = $this->db->prepare("INSERT INTO produto (nome, preco, imagem, id_categoria, estoque) VALUES (:nome, :preco, :imagem, :id_categoria, :estoque)");
-        
+
         $stmt->bindValue(':nome', $produto->getNome());
         $stmt->bindValue(':preco', $produto->getPreco());
         $stmt->bindValue(':imagem', $produto->getImagem());
-        $stmt->bindValue(':id_categoria', $produto->getIdCategoria(), PDO::PARAM_INT); 
+        $stmt->bindValue(':id_categoria', $produto->getIdCategoria(), PDO::PARAM_INT);
         $stmt->bindValue(':estoque', $produto->getEstoque(), PDO::PARAM_INT);
-        
+
         $stmt->execute();
-        
+
         $produto->setIdProduto($this->db->lastInsertId());
         return $produto;
     }
@@ -73,14 +71,14 @@ class ProdutoRepository implements IProdutoRepository
     public function update($produto)
     {
         $stmt = $this->db->prepare("UPDATE produto SET nome = :nome, preco = :preco, imagem = :imagem, id_categoria = :id_categoria, estoque = :estoque WHERE id_produto = :id");
-        
+
         $stmt->bindValue(':id', $produto->getIdProduto(), PDO::PARAM_INT);
         $stmt->bindValue(':nome', $produto->getNome());
         $stmt->bindValue(':preco', $produto->getPreco());
         $stmt->bindValue(':imagem', $produto->getImagem());
         $stmt->bindValue(':id_categoria', $produto->getIdCategoria(), PDO::PARAM_INT);
-        $stmt->bindValue(':estoque', $produto->getEstoque(), PDO::PARAM_INT); 
-        
+        $stmt->bindValue(':estoque', $produto->getEstoque(), PDO::PARAM_INT);
+
         return $stmt->execute();
     }
 
@@ -100,20 +98,18 @@ class ProdutoRepository implements IProdutoRepository
     // NOVO MÉTODO 2: Busca produtos com Paginação
     public function getPaginated(int $limit, int $offset): array
     {
-        // Garante que a consulta está correta com LIMIT e OFFSET
-        $sql = "SELECT id_produto, nome, preco, imagem, id_categoria, estoque 
-                FROM produto 
-                ORDER BY id_produto DESC 
-                LIMIT :limit OFFSET :offset";
-        
+        $sql = "SELECT pro.id_produto, pro.nome, pro.preco, pro.imagem,
+                   pro.estoque, cat.nome_categoria
+            FROM produto pro
+            INNER JOIN categoria cat ON cat.id_categoria = pro.id_categoria
+            ORDER BY pro.id_produto ASC
+            LIMIT :limit OFFSET :offset";
+
         $stmt = $this->db->prepare($sql);
-        
-        // Liga os valores como inteiros para segurança
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-        
         $stmt->execute();
-        
+
         $produtosData = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $produtos = [];
 
@@ -123,10 +119,11 @@ class ProdutoRepository implements IProdutoRepository
                 $data['nome'],
                 $data['preco'],
                 $data['imagem'],
-                $data['id_categoria'],
-                $data['estoque'] 
+                $data['nome_categoria'],
+                $data['estoque']
             );
         }
+
         return $produtos;
     }
 }
