@@ -4,15 +4,15 @@
         --cor-terceira: rgb(253, 230, 182);
     }
 
-    .produtos__container {
+    /* .produtos__container {
         padding: 20px;
-    }
+    } */
 
     .produtos__header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 20px;
+        margin: 20px 0px 20px 0px;
     }
 
     .produtos__header h2 {
@@ -58,11 +58,9 @@
         width: 100%;
         border-collapse: collapse;
         background-color: var(--cor-secundaria);
-        border-radius: 8px;
+        border-radius: 5px;
         overflow: hidden;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        margin-bottom: 0;
-        margin-top: 40px;
     }
 
     .produtos__tabela thead th {
@@ -159,7 +157,7 @@
         font-size: 0.9rem;
         color: #fff;
         text-align: center;
-  margin-top: 18px;
+        margin-top: 18px;
     }
 
     /* Verde pro Ativo */
@@ -218,6 +216,7 @@
 
     .editar {
         margin-right: 20px;
+        text-decoration: none;
     }
 
     .dropdown-filtro {

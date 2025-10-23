@@ -1,163 +1,167 @@
 :root {
-    --fontfamily: 'Calibri', 'Trebuchet MS', 'Segoe UI', sans-serif;
     --cor-primaria: #3b2500ff;
     --cor-secundaria: rgb(248, 239, 218);
     --cor-terceira: rgb(253, 230, 182);
 }
 
-/* ===== CONTAINER GERAL ===== */
-.tela-container {
-    background-color: var(--cor-secundaria);
-    padding: 40px;
-    font-family: var(--fontfamily);
-    color: var(--cor-primaria);
-}
-
-/* ===== CONTAINER INTERNO ===== */
-.container-produto {
-    background-color: #fff6e5; /* tom similar ao da tabela */
-    border-radius: 6px;
-    padding: 40px 50px;
-    box-shadow: 0px 2px 6px rgba(59, 37, 0, 0.2);
-    max-width: 1100px;
-    margin: 0 auto; /* centraliza o card */
-}
-
-/* ===== TÍTULO ===== */
-.titulo {
-    font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 25px;
-}
-
-/* ===== FORMULÁRIO ===== */
-.formulario {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-}
-
-/* ===== GRID DOS CAMPOS ===== */
 .campos-container {
-    display: grid;
-    grid-template-columns: 1fr 1.5fr 1fr;
-    grid-template-areas:
-        "id nome imagem"
-        "estoque ativo imagem"
-        "categoria preco imagem";
-    gap: 25px 30px;
-}
-
-.campo-grupo {
     display: flex;
+    /* Habilita o Flexbox */
+    gap: 60px;
+    /* Espaçamento entre a coluna de campos e a coluna de imagem */
+    /* Espaço antes dos botões de ação */
+}
+
+.campos-esquerda-container {
+    flex: 3;
+    /* Faz com que esta coluna ocupe cerca de 2/3 do espaço disponível */
+    display: flex;
+    /* Usa Flexbox para organizar os grupos de campos */
     flex-direction: column;
+    /* Empilha os grupos de campos verticalmente */
+
 }
 
-.campo-grupo label {
-    font-size: 15px;
-    margin-bottom: 5px;
+.esquerda {
+    margin-bottom: 35px;
 }
 
-/* ===== INPUTS E SELECTS ===== */
-.campo-input,
-.campo-select {
-    background-color: var(--cor-terceira);
-    border: none;
-    padding: 10px;
-    border-radius: 3px;
-    font-size: 15px;
-    color: var(--cor-primaria);
-    outline: none;
-    width: 100%;
-    transition: box-shadow 0.2s, transform 0.1s;
-}
-
-.campo-input:focus,
-.campo-select:focus {
-    box-shadow: 0 0 0 2px rgba(59, 37, 0, 0.25);
-}
-
-/* ===== IMAGEM ===== */
+/* 3. Estiliza o contêiner da imagem para ocupar a outra parte do espaço */
 .campo-grupo.campo-imagem {
-    grid-area: imagem;
+    flex: 1;
+    /* Adicione estas propriedades para empilhar a imagem e os botões */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* Empurra os botões para baixo e a imagem para cima */
+    /* Você pode precisar remover 'margin-top: 0;' se estiver causando problemas */
+    margin-top: 0;
+    height: 100%;
+    /* Garante que ele preencha a altura máxima da coluna Flexbox */
+}
+
+/* 4. Estilize a caixa da imagem para ser mais visível e ter um tamanho fixo, se desejar */
+.campo-grupo.campo-imagem .imagem-box {
+    /* Exemplo: para definir uma altura mínima e visualmente atraente */
+    min-height: 250px;
+    border: 2px dashed var(--cor-primaria);
+    /* Exemplo de borda tracejada */
+    background-color: var(--cor-secundaria);
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    padding: 20px;
+    border-radius: 8px;
 }
 
-.campo-imagem label {
-    margin-bottom: 10px;
-    font-weight: 500;
-}
-
-.imagem-box {
-    background-color: var(--cor-terceira);
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border-radius: 4px;
-    box-shadow: 0px 1px 3px rgba(59, 37, 0, 0.15);
-}
-
-.imagem-preview {
-    width: 130px;
-    height: 130px;
-    object-fit: cover;
-    border-radius: 3px;
-    margin-bottom: 10px;
-}
-
-.icones-imagem {
-    display: flex;
-    gap: 12px;
-}
-
-.icone-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
-    color: var(--cor-primaria);
-    transition: transform 0.2s;
-}
-
-.icone-btn:hover {
-    transform: scale(1.2);
-}
-
-.lixeira {
-    color: darkred;
-}
-
-/* ===== BOTÕES ===== */
 .botoes-acao {
     display: flex;
+    /* Habilita o Flexbox para alinhar os botões lado a lado */
     justify-content: flex-end;
+    /* Alinha os botões à direita (final do contêiner) */
     gap: 15px;
+    /* Espaço entre os botões */
+    margin-top: auto;
+    /* IMPORTANTE: Empurra os botões para o final (bottom) do .campo-grupo */
+
+    /* Alinhamento visual com a caixa da imagem.
+       A caixa da imagem tem um padding de 20px, então fazemos o mesmo para os botões. */
 }
 
 .botao {
-    padding: 8px 22px;
+    padding: 10px 20px;
     border: none;
-    border-radius: 3px;
-    font-size: 15px;
+    border-radius: 5px;
+    font-size: 17px;
     cursor: pointer;
-    font-weight: 500;
-    transition: background 0.2s, transform 0.1s;
-}
-
-.botao-cancelar {
-    background-color: var(--cor-primaria);
-    color: var(--cor-terceira);
+    transition: background-color 0.3s ease;
+    margin-top: 50px;
 }
 
 .botao-salvar {
-    background-color: var(--cor-terceira);
-    color: var(--cor-primaria);
+    background-color: var(--cor-primaria);
+    /* Marrom Escuro */
+    color: var(--cor-secundaria);
+    /* Texto Claro */
 }
 
-.botao:hover {
-    opacity: 0.9;
-    transform: scale(1.03);
+/* ... (Seus estilos de hover aqui) ... */
+
+.botao-cancelar {
+    background-color: var(--cor-secundaria);
+    /* Marrom Escuro */
+    color: var(--cor-primaria);
+    /* Texto Claro */
+    opacity: 0.8;
+    text-decoration: none;
+}
+
+.window-container {
+    background-color: var(--cor-terceira);
+    /* background-color: var(--cor-secundaria); */
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    /* border: 1px solid #2b1c00; */
+    overflow: visible;
+    padding: 50px 50px;
+}
+
+.cadastro-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 23px 0px 23px 0px;
+}
+
+
+.cadastro-header h2 {
+    color: var(--cor-primaria);
+    font-size: 30px;
+    margin: 0;
+}
+
+.campo-grupo label {
+    display: block;
+    color: var(--cor-primaria);
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.campo-grupo input,
+.campo-grupo select {
+    border: 1px solid;
+    width: 100%;
+    padding: 10px;
+    background-color: var(--cor-secundaria);
+    border-radius: 5px;
+    outline: none;
+    font-size: 1em;
+    box-sizing: border-box;
+    color: #3b2500ff;
+    border-color: var(--cor-primaria);
+}
+
+.form-row .campo-grupo {
+    flex: 1;
+    /* Faz com que cada campo-grupo ocupe uma porção igual (50% neste caso) */
+}
+
+.form-row {
+    display: flex;
+    /* justify-content: space-between; */
+    gap: 40px;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.form-row .id-campo:first-child {
+    max-width: 150px;
+    flex: 0 0 auto;
+}
+
+.form-row .campo-nome {
+    flex-grow: 1;
+    /* Permite que ele cresça para ocupar todo o espaço restante */
 }

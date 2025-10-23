@@ -108,7 +108,7 @@ function formatarPreco($preco)
                         <td class="produtos__acoes-col">
                             <a href="/sugarbeat_admin/produto/editar/<?= $produto->getIdProduto() ?>"
                                 title="Editar" class="editar">
-                                <i class="fa-solid fa-pen-to-square"></i>
+                                <i class="fa-solid fa-pen"></i>
                             </a>
 
                             <a href="/sugarbeat_admin/produto/deletar/<?= $produto->getIdProduto() ?>"

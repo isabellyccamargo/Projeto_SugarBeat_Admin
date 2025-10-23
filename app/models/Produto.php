@@ -8,6 +8,7 @@ class Produto {
     private $id_categoria;
     private $nome_categoria;
     private $estoque; 
+    private $ativo; 
 
     public function __construct(
         $id_produto = null, 
@@ -16,7 +17,8 @@ class Produto {
         $imagem = null, 
         $id_categoria = null,
         $nome_categoria = null,
-        $estoque = null
+        $estoque = null,
+        $ativo = null
     ) {
         $this->id_produto = $id_produto;
         $this->nome = $nome;
@@ -25,6 +27,7 @@ class Produto {
         $this->id_categoria = $id_categoria;
         $this->estoque = $estoque; 
         $this->nome_categoria = $nome_categoria;
+        $this->ativo = $ativo;
     }
 
     public function getIdProduto() { return $this->id_produto; }
@@ -47,4 +50,7 @@ class Produto {
     
     public function getEstoque() { return $this->estoque; }
     public function setEstoque($estoque) { $this->estoque = $estoque; }
+
+    public function getAtivo() { return $this->ativo; }
+    public function setAtivo($ativo) { $this->ativo = $ativo; }
 }

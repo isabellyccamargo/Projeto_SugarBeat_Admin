@@ -13,7 +13,7 @@ class ProdutoRepository implements IProdutoRepository
 
     public function getById($id)
     {
-        $stmt = $this->db->prepare("SELECT pro.id_produto, pro.nome, pro.preco, pro.imagem, cat.nome_categoria " .
+        $stmt = $this->db->prepare("SELECT pro.id_produto, pro.nome, pro.ativo, pro.preco, pro.imagem, cat.nome_categoria " .
             "  FROM produto pro " .
             " INNER JOIN categoria cat on cat.id_categoria = pro.id_categoria WHERE pro.id_produto = :id");
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
@@ -26,7 +26,8 @@ class ProdutoRepository implements IProdutoRepository
                 $produtoData['nome'],
                 $produtoData['preco'],
                 $produtoData['imagem'],
-                $produtoData['nome_categoria']
+                $produtoData['nome_categoria'],
+                $produtoData['ativo']
             );
         }
     }
@@ -34,7 +35,7 @@ class ProdutoRepository implements IProdutoRepository
 
     public function getAll()
     {
-        $stmt = $this->db->query("SELECT pro.id_produto, pro.nome, pro.preco, pro.imagem, cat.nome_categoria " .
+        $stmt = $this->db->query("SELECT pro.id_produto, pro.nome, pro.ativo, pro.preco, pro.imagem, cat.nome_categoria " .
             "  FROM produto pro " .
             " INNER JOIN categoria cat on cat.id_categoria = pro.id_categoria;");
         $produtosData = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -46,7 +47,8 @@ class ProdutoRepository implements IProdutoRepository
                 $data['nome'],
                 $data['preco'],
                 $data['imagem'],
-                $data['nome_categoria']
+                $data['nome_categoria'],
+                $data['ativo']
             );
         }
         return $produtos;
@@ -54,13 +56,14 @@ class ProdutoRepository implements IProdutoRepository
 
     public function save($produto)
     {
-        $stmt = $this->db->prepare("INSERT INTO produto (nome, preco, imagem, id_categoria, estoque) VALUES (:nome, :preco, :imagem, :id_categoria, :estoque)");
+        $stmt = $this->db->prepare("INSERT INTO produto (nome, preco, imagem, id_categoria, estoque, ativo) VALUES (:nome, :preco, :imagem, :id_categoria, :estoque, :ativo)");
 
         $stmt->bindValue(':nome', $produto->getNome());
         $stmt->bindValue(':preco', $produto->getPreco());
         $stmt->bindValue(':imagem', $produto->getImagem());
         $stmt->bindValue(':id_categoria', $produto->getIdCategoria(), PDO::PARAM_INT);
         $stmt->bindValue(':estoque', $produto->getEstoque(), PDO::PARAM_INT);
+        $stmt->bindValue(':ativo', $produto->getAtivo()); 
 
         $stmt->execute();
 
@@ -70,7 +73,7 @@ class ProdutoRepository implements IProdutoRepository
 
     public function update($produto)
     {
-        $stmt = $this->db->prepare("UPDATE produto SET nome = :nome, preco = :preco, imagem = :imagem, id_categoria = :id_categoria, estoque = :estoque WHERE id_produto = :id");
+        $stmt = $this->db->prepare("UPDATE produto SET nome = :nome, preco = :preco, imagem = :imagem, id_categoria = :id_categoria, estoque = :estoque, ativo = :ativo WHERE id_produto = :id");
 
         $stmt->bindValue(':id', $produto->getIdProduto(), PDO::PARAM_INT);
         $stmt->bindValue(':nome', $produto->getNome());
@@ -78,6 +81,7 @@ class ProdutoRepository implements IProdutoRepository
         $stmt->bindValue(':imagem', $produto->getImagem());
         $stmt->bindValue(':id_categoria', $produto->getIdCategoria(), PDO::PARAM_INT);
         $stmt->bindValue(':estoque', $produto->getEstoque(), PDO::PARAM_INT);
+        $stmt->bindValue(':ativo', $produto->getAtivo()); 
 
         return $stmt->execute();
     }
@@ -98,7 +102,7 @@ class ProdutoRepository implements IProdutoRepository
     // NOVO MÉTODO 2: Busca produtos com Paginação
     public function getPaginated(int $limit, int $offset): array
     {
-        $sql = "SELECT pro.id_produto, pro.nome, pro.preco, pro.imagem,
+        $sql = "SELECT pro.id_produto, pro.nome, pro.ativo, pro.preco, pro.imagem,
                    pro.estoque, cat.nome_categoria
             FROM produto pro
             INNER JOIN categoria cat ON cat.id_categoria = pro.id_categoria
@@ -120,7 +124,8 @@ class ProdutoRepository implements IProdutoRepository
                 $data['preco'],
                 $data['imagem'],
                 $data['nome_categoria'],
-                $data['estoque']
+                $data['estoque'],
+                $data['ativo']
             );
         }
 

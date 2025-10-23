@@ -1,5 +1,6 @@
 <?php
 
+
 class ProdutoController
 {
     private $produtoService;
@@ -39,15 +40,13 @@ class ProdutoController
 
             $categorias = $this->categoriaService->listarTodasCategorias();
 
-            // Corrige o nome da variável: no Controller original você usou 'produto' na View::render, mas na View
-            // você usou 'produtos'. O array 'produtos' deve estar na chave 'produtos'
             $data = [
                 'produtos' => $dadosPaginacao['produtos'],
                 'pagina_atual' => $dadosPaginacao['pagina_atual'],
                 'total_paginas' => $dadosPaginacao['total_paginas'],
                 'produtos_por_pagina' => $produtosPorPagina,
                 'total_produtos' => $dadosPaginacao['total_produtos'],
-                'listaCategorias' => $categorias 
+                'listaCategorias' => $categorias
             ];
 
             // Renderiza a View, passando todos os dados necessários
@@ -57,23 +56,101 @@ class ProdutoController
 
     public function cadastro()
     {
+        // 1. Lógica para carregar categorias (GET request)
+        $categorias = $this->categoriaService->listarTodasCategorias();
+        $data = ['listaCategorias' => $categorias];
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->salvar();
+            // 2. Se for POST, chama o método de salvamento
+            $this->salvar($data); // Passa os dados iniciais (categorias) para re-renderizar em caso de erro
         } else {
-            View::renderWithLayout('produto/CadastroProdutoView', 'config/AppLayout');
+            // Se for GET, apenas renderiza o formulário
+            View::renderWithLayout('produto/CadastroProdutoView', 'config/AppLayout', $data);
         }
     }
 
-    private function salvar()
+    /**
+     * Lógica de salvamento e validação do produto, incluindo upload de imagem.
+     * @param array $data Dados iniciais para re-renderização (ex: lista de categorias).
+     */
+    private function salvar($data)
     {
-        try {
-            $produto = new Produto();
-            $produto->setNome($_POST['nome']);
-            $produto->setPreco($_POST['preco']);
-            $produto->setIdCategoria($_POST['nome_categoria']);
-            $produto->setEstoque($_POST['estoque']);
-            $produto->setImagem($_POST['imagem'] ?? null);
+        // VARIÁVEIS PARA LÓGICA DE UPLOAD
+        $caminhoImagem = null;
+        $uploadErro = null;
 
+        // --- 1. LÓGICA DE UPLOAD DE ARQUIVO (Simulada para ambiente virtual) ---
+        if (isset($_FILES['imagem']) && $_FILES['imagem']['error'] === UPLOAD_ERR_OK) {
+            $arquivo = $_FILES['imagem'];
+
+            // --- PASSO 1: Verificação e Validação Simplificada ---
+            $nomeOriginal = basename($arquivo['name']);
+            $extensao = strtolower(pathinfo($nomeOriginal, PATHINFO_EXTENSION));
+
+            // Permite APENAS jpg e jpeg (alterado conforme solicitação do usuário)
+            $tiposPermitidos = ['jpg']; 
+            if (!in_array($extensao, $tiposPermitidos)) {
+                $uploadErro = "Tipo de arquivo não permitido ({$extensao}). Somente arquivos JPG e JPEG são aceitos."; // Mensagem atualizada
+            }
+
+            // --- PASSO 2: Geração de Nome Único e Simulação de Movimentação ---
+            if (!$uploadErro) {
+                $nomeUnico = uniqid("prod_", true) . '.' . $extensao;
+
+                /* * NOTA: Em um ambiente real com acesso ao sistema de arquivos:
+                 * $diretorio = 'caminho/do/seu/uploads/';
+                 * move_uploaded_file($arquivo['tmp_name'], $diretorio . $nomeUnico);
+                 */
+
+                // SIMULAÇÃO: Apenas salva o nome único para persistência no banco
+                $caminhoImagem = $nomeUnico; 
+            }
+        } 
+        
+        // --- 2. TRATAMENTO DE ERRO DE UPLOAD ---
+        if ($uploadErro) {
+            // Cria um objeto Produto para re-popular o formulário
+            $produtoComErro = new Produto();
+            $produtoComErro->setNome($_POST['nome'] ?? null);
+            $produtoComErro->setPreco($_POST['preco'] ?? null);
+            $produtoComErro->setIdCategoria($_POST['categoria'] ?? null);
+            $produtoComErro->setEstoque($_POST['estoque'] ?? null);
+            $produtoComErro->setAtivo($_POST['ativo'] ?? '0');
+
+            $_SESSION['alert_message'] = [
+                'type' => 'error',
+                'title' => 'Erro de Upload!',
+                'text' => $uploadErro
+            ];
+            
+            // Re-renderiza a View, mantendo as categorias e o produto preenchido
+            $data['produto_com_erro'] = $produtoComErro;
+            View::renderWithLayout('produto/CadastroProdutoView', 'config/AppLayout', $data);
+            exit();
+        }
+
+
+        // --- 3. COLETA E PREPARAÇÃO DOS DADOS RESTANTES ---
+        $dados = [
+            'nome' => $_POST['nome'] ?? null,
+            'preco' => $_POST['preco'] ?? null,
+            'id_categoria' => $_POST['categoria'] ?? null, // Use 'categoria' como nome do campo
+            'estoque' => $_POST['estoque'] ?? null,
+            'ativo' => $_POST['ativo'] ?? '0', 
+            'imagem' => $caminhoImagem // <<-- AGORA USA O CAMINHO GERADO NO UPLOAD
+        ];
+
+        // --- 4. INSTANCIA E PREENCHE O MODEL PRODUTO ---
+        $produto = new Produto();
+        $produto->setNome($dados['nome']);
+        $produto->setPreco($dados['preco']);
+        $produto->setIdCategoria($dados['id_categoria']);
+        $produto->setEstoque($dados['estoque']);
+        $produto->setAtivo($dados['ativo']);
+        $produto->setImagem($dados['imagem']); // Define o nome do arquivo gerado/simulado
+
+        try {
+            // --- 5. VALIDAÇÃO E PERSISTÊNCIA (dentro do Service) ---
             $novoProduto = $this->produtoService->criarNovoProduto($produto);
 
             $produtoIdFormatado = str_pad($novoProduto->getIdProduto(), 5, '0', STR_PAD_LEFT);
@@ -87,71 +164,20 @@ class ProdutoController
             header("Location: /produto");
             exit();
         } catch (Exception $e) {
+
+            // --- 6. TRATAMENTO DE ERROS DE VALIDAÇÃO/PERSISTÊNCIA ---
             $_SESSION['alert_message'] = [
                 'type' => 'error',
                 'title' => 'Erro!',
                 'text' => 'Erro ao cadastrar produto: ' . $e->getMessage()
             ];
 
-            header("Location: /produto/cadastro");
-            exit();
+            // Mantém os dados no formulário em caso de erro. 
+            $data['produto_com_erro'] = $produto;
+            View::renderWithLayout('produto/CadastroProdutoView', 'config/AppLayout', $data);
         }
     }
 
-    // public function editar($id)
-    // {
-    //     try {
-    //         $produtoAtual = $this->produtoService->getProduto($id);
 
-    //         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    //             $this->atualizar($id, $produtoAtual);
-    //         } else {
-    //             View::renderWithLayout('produto/EdicaoProdutoView', 'config/AppLayout', ['produto' => $produtoAtual]);
-    //         }
-    //     } catch (Exception $e) {
-    //         http_response_code(404);
-    //         $_SESSION['alert_message'] = [
-    //             'type' => 'error',
-    //             'title' => 'Erro!',
-    //             'text' => 'Produto não encontrado: ' . $e->getMessage()
-    //         ];
-    //         header("Location: /produto");
-    //         exit();
-    //     }
-    // }
-
-    // private function atualizar($id, Produto $produtoAtual)
-    // {
-    //     try {
-    //         $produto = new Produto(
-    //             $produtoAtual->getIdProduto(),
-    //             $_POST['nome'] ?? $produtoAtual->getNome(),
-    //             $_POST['preco'] ?? $produtoAtual->getPreco(),
-    //             $_POST['imagem'] ?? $produtoAtual->getImagem(), 
-    //             $_POST['nome_categoria'] ?? $produtoAtual->getIdCategoria(), 
-    //             $_POST['estoque'] ?? $produtoAtual->getEstoque() 
-    //         );
-
-    //         $this->produtoService->atualizarProduto($produto);
-
-    //         $produtoIdFormatado = str_pad($produtoAtual->getIdProduto(), 5, '0', STR_PAD_LEFT);
-
-    //         $_SESSION['alert_message'] = [
-    //             'type' => 'success',
-    //             'title' => 'Sucesso!',
-    //             'text' => 'Produto atualizado com sucesso. <br><br>' . '<span style="font-weight:bold; font-size:20px;">#' . $produtoIdFormatado . '</span>'
-    //         ];
-    //     } catch (Exception $e) {
-
-    //         $_SESSION['alert_message'] = [
-    //             'type' => 'error',
-    //             'title' => 'Erro!',
-    //             'text' => 'Erro ao atualizar produto: ' . $e->getMessage()
-    //         ];
-    //     } finally {
-
-    //         header("Location: /produto/editar/" . $id);
-    //         exit();
-    //     }
-    // }
 }
+?>
