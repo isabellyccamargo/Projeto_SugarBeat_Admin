@@ -15,21 +15,21 @@ class UsuarioController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = $_POST['email'] ?? '';
             $senha = $_POST['senha'] ?? '';
-            
+
             try {
                 $usuario = $this->usuarioService->autenticarUsuario($email, $senha);
-                
+
 
                 $_SESSION['user_id'] = $usuario->getIdUsuario();
                 $_SESSION['user_nome'] = $usuario->getNome();
                 $_SESSION['is_admin'] = $usuario->isAdministrador();
-                
 
-                header("Location: /sugarbeat_admin/dashboard"); 
+
+                header("Location: /sugarbeat_admin/dashboard");
                 exit();
             } catch (Exception $e) {
                 $_SESSION['login_error'] = $e->getMessage();
-                header("Location: /sugarbeat_admin/login"); 
+                header("Location: /sugarbeat_admin/login");
                 exit();
             }
         } else {
@@ -37,22 +37,22 @@ class UsuarioController
             View::render('usuario/LoginView');
         }
     }
-    
+
     public function logout()
     {
         session_destroy();
         header("Location: /sugarbeat_admin/login");
         exit();
     }
-    
+
 
     public function listar($id = null)
     {
 
         if ($id) {
             try {
-                $usuario = $this->usuarioService->getUsuario($id);
-                View::renderWithLayout('usuario/DetalheUsuarioView', 'config/AppLayout', ['usuario' => $usuario]);
+                $usuarios = $this->usuarioService->listarTodosUsuarios();
+                View::renderWithLayout('usuario/DetalheUsuarioView', 'config/AppLayout', ['usuario' => $usuarios]);
             } catch (Exception $e) {
                 http_response_code(404);
                 $_SESSION['alert_message'] = ['type' => 'error', 'title' => 'Erro!', 'text' => $e->getMessage()];
@@ -62,6 +62,8 @@ class UsuarioController
         } else {
             try {
                 $usuarios = $this->usuarioService->listarTodosUsuarios();
+
+                // Mude 'listaUsuarios' para 'usuario'
                 View::renderWithLayout('usuario/ListagemUsuarioView', 'config/AppLayout', ['listaUsuarios' => $usuarios]);
             } catch (Exception $e) {
                 $_SESSION['alert_message'] = ['type' => 'error', 'title' => 'Erro!', 'text' => 'Erro ao listar usuários: ' . $e->getMessage()];
@@ -78,7 +80,7 @@ class UsuarioController
             View::renderWithLayout('usuario/CadastroUsuarioView', 'config/AppLayout');
         }
     }
-    
+
     private function salvar()
     {
         try {
@@ -86,10 +88,10 @@ class UsuarioController
                 null,
                 $_POST['nome'] ?? '',
                 $_POST['email'] ?? '',
-                $_POST['senha'] ?? '', 
+                $_POST['senha'] ?? '',
                 $_POST['administrador'] ?? 'N'
             );
-            
+
             $novoUsuario = $this->usuarioService->criarNovoUsuario($usuario);
 
             $_SESSION['alert_message'] = [
@@ -98,7 +100,7 @@ class UsuarioController
                 'text' => "Usuário '{$novoUsuario->getNome()}' cadastrado com sucesso."
             ];
 
-            header("Location: /sugarbeat_admin/usuario"); 
+            header("Location: /sugarbeat_admin/usuario");
             exit();
         } catch (Exception $e) {
             $_SESSION['alert_message'] = [
@@ -111,7 +113,7 @@ class UsuarioController
             exit();
         }
     }
-    
+
     public function editar($id)
     {
         try {
@@ -134,7 +136,7 @@ class UsuarioController
     {
         try {
             $novaSenha = $_POST['senha'] ?? '';
-            
+
             $usuario = new Usuario(
                 $id,
                 $_POST['nome'] ?? $usuarioAtual->getNome(),
@@ -142,7 +144,7 @@ class UsuarioController
                 $novaSenha,
                 $_POST['administrador'] ?? $usuarioAtual->getAdministrador()
             );
-            
+
             $this->usuarioService->atualizarUsuario($usuario);
 
             $_SESSION['alert_message'] = [
@@ -161,15 +163,15 @@ class UsuarioController
             exit();
         }
     }
-    
+
     public function deletar($id)
     {
         try {
             $usuario = $this->usuarioService->getUsuario($id);
             $nome = $usuario->getNome();
-            
+
             $this->usuarioService->deletarUsuario($id);
-            
+
             $_SESSION['alert_message'] = [
                 'type' => 'success',
                 'title' => 'Sucesso!',
