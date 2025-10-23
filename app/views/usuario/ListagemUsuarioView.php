@@ -1,9 +1,6 @@
 <?php
 $listaUsuarios = $listaUsuarios ?? [];
 $mensagem_erro = $mensagem_erro ?? null;
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -12,7 +9,7 @@ $mensagem_erro = $mensagem_erro ?? null;
 <head>
     
     <link rel="stylesheet" href="/sugarbeat_admin/assets/css/listagemProduto.css">
-    
+
 </head>
 
 <div class="produtos__container">
@@ -76,19 +73,16 @@ $mensagem_erro = $mensagem_erro ?? null;
     const btn = document.getElementById('btn-filtrar');
     const drop = document.getElementById('dropdown-filtro');
 
-    // Alterna exibição do dropdown ao clicar no botão
     btn.addEventListener('click', () => {
         drop.style.display = (drop.style.display === 'none' || drop.style.display === '') ? 'block' : 'none';
     });
 
-    // Fechar ao clicar fora
     document.addEventListener('click', (e) => {
         if (!btn.contains(e.target) && !drop.contains(e.target)) {
             drop.style.display = 'none';
         }
     });
 
-    // Clique nas categorias
     document.querySelectorAll('.dropdown-filtro .categoria').forEach(item => {
         item.addEventListener('click', () => {
             const categoriaId = item.getAttribute('data-id');
