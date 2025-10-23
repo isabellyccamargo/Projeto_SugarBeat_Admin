@@ -1,9 +1,7 @@
-
 <head>
-
     <link rel="stylesheet" href="/sugarbeat_admin/assets/css/cadastroProduto.css">
-
 </head>
+
 <div class="tela-container">
 
     <div class="cadastro-header">
@@ -51,14 +49,10 @@
                             <select id="categoria" name="categoria" class="campo-select input-display" required>
                                 <option value="" disabled selected>Selecione</option>
                                 <?php
-                                // Garante que a variável exista antes de iterar
                                 if (isset($listaCategorias) && is_array($listaCategorias)):
                                     foreach ($listaCategorias as $categoria):
-                                        // O value do option deve ser o ID da categoria, não o nome
-                                        // Assumindo que sua Categoria Model tem getIdCategoria() e getNome()
                                         $selected = '';
 
-                                        // Lógica para manter a categoria selecionada em caso de erro
                                         if (isset($produto_com_erro) && $produto_com_erro->getIdCategoria() == $categoria->getIdCategoria()) {
                                             $selected = 'selected';
                                         }
@@ -84,7 +78,7 @@
                 <div class="campo-grupo campo-imagem">
                     <label>Imagem do Produto</label>
                     <div class="imagem-box">
-                        <img src="caminho/para/sua/imagem_do_brigadeiro.png" alt="Imagem do Produto" class="imagem-preview"required>
+                        <img src="caminho/para/sua/imagem_do_brigadeiro.png" alt="Imagem do Produto" class="imagem-preview" required>
                         <div class="icones-imagem">
                             <button type="button" class="icone-btn" title="Substituir Imagem">
                                 &#x1F4C4; </button>
@@ -99,9 +93,7 @@
                     </div>
                 </div>
 
-
             </div>
-
 
         </form>
     </div>
