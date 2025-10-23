@@ -7,9 +7,8 @@ $mensagem_erro = $mensagem_erro ?? null;
 <html lang="pt-br">
 
 <head>
-    
-    <link rel="stylesheet" href="/sugarbeat_admin/assets/css/listagemProduto.css">
 
+    <link rel="stylesheet" href="/sugarbeat_admin/assets/css/listagemProduto.css">
 </head>
 
 <div class="produtos__container">
