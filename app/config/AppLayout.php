@@ -128,7 +128,7 @@
             font-weight: 700;
             padding-left: 30px;
         }
-        
+
         .menu a.menu__link--ativo:hover {
             color: var(--cor-primaria);
             background-color: rgb(248, 239, 218);
@@ -212,38 +212,34 @@
     <div class="container">
         <!-- ====== MENU LATERAL ====== -->
         <aside class="sidebar">
-           
-                <div>
-                    <div class="logo-container">
-                        <div class="logo">
-                            <img src="/sugarbeat_admin/fotos/imgsite.jpg" alt="Logo da Empresa">
-                        </div>
-                        <span class="logo__texto">SugarBeat Admin</span>
-                    </div>
-                    <nav class="menu">
-                        <nav class="menu">
-                            <a href="/sugarbeat_admin/dashboard" class="<?= is_active('/sugarbeat_admin/dashboard', $current_uri) ?>">Dashboard</a>
-                            <a href="/sugarbeat_admin/produto" class="<?= is_active('/sugarbeat_admin/produto', $current_uri) ?>">Produtos</a>
-                            <a href="/sugarbeat_admin/categoria" class="<?= is_active('/sugarbeat_admin/categoria', $current_uri) ?>">Categorias</a>
-                            <a href="/sugarbeat_admin/usuario" class="<?= is_active('/sugarbeat_admin/usuario', $current_uri) ?>">Usuários</a>
-                        </nav>
-                </div>
 
-                <a href="/sugarbeat_admin/logout" class="logout">
-                    ← Sair
-                </a>
+            <div>
+                <div class="logo-container">
+                    <div class="logo">
+                        <img src="/sugarbeat_admin/fotos/imgsite.jpg" alt="Logo da Empresa">
+                    </div>
+                    <span class="logo__texto">SugarBeat Admin</span>
+                </div>
+                <nav class="menu">
+                    <nav class="menu">
+                        <a href="/sugarbeat_admin/dashboard" class="<?= is_active('/sugarbeat_admin/dashboard', $current_uri) ?>">Dashboard</a>
+                        <a href="/sugarbeat_admin/produto" class="<?= is_active('/sugarbeat_admin/produto', $current_uri) ?>">Produtos</a>
+                        <a href="/sugarbeat_admin/categoria" class="<?= is_active('/sugarbeat_admin/categoria', $current_uri) ?>">Categorias</a>
+                        <a href="/sugarbeat_admin/usuario" class="<?= is_active('/sugarbeat_admin/usuario', $current_uri) ?>">Usuários</a>
+                    </nav>
+            </div>
+
+            <a href="/sugarbeat_admin/logout" class="logout">
+                ← Sair
+            </a>
         </aside>
 
         <!-- ====== CONTEÚDO PRINCIPAL ====== -->
         <div class="main-content">
             <div class="topbar">
                 <?php
-                if (session_status() === PHP_SESSION_NONE) {
-                    session_start();
-                }
 
-                $nome = $_SESSION['nome_usuario'] ?? 'Pessoa';
-
+                $nome = $_SESSION['user_nome'] ?? 'Visitante';
                 echo "<span>Olá, $nome</span>";
                 ?>
             </div>

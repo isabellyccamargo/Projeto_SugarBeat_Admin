@@ -11,17 +11,6 @@ class UsuarioRepository implements IUsuarioRepository
         $this->db = $db;
     }
 
-    private function criarObjetoUsuario(array $data): Usuario
-    {
-        return new Usuario(
-            $data['id_usuario'],
-            $data['nome'],
-            $data['email'],
-            $data['senha'], 
-            $data['administrador']
-        );
-    }
-
     public function getById($id): ?Usuario
     {
         $stmt = $this->db->prepare("SELECT * FROM usuario WHERE id_usuario = :id");
@@ -29,41 +18,74 @@ class UsuarioRepository implements IUsuarioRepository
         $stmt->execute();
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $data ? $this->criarObjetoUsuario($data) : null;
+        // Criação Direta (como no ClienteRepository)
+        if (!$data) {
+            return null;
+        }
+
+        return new Usuario(
+            $data['id_usuario'],
+            $data['nome'],     
+            $data['email'],
+            $data['senha'],
+            $data['administrador']
+        );
     }
-    
+
     public function getByEmail($email): ?Usuario
     {
-        $stmt = $this->db->prepare("SELECT * FROM usuario WHERE email = :email");
+        $stmt = $this->db->prepare("SELECT id_usuario, nome, email, senha, administrador 
+            FROM usuario 
+            WHERE email = :email");
         $stmt->bindValue(':email', $email, PDO::PARAM_STR);
         $stmt->execute();
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $data ? $this->criarObjetoUsuario($data) : null;
+        if (!$data) {
+            return null;
+        }
+
+        $usuario = new Usuario(); // Instancia o objeto vazio
+
+        // Atribui os valores um por um via Setter
+        $usuario->setIdUsuario($data['id_usuario']);
+        $usuario->setNome($data['nome']); // Garante que o nome é atribuído
+        $usuario->setEmail($data['email']);
+        $usuario->setSenha($data['senha']);
+        $usuario->setAdministrador($data['administrador']);
+
+        return $usuario;
     }
 
     public function getAll(): array
     {
+        // 1. Executa a query para buscar todos os usuários
         $stmt = $this->db->query("SELECT * FROM usuario ORDER BY nome ASC");
         $dataList = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $usuarios = [];
 
+        // 2. Itera sobre os dados e cria o objeto Usuario diretamente
         foreach ($dataList as $data) {
-            $usuarios[] = $this->criarObjetoUsuario($data);
+            $usuarios[] = new Usuario(
+                $data['id_usuario'],
+                $data['nome'],      // <- Mapeamento Direto
+                $data['email'],
+                $data['senha'],
+                $data['administrador']
+            );
         }
 
         return $usuarios;
     }
-
     public function save(Usuario $usuario): Usuario
     {
         $sql = "INSERT INTO usuario (nome, email, senha, administrador) 
                 VALUES (:nome, :email, :senha, :administrador)";
         $stmt = $this->db->prepare($sql);
-        
+
         $stmt->bindValue(':nome', $usuario->getNome());
         $stmt->bindValue(':email', $usuario->getEmail());
-        $stmt->bindValue(':senha', $usuario->getSenha()); 
+        $stmt->bindValue(':senha', $usuario->getSenha());
         $stmt->bindValue(':administrador', $usuario->getAdministrador());
         $stmt->execute();
 
@@ -77,14 +99,14 @@ class UsuarioRepository implements IUsuarioRepository
         if (!empty($usuario->getSenha())) {
             $set .= ", senha = :senha";
         }
-        
+
         $sql = "UPDATE usuario SET {$set} WHERE id_usuario = :id";
         $stmt = $this->db->prepare($sql);
-        
+
         $stmt->bindValue(':nome', $usuario->getNome());
         $stmt->bindValue(':email', $usuario->getEmail());
         $stmt->bindValue(':administrador', $usuario->getAdministrador());
-        
+
         if (!empty($usuario->getSenha())) {
             $stmt->bindValue(':senha', $usuario->getSenha());
         }
@@ -98,7 +120,7 @@ class UsuarioRepository implements IUsuarioRepository
     {
         $stmt = $this->db->prepare("DELETE FROM usuario WHERE id_usuario = :id");
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        
+
         return $stmt->execute();
     }
 }

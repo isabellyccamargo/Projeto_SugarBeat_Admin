@@ -35,6 +35,7 @@ class AuthController {
                 $_SESSION['user_logged'] = true;
                 // Opcional: Armazenar dados úteis
                 $_SESSION['user_id'] = $usuario->getIdUsuario();
+                $_SESSION['user_nome'] = $usuario->getNome();
                 $_SESSION['user_admin'] = $usuario->getAdministrador();
                 header('Location: /sugarbeat_admin/dashboard');
                 exit;

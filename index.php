@@ -1,5 +1,7 @@
 <?php
 
+ob_start();
+
 session_set_cookie_params([
     'lifetime' => 0,          // 0 = Expira ao fechar o navegador
     'path' => '/',            // Válido em todo o site
