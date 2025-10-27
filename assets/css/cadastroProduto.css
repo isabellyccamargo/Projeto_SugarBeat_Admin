@@ -6,19 +6,13 @@
 
 .campos-container {
     display: flex;
-    /* Habilita o Flexbox */
     gap: 60px;
-    /* Espaçamento entre a coluna de campos e a coluna de imagem */
-    /* Espaço antes dos botões de ação */
 }
 
 .campos-esquerda-container {
     flex: 3;
-    /* Faz com que esta coluna ocupe cerca de 2/3 do espaço disponível */
     display: flex;
-    /* Usa Flexbox para organizar os grupos de campos */
     flex-direction: column;
-    /* Empilha os grupos de campos verticalmente */
 
 }
 
@@ -26,26 +20,18 @@
     margin-bottom: 35px;
 }
 
-/* 3. Estiliza o contêiner da imagem para ocupar a outra parte do espaço */
 .campo-grupo.campo-imagem {
     flex: 1;
-    /* Adicione estas propriedades para empilhar a imagem e os botões */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    /* Empurra os botões para baixo e a imagem para cima */
-    /* Você pode precisar remover 'margin-top: 0;' se estiver causando problemas */
     margin-top: 0;
     height: 100%;
-    /* Garante que ele preencha a altura máxima da coluna Flexbox */
 }
 
-/* 4. Estilize a caixa da imagem para ser mais visível e ter um tamanho fixo, se desejar */
 .campo-grupo.campo-imagem .imagem-box {
-    /* Exemplo: para definir uma altura mínima e visualmente atraente */
     min-height: 250px;
     border: 2px dashed var(--cor-primaria);
-    /* Exemplo de borda tracejada */
     background-color: var(--cor-secundaria);
     display: flex;
     flex-direction: column;
@@ -57,16 +43,9 @@
 
 .botoes-acao {
     display: flex;
-    /* Habilita o Flexbox para alinhar os botões lado a lado */
     justify-content: flex-end;
-    /* Alinha os botões à direita (final do contêiner) */
     gap: 15px;
-    /* Espaço entre os botões */
     margin-top: auto;
-    /* IMPORTANTE: Empurra os botões para o final (bottom) do .campo-grupo */
-
-    /* Alinhamento visual com a caixa da imagem.
-       A caixa da imagem tem um padding de 20px, então fazemos o mesmo para os botões. */
 }
 
 .botao {
@@ -87,19 +66,15 @@
 
 .botao-cancelar {
     background-color: var(--cor-secundaria);
-    /* Marrom Escuro */
     color: var(--cor-primaria);
-    /* Texto Claro */
     opacity: 0.8;
     text-decoration: none;
 }
 
 .window-container {
     background-color: var(--cor-terceira);
-    /* background-color: var(--cor-secundaria); */
     border-radius: 5px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    /* border: 1px solid #2b1c00; */
     overflow: visible;
     padding: 50px 50px;
 }
@@ -142,12 +117,10 @@
 
 .form-row .campo-grupo {
     flex: 1;
-    /* Faz com que cada campo-grupo ocupe uma porção igual (50% neste caso) */
 }
 
 .form-row {
     display: flex;
-    /* justify-content: space-between; */
     gap: 40px;
     width: 100%;
     margin-bottom: 30px;
@@ -160,5 +133,4 @@
 
 .form-row .campo-nome {
     flex-grow: 1;
-    /* Permite que ele cresça para ocupar todo o espaço restante */
 }
