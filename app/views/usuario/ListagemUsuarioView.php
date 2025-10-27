@@ -69,6 +69,7 @@ $mensagem_erro = $mensagem_erro ?? null;
 </div>
 
 <script>
+
     const btn = document.getElementById('btn-filtrar');
     const drop = document.getElementById('dropdown-filtro');
 
@@ -88,4 +89,5 @@ $mensagem_erro = $mensagem_erro ?? null;
             window.location.href = `?categoria=${categoriaId}`;
         });
     });
+    
 </script>
