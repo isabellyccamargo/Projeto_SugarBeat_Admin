@@ -1,6 +1,7 @@
 <?php
 $listaUsuarios = $listaUsuarios ?? [];
 $mensagem_erro = $mensagem_erro ?? null;
+
 ?>
 
 <!DOCTYPE html>

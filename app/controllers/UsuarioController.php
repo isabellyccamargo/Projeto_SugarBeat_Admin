@@ -197,4 +197,6 @@ class UsuarioController
         // O AppLayout.php vai ler $_SESSION['user_nome']
         View::renderWithLayout('dashboard/index', 'config/AppLayout');
     }
+
+    
 }

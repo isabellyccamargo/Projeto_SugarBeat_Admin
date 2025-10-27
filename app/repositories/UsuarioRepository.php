@@ -133,4 +133,5 @@ class UsuarioRepository implements IUsuarioRepository
 
         return $stmt->execute();
     }
+    
 }
