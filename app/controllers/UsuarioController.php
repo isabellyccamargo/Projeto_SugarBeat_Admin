@@ -9,46 +9,6 @@ class UsuarioController
         $this->usuarioService = $usuarioService;
     }
 
-
-    public function login()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = $_POST['email'] ?? '';
-            $senha = $_POST['senha'] ?? '';
-
-            try {
-                $usuario = $this->usuarioService->autenticarUsuario($email, $senha);
-
-                if (!$usuario) {
-                    throw new Exception("Erro de autenticação: Objeto Usuário não retornado.");
-                }
-
-                $_SESSION['user_id'] = $usuario->getIdUsuario();
-                $_SESSION['user_nome'] =  $usuario->getNome(); // Salva o nome real
-                $_SESSION['is_admin'] = $usuario->isAdministrador();
-                $_SESSION['user_logged'] = true;
-
-                header("Location: /sugarbeat_admin/dashboard");
-                exit();
-            } catch (Exception $e) {
-                $_SESSION['login_error'] = $e->getMessage();
-                header("Location: /sugarbeat_admin/login");
-                exit();
-            }
-        } else {
-
-            View::render('usuario/LoginView');
-        }
-    }
-
-    public function logout()
-    {
-        session_destroy();
-        header("Location: /sugarbeat_admin/login");
-        exit();
-    }
-
-
     public function listar($id = null)
     {
         $adminFilter = $_GET['admin'] ?? null;
@@ -190,13 +150,5 @@ class UsuarioController
             exit();
         }
     }
-
-    public function dashboard()
-    {
-        // Apenas renderiza a View, confiando que a sessão já está ativa.
-        // O AppLayout.php vai ler $_SESSION['user_nome']
-        View::renderWithLayout('dashboard/index', 'config/AppLayout');
-    }
-
     
 }

@@ -196,13 +196,15 @@
     .dropdown-filtro {
         position: absolute;
         background-color: var(--cor-secundaria);
-        /* ... outros estilos ... */
-        top: 165px; /* Isso pode variar dependendo do seu layout */
-        right: 0px; 
-        margin-right: 30px; 
-        /* ... outros estilos ... */
+        top: 165px;
+        right: 0px;
+        margin-right: 30px;
         display: none;
+        border: 1px solid rgb(66, 45, 6);
+         border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     }
+
     /* Ajuste do botão para indicar que é clicável */
     .btn__filtrar {
         cursor: pointer;

@@ -49,7 +49,7 @@ class AuthController {
         // Exibe a tela de login (GET)
         View::render('login/index');
     }
-
+    
     // Rota: /dashboard
     // Renderiza o conteúdo da DashboardView DENTRO do AppLayout (localizado em app/core/)
     public function dashboard() {
