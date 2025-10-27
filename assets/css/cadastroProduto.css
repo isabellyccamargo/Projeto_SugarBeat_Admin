@@ -81,12 +81,9 @@
 
 .botao-salvar {
     background-color: var(--cor-primaria);
-    /* Marrom Escuro */
     color: var(--cor-secundaria);
-    /* Texto Claro */
 }
 
-/* ... (Seus estilos de hover aqui) ... */
 
 .botao-cancelar {
     background-color: var(--cor-secundaria);
