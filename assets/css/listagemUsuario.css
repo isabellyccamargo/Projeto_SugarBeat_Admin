@@ -4,24 +4,20 @@
         --cor-terceira: rgb(253, 230, 182);
     }
 
-    /* .produtos__container {
-        padding: 20px;
-    } */
-
-    .produtos__header {
+    .usuarios__header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin: 20px 0px 20px 0px;
     }
 
-    .produtos__header h2 {
+    .usuarios__header h2 {
         color: var(--cor-primaria);
         font-size: 30px;
         margin: 0;
     }
 
-    .produtos__acoes {
+    .usuarios__acoes {
         display: flex;
         gap: 15px;
     }
@@ -54,7 +50,7 @@
     }
 
     /* TABELA ESTILOS  */
-    .produtos__tabela {
+    .usuarios__tabela {
         width: 100%;
         border-collapse: collapse;
         background-color: var(--cor-secundaria);
@@ -63,7 +59,7 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-    .produtos__tabela thead th {
+    .usuarios__tabela thead th {
         background-color: var(--cor-primaria);
         color: var(--cor-terceira);
         padding: 12px 12px;
@@ -74,23 +70,23 @@
         font-size: 17px;
     }
 
-    .produtos__tabela tbody tr {
+    .usuarios__tabela tbody tr {
         border-bottom: 1px solid var(--cor-terceira);
         color: var(--cor-primaria);
         background-color: var(--cor-secundaria);
     }
 
-    .produtos__tabela tbody tr:nth-child(odd) {
+    .usuarios__tabela tbody tr:nth-child(odd) {
         background-color: var(--cor-terceira);
     }
 
-    .produtos__tabela td {
+    .usuarios__tabela td {
         padding: 6px 15px;
         font-size: 0.95rem;
     }
 
     /*  (PAGINAÇÃO) */
-    .produtos__tabela tfoot td {
+    .usuarios__tabela tfoot td {
         background-color: var(--cor-terceira);
         padding: 15px;
         border-top: none;
@@ -148,27 +144,6 @@
         background-color: var(--cor-terceira);
     }
 
-    .status-sim,
-    .status-nao {
-        display: inline-block;
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-weight: 600;
-        font-size: 0.9rem;
-        color: #fff;
-        text-align: center;
-        margin-top: 18px;
-    }
-
-    /* Verde pro Ativo */
-    .status-sim {
-        background-color: #28a745;
-    }
-
-    /* Vermelho pro Inativo */
-    .status-nao {
-        background-color: #92182f;
-    }
 
     .id__circle {
         display: flex;
@@ -177,61 +152,30 @@
         text-align: left;
     }
 
-    .circle {
-        width: 15px;
-        height: 15px;
-        border-radius: 50%;
-        background-color: var(--cor-primaria);
-        display: inline-block;
-    }
-
-    .produto__info-completa {
+    .usuario__info-completa {
         display: flex;
         align-items: center;
         gap: 10px;
         font-weight: 500;
     }
 
-    .produto__img {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 1px solid rgba(59, 37, 0, 0.5);
-    }
-
-    .produtos__acoes-col {
+    .usuarios__acoes-col {
         width: 100px;
     }
 
-    .produtos__acoes-col a {
+    .usuarios__acoes-col a {
         color: var(--cor-primaria);
         margin-left: 15px;
         font-size: 1.1rem;
     }
 
-    .produtos__acoes-col a:hover {
+    .usuarios__acoes-col a:hover {
         color: #8b6b3e;
     }
 
     .editar {
         margin-right: 20px;
         text-decoration: none;
-    }
-
-    .dropdown-filtro {
-        position: absolute;
-        background-color: var(--cor-secundaria);
-        border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-        top: 165px;
-        right: 0px;
-        margin-right: 30px;
-        min-width: 150px;
-        z-index: 1000;
-        display: none;
-        border: 1px solid rgb(66, 45, 6);
-
     }
 
     /* Cada item de categoria */
@@ -249,6 +193,16 @@
         border-radius: 8px;
     }
 
+    .dropdown-filtro {
+        position: absolute;
+        background-color: var(--cor-secundaria);
+        /* ... outros estilos ... */
+        top: 165px; /* Isso pode variar dependendo do seu layout */
+        right: 0px; 
+        margin-right: 30px; 
+        /* ... outros estilos ... */
+        display: none;
+    }
     /* Ajuste do botão para indicar que é clicável */
     .btn__filtrar {
         cursor: pointer;
@@ -256,23 +210,27 @@
     }
 
     .admin-badge {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 5px; /* Bordas arredondadas como na imagem */
-    font-weight: 700;
-    font-size: 0.9em;
-    text-align: center;
-    min-width: 60px; /* Garante tamanho mínimo */
-}
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 5px;
+        /* Bordas arredondadas como na imagem */
+        font-weight: 700;
+        font-size: 0.9em;
+        text-align: center;
+        min-width: 60px;
+        /* Garante tamanho mínimo */
+    }
 
-/* Estilo para Administrador = Sim */
-.admin-badge.sim {
-    background-color: #38761d; /* Verde escuro */
-    color: white;
-}
+    /* Estilo para Administrador = Sim */
+    .admin-badge.sim {
+        background-color: #38761d;
+        /* Verde escuro */
+        color: white;
+    }
 
-/* Estilo para Administrador = Não */
-.admin-badge.nao {
-    background-color: #a61c00; /* Vermelho escuro (como o "Inativo" da sua imagem) */
-    color: white;
-}
+    /* Estilo para Administrador = Não */
+    .admin-badge.nao {
+        background-color: #a61c00;
+        /* Vermelho escuro (como o "Inativo" da sua imagem) */
+        color: white;
+    }

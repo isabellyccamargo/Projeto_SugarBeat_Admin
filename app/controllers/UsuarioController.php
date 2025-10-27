@@ -51,10 +51,11 @@ class UsuarioController
 
     public function listar($id = null)
     {
+        $adminFilter = $_GET['admin'] ?? null;
 
         if ($id) {
             try {
-                $usuario = $this->usuarioService->getUsuario($id); 
+                $usuario = $this->usuarioService->getUsuario($id);
                 View::renderWithLayout('usuario/DetalheUsuarioView', 'config/AppLayout', ['usuario' => $usuario]);
             } catch (Exception $e) {
                 http_response_code(404);
@@ -64,9 +65,8 @@ class UsuarioController
             }
         } else {
             try {
-                $usuarios = $this->usuarioService->listarTodosUsuarios();
+                $usuarios = $this->usuarioService->listarUsuariosComFiltro($adminFilter);
 
-                // Mude 'listaUsuarios' para 'usuario'
                 View::renderWithLayout('usuario/ListagemUsuarioView', 'config/AppLayout', ['listaUsuarios' => $usuarios]);
             } catch (Exception $e) {
                 $_SESSION['alert_message'] = ['type' => 'error', 'title' => 'Erro!', 'text' => 'Erro ao listar usuários: ' . $e->getMessage()];
@@ -74,7 +74,6 @@ class UsuarioController
             }
         }
     }
-
     public function cadastro()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

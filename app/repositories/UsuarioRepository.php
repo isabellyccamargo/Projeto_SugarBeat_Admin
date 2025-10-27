@@ -25,7 +25,7 @@ class UsuarioRepository implements IUsuarioRepository
 
         return new Usuario(
             $data['id_usuario'],
-            $data['nome'],     
+            $data['nome'],
             $data['email'],
             $data['senha'],
             $data['administrador']
@@ -57,18 +57,28 @@ class UsuarioRepository implements IUsuarioRepository
         return $usuario;
     }
 
-    public function getAll(): array
+    public function getAll(?string $adminStatus = null): array 
     {
-        // 1. Executa a query para buscar todos os usuários
-        $stmt = $this->db->query("SELECT * FROM usuario ORDER BY nome ASC");
+        $sql = "SELECT * FROM usuario";
+        $params = [];
+
+        if (in_array($adminStatus, ['S', 'N'])) {
+            $sql .= " WHERE administrador = :admin";
+            $params[':admin'] = $adminStatus;
+        }
+
+        $sql .= " ORDER BY nome ASC";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params); 
+
         $dataList = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $usuarios = [];
 
-        // 2. Itera sobre os dados e cria o objeto Usuario diretamente
         foreach ($dataList as $data) {
             $usuarios[] = new Usuario(
                 $data['id_usuario'],
-                $data['nome'],      // <- Mapeamento Direto
+                $data['nome'],
                 $data['email'],
                 $data['senha'],
                 $data['administrador']
