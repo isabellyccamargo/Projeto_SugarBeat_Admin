@@ -222,18 +222,14 @@
     .dropdown-filtro {
         position: absolute;
         background-color: var(--cor-secundaria);
-        /* fundo amarelo claro como na imagem */
         border-radius: 8px;
-        /* cantos arredondados */
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-        /* sombra suave */
         top: 165px;
         right: 0px;
         margin-right: 30px;
         min-width: 150px;
         z-index: 1000;
         display: none;
-        /* inicial escondido */
         border: 1px solid rgb(66, 45, 6);
 
     }
@@ -251,7 +247,6 @@
     .dropdown-filtro .categoria:hover {
         background-color: var(--cor-terceira);
         border-radius: 8px;
-        /* destaque ao passar o mouse */
     }
 
     /* Ajuste do botão para indicar que é clicável */
