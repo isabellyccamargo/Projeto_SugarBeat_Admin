@@ -75,7 +75,7 @@ class ProdutoService
         // Garante que a página atual é válida
         $paginaAtual = max(1, min((int)$paginaAtual, $totalPaginas));
         
-        // Calcula o    
+        // Calcula o offset
         $offset = ($paginaAtual - 1) * $produtosPorPagina;
 
         // Busca a lista de produtos da página
