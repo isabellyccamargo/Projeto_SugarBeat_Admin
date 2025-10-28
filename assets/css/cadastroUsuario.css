@@ -1,0 +1,245 @@
+:root {
+    --cor-primaria: #3b2500ff;
+    --cor-secundaria: rgb(248, 239, 218);
+    --cor-terceira: rgb(253, 230, 182);
+    --cor-ativa-toggle: #38761D;
+    --cor-inativa-toggle: #D9D9D9;
+}
+
+.campos-container {
+    display: flex;
+}
+
+.campos-esquerda-container {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+}
+
+.esquerda {
+    margin-bottom: 35px;
+}
+
+.campo-grupo.campo-toggle {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 35px;
+}
+
+.campo-grupo.campo-imagem {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 0;
+    height: 100%;
+}
+
+.botoes-acao {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: auto;
+}
+
+.botao {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 17px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.botao-salvar {
+    background-color: var(--cor-primaria);
+    color: var(--cor-secundaria);
+}
+
+
+.botao-cancelar {
+    background-color: var(--cor-secundaria);
+    color: var(--cor-primaria);
+    opacity: 0.8;
+    text-decoration: none;
+}
+
+.window-container {
+    background-color: var(--cor-terceira);
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: visible;
+    padding: 50px 50px;
+}
+
+.cadastro-header {
+    margin: 23px 0px 23px 0px;
+}
+
+.cadastro-header h2 {
+    color: var(--cor-primaria);
+    font-size: 30px;
+}
+
+.campo-grupo label {
+    display: block;
+    color: var(--cor-primaria);
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.campo-grupo.campo-toggle label {
+    display: inline;
+    margin-bottom: 0;
+}
+
+.campo-grupo input,
+.campo-grupo select {
+    border: 1px solid;
+    width: 100%;
+    padding: 10px;
+    background-color: var(--cor-secundaria);
+    border-radius: 5px;
+    outline: none;
+    font-size: 1em;
+    box-sizing: border-box;
+    color: #3b2500ff;
+    border-color: var(--cor-primaria);
+}
+
+.form-row .campo-grupo {
+    flex: 1;
+}
+
+.form-row {
+    display: flex;
+    gap: 40px;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.form-row .id-campo:first-child {
+    max-width: 150px;
+    flex: 0 0 auto;
+}
+
+.form-row .campo-nome {
+    flex-grow: 1;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* O contêiner principal do switch (o background arredondado) */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 80px;
+    /* Largura definida pelo usuário */
+    height: 34px;
+    /* Altura do switch */
+    /* Remove a margem vertical para alinha com o texto */
+    margin-bottom: 0 !important;
+
+    /* Z-index para garantir que ele fique acima de outros elementos se necessário */
+    z-index: 10;
+}
+
+/* O slider (a bolinha que se move) e o background visível */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--cor-inativa-toggle);
+    /* Cor de fundo quando está DESLIGADO (Cinza) */
+    transition: .4s;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    /* Borda sutil */
+    /* Adiciona a fonte para garantir que o texto apareça */
+    font-family: sans-serif;
+}
+
+/* Estilo do slider para ficar redondo (pílula) */
+.slider.round {
+    border-radius: 34px;
+}
+
+/* Cria a "bolinha" (thumb) dentro do slider (mantém z-index 2 para ficar por cima do texto) */
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    /* Tamanho da bolinha */
+    width: 30px;
+    /* Largura definida pelo usuário */
+    left: 4px;
+    /* Posição inicial */
+    bottom: 4px;
+    background-color: white;
+    /* Cor da bolinha */
+    transition: .4s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    /* Sombra para efeito 3D (Neumorfismo sutil) */
+    z-index: 2;
+    /* Garante que a bolinha fica por cima do texto SIM/NÃO */
+}
+
+/* Adiciona o texto SIM e NÃO usando :after */
+.slider:after {
+    content: "NÃO";
+    position: absolute;
+    top: 50%;
+    right: 4px;
+    /* Posição do texto NÃO (direita) */
+    transform: translateY(-50%);
+    color: var(--cor-primaria);
+    /* Cor do texto no estado OFF */
+    font-size: 13px;
+    font-weight: bold;
+    transition: all 0.4s ease;
+    opacity: 1;
+    z-index: 1;
+    /* Garante que o texto fica por baixo da bolinha, mas acima do fundo */
+    line-height: 1;
+    /* Alinha verticalmente */
+}
+
+/* MUDANÇAS QUANDO ESTÁ LIGADO (CHECKED) */
+
+/* Muda a cor de fundo do slider para o verde customizado */
+.switch input:checked+.slider {
+    background-color: var(--cor-ativa-toggle);
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+    /* Sombra interna para profundidade ON */
+}
+
+/* Move a bolinha para a direita quando está LIGADO */
+.switch input:checked+.slider:before {
+    transform: translateX(42px);
+    /* CORRIGIDO: 80px (switch) - 30px (bolinha) - 8px (padding) = 42px */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+/* Muda o texto para SIM e o move para a esquerda quando LIGADO */
+.switch input:checked+.slider:after {
+    content: "SIM";
+    left: 8px;
+    /* Adicionado para posicionar o texto SIM na esquerda */
+    right: auto;
+    color: white;
+    /* Cor do texto no estado ON (contraste com o verde) */
+}
+
+/* Estilo para focar o switch (acessibilidade) */
+.switch input:focus+.slider {
+    box-shadow: 0 0 1px var(--cor-ativa-toggle);
+}

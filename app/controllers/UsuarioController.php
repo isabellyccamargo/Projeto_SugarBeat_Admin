@@ -150,5 +150,11 @@ class UsuarioController
             exit();
         }
     }
+
+     public function logout() {
+        session_destroy();
+        header('Location: /sugarbeat_admin/login');
+        exit;
+    }
     
 }

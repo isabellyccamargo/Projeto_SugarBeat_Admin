@@ -1,32 +1,72 @@
-<h2>Cadastro de Novo Usuário</h2>
-<p>Preencha os dados do novo usuário para acesso ao sistema.</p>
+<head>
+    <link rel="stylesheet" href="/sugarbeat_admin/assets/css/cadastroUsuario.css">
+</head>
 
-<form action="/sugarbeat/usuario/cadastro" method="POST" style="max-width: 400px; margin-top: 20px; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
-    <div style="margin-bottom: 15px;">
-        <label for="nome" style="display: block; margin-bottom: 5px; font-weight: bold; color: #4a5568;">Nome Completo:</label>
-        <input type="text" id="nome" name="nome" required 
-               style="width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 4px; box-sizing: border-box;">
-    </div>
-    
-    <div style="margin-bottom: 15px;">
-        <label for="email" style="display: block; margin-bottom: 5px; font-weight: bold; color: #4a5568;">E-mail:</label>
-        <input type="email" id="email" name="email" required 
-               style="width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 4px; box-sizing: border-box;">
+<div class="tela-container">
+
+    <div class="cadastro-header">
+        <h2>Dados do Usuário</h2>
     </div>
 
-    <div style="margin-bottom: 20px;">
-        <label for="senha" style="display: block; margin-bottom: 5px; font-weight: bold; color: #4a5568;">Senha:</label>
-        <input type="password" id="senha" name="senha" required 
-               style="width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 4px; box-sizing: border-box;">
+    <div class=" window-container container-produto">
+
+        <form action="/sugarbeat_admin/produto/cadastro" method="POST" enctype="multipart/form-data" class="formulario">
+
+            <div class="campos-container">
+                <div class="campos-esquerda-container">
+
+                    <div class="form-row ">
+                        <div class="campo-grupo id-campo esquerda">
+                            <label for="id">ID</label>
+                            <input type="text" id="id" name="id" readonly>
+                        </div>
+
+                        <div class="campo-grupo campo-nome esquerda">
+                            <label for="nome">Nome</label>
+                            <input type="text" id="nome" name="nome" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="campo-grupo esquerda">
+                            <label for="estoque">Email</label>
+                            <input type="text" id="email" name="email" required>
+                        </div>
+
+                        <div class="campo-grupo esquerda">
+                            <label for="estoque">Senha</label>
+                            <input type="text" id="email" name="email" required>
+                        </div>
+
+                        <div class="campo-grupo esquerda campo-toggle">
+                            <!-- O rótulo para o nome do campo -->
+                            <label for="administrador-toggle">Administrador</label>
+
+                            <!-- O contêiner do switch em si -->
+                            <label class="switch">
+                                <!-- O checkbox real (escondido) -->
+                                <input type="checkbox" id="administrador-toggle" name="administrador" value="1">
+                                <!-- O elemento visual que desliza -->
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+
+
+                    </div>
+
+                    <div class="form-row">
+
+
+
+                    </div>
+
+                    <div class="botoes-acao">
+                        <a href="/sugarbeat_admin/usuario/" class="botao botao-cancelar">Cancelar</a>
+                        <button type="submit" class="botao botao-salvar">Salvar</button>
+                    </div>
+                </div>
+
+        </form>
     </div>
-    
-    <button type="submit" 
-            style="width: 100%; padding: 10px; background-color: #4c51bf; color: white; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.2s;">
-        Cadastrar Usuário
-    </button>
-    
-    <a href="/sugarbeat/usuario" 
-       style="display: block; text-align: center; margin-top: 10px; color: #4a5568; text-decoration: none;">
-       Voltar para a Listagem
-    </a>
-</form>
+
+</div>
