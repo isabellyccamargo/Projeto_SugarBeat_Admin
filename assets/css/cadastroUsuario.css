@@ -121,53 +121,32 @@
 }
 
 .form-row .id-campo:first-child {
-    max-width: 150px;
+    max-width: 190px;
     flex: 0 0 auto;
-}
-
-.form-row .campo-nome {
-    flex-grow: 1;
-}
-
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
 }
 
 /* O contêiner principal do switch (o background arredondado) */
 .switch {
     position: relative;
-    display: inline-block;
     width: 80px;
-    /* Largura definida pelo usuário */
     height: 34px;
-    /* Altura do switch */
-    /* Remove a margem vertical para alinha com o texto */
     margin-bottom: 0 !important;
-
-    /* Z-index para garantir que ele fique acima de outros elementos se necessário */
-    z-index: 10;
+    /* z-index: 10; */
 }
 
-/* O slider (a bolinha que se move) e o background visível */
+/* O slider (a bolinha que se move)*/
 .slider {
     position: absolute;
-    cursor: pointer;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     background-color: var(--cor-inativa-toggle);
-    /* Cor de fundo quando está DESLIGADO (Cinza) */
     transition: .4s;
     border: 1px solid rgba(0, 0, 0, 0.1);
-    /* Borda sutil */
-    /* Adiciona a fonte para garantir que o texto apareça */
-    font-family: sans-serif;
+    font-weight: 500;
 }
 
-/* Estilo do slider para ficar redondo (pílula) */
 .slider.round {
     border-radius: 34px;
 }
@@ -177,20 +156,14 @@
     position: absolute;
     content: "";
     height: 26px;
-    /* Tamanho da bolinha */
     width: 30px;
-    /* Largura definida pelo usuário */
     left: 4px;
-    /* Posição inicial */
     bottom: 4px;
     background-color: white;
-    /* Cor da bolinha */
     transition: .4s;
     border-radius: 50%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    /* Sombra para efeito 3D (Neumorfismo sutil) */
     z-index: 2;
-    /* Garante que a bolinha fica por cima do texto SIM/NÃO */
 }
 
 /* Adiciona o texto SIM e NÃO usando :after */
@@ -199,33 +172,25 @@
     position: absolute;
     top: 50%;
     right: 4px;
-    /* Posição do texto NÃO (direita) */
     transform: translateY(-50%);
     color: var(--cor-primaria);
-    /* Cor do texto no estado OFF */
     font-size: 13px;
     font-weight: bold;
     transition: all 0.4s ease;
     opacity: 1;
     z-index: 1;
-    /* Garante que o texto fica por baixo da bolinha, mas acima do fundo */
     line-height: 1;
-    /* Alinha verticalmente */
 }
-
-/* MUDANÇAS QUANDO ESTÁ LIGADO (CHECKED) */
 
 /* Muda a cor de fundo do slider para o verde customizado */
 .switch input:checked+.slider {
     background-color: var(--cor-ativa-toggle);
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
-    /* Sombra interna para profundidade ON */
 }
 
 /* Move a bolinha para a direita quando está LIGADO */
 .switch input:checked+.slider:before {
     transform: translateX(42px);
-    /* CORRIGIDO: 80px (switch) - 30px (bolinha) - 8px (padding) = 42px */
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.5);
 }
 
@@ -233,10 +198,8 @@
 .switch input:checked+.slider:after {
     content: "SIM";
     left: 8px;
-    /* Adicionado para posicionar o texto SIM na esquerda */
     right: auto;
     color: white;
-    /* Cor do texto no estado ON (contraste com o verde) */
 }
 
 /* Estilo para focar o switch (acessibilidade) */

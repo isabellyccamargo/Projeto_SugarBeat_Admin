@@ -7,7 +7,7 @@ $mensagem_erro = $mensagem_erro ?? null;
 $pagina_atual = $pagina_atual ?? 1;
 $total_paginas = $total_paginas ?? 1;
 $total_produtos = $total_produtos ?? 0;
-$produtos_por_pagina = $produtos_por_pagina ?? 10;
+$produtos_por_pagina = $produtos_por_pagina ?? 8;
 
 function formatarPreco($preco)
 {

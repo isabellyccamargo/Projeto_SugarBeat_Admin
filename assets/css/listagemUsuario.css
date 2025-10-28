@@ -70,6 +70,14 @@
         font-size: 17px;
     }
 
+    .Nome {
+        width: 550px;
+    }
+
+    .email {
+        width: 500px;
+    }
+
     .usuarios__tabela tbody tr {
         border-bottom: 1px solid var(--cor-terceira);
         color: var(--cor-primaria);
@@ -81,7 +89,7 @@
     }
 
     .usuarios__tabela td {
-        padding: 6px 15px;
+        padding: 18px 15px;
         font-size: 0.95rem;
     }
 
@@ -90,6 +98,7 @@
         background-color: var(--cor-terceira);
         padding: 15px;
         border-top: none;
+        border-top: 1px solid rgba(59, 37, 0, 0.3);
     }
 
     .produtos__paginacao {
@@ -201,11 +210,10 @@
         margin-right: 30px;
         display: none;
         border: 1px solid rgb(66, 45, 6);
-         border-radius: 8px;
+        border-radius: 8px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     }
 
-    /* Ajuste do botão para indicar que é clicável */
     .btn__filtrar {
         cursor: pointer;
         position: relative;
@@ -215,24 +223,19 @@
         display: inline-block;
         padding: 4px 10px;
         border-radius: 5px;
-        /* Bordas arredondadas como na imagem */
         font-weight: 700;
         font-size: 0.9em;
         text-align: center;
         min-width: 60px;
-        /* Garante tamanho mínimo */
+        margin-left: 8px;
     }
 
-    /* Estilo para Administrador = Sim */
     .admin-badge.sim {
         background-color: #38761d;
-        /* Verde escuro */
         color: white;
     }
 
-    /* Estilo para Administrador = Não */
     .admin-badge.nao {
         background-color: #a61c00;
-        /* Vermelho escuro (como o "Inativo" da sua imagem) */
         color: white;
     }

@@ -24,10 +24,27 @@ class UsuarioController
                 exit();
             }
         } else {
-            try {
-                $usuarios = $this->usuarioService->listarUsuariosComFiltro($adminFilter);
 
-                View::renderWithLayout('usuario/ListagemUsuarioView', 'config/AppLayout', ['listaUsuarios' => $usuarios]);
+            $usuariosPorPagina = 8;
+            $paginaAtual = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
+
+            try {
+                $dadosPaginacao = $this->usuarioService->getUsuariosPaginados(
+                    $paginaAtual,
+                    $usuariosPorPagina,
+                    $adminFilter
+                );
+
+                $data = [
+                    'listaUsuarios' => $dadosPaginacao['usuarios'],
+                    'pagina_atual' => $dadosPaginacao['pagina_atual'],
+                    'total_paginas' => $dadosPaginacao['total_paginas'],
+                    'usuarios_por_pagina' => $usuariosPorPagina,
+                    'total_usuarios' => $dadosPaginacao['total_usuarios'],
+                    'adminFilter' => $adminFilter // Passa o filtro atual para que a View possa manter o contexto na navegação
+                ];
+
+                View::renderWithLayout('usuario/ListagemUsuarioView', 'config/AppLayout', $data);
             } catch (Exception $e) {
                 $_SESSION['alert_message'] = ['type' => 'error', 'title' => 'Erro!', 'text' => 'Erro ao listar usuários: ' . $e->getMessage()];
                 View::renderWithLayout('usuario/ListagemUsuarioView', 'config/AppLayout', ['listaUsuarios' => []]);
@@ -151,10 +168,10 @@ class UsuarioController
         }
     }
 
-     public function logout() {
+    public function logout()
+    {
         session_destroy();
         header('Location: /sugarbeat_admin/login');
         exit;
     }
-    
 }

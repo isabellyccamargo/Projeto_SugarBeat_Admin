@@ -10,9 +10,9 @@ class UsuarioService
     }
 
 
-    public function listarUsuariosComFiltro(?string $adminStatus = null): array 
+    public function listarUsuariosComFiltro(?string $adminStatus = null): array
     {
-        return $this->usuarioRepository->getAll($adminStatus); 
+        return $this->usuarioRepository->getAll($adminStatus);
     }
 
     public function getUsuario($id): Usuario
@@ -102,5 +102,26 @@ class UsuarioService
         }
         $usuario->setAdministrador($admin);
     }
-    
+
+    public function getUsuariosPaginados(int $paginaAtual, int $usuariosPorPagina, ?string $adminFilter): array
+    {
+        // O método countAll no Repository deve aceitar o filtro para contar apenas os usuários relevantes.
+        $totalUsuarios = $this->usuarioRepository->countAll($adminFilter);
+        // 2. Calcula o total de páginas. Se não houver usuários, o total é 1.
+        $totalPaginas = $usuariosPorPagina > 0 ? ceil($totalUsuarios / $usuariosPorPagina) : 1;
+        // 3. Garante que a página atual é um valor válido (entre 1 e totalPaginas)
+        $paginaAtual = max(1, min((int)$paginaAtual, $totalPaginas));
+        // 4. Calcula o offset (o número de itens que o banco de dados deve pular)
+        $offset = ($paginaAtual - 1) * $usuariosPorPagina;
+        // 5. Busca a lista de usuários da página, aplicando o LIMIT, OFFSET e o FILTRO.
+        $usuarios = $this->usuarioRepository->getPaginated($usuariosPorPagina, $offset, $adminFilter);
+
+        // 6. Retorna um array com todos os metadados e a lista para o Controller
+        return [
+            'usuarios' => $usuarios,
+            'pagina_atual' => $paginaAtual,
+            'total_paginas' => (int) $totalPaginas,
+            'total_usuarios' => $totalUsuarios
+        ];
+    }
 }

@@ -4,10 +4,6 @@
         --cor-terceira: rgb(253, 230, 182);
     }
 
-    /* .produtos__container {
-        padding: 20px;
-    } */
-
     .produtos__header {
         display: flex;
         justify-content: space-between;
@@ -94,6 +90,7 @@
         background-color: var(--cor-terceira);
         padding: 15px;
         border-top: none;
+        border-top: 1px solid rgba(59, 37, 0, 0.3);
     }
 
     .produtos__paginacao {
@@ -243,13 +240,11 @@
         display: block;
     }
 
-    /* Hover */
     .dropdown-filtro .categoria:hover {
         background-color: var(--cor-terceira);
         border-radius: 8px;
     }
 
-    /* Ajuste do botão para indicar que é clicável */
     .btn__filtrar {
         cursor: pointer;
         position: relative;
@@ -258,21 +253,19 @@
     .admin-badge {
     display: inline-block;
     padding: 4px 10px;
-    border-radius: 5px; /* Bordas arredondadas como na imagem */
+    border-radius: 5px; 
     font-weight: 700;
     font-size: 0.9em;
     text-align: center;
-    min-width: 60px; /* Garante tamanho mínimo */
+    min-width: 60px; 
 }
 
-/* Estilo para Administrador = Sim */
 .admin-badge.sim {
-    background-color: #38761d; /* Verde escuro */
+    background-color: #38761d; 
     color: white;
 }
 
-/* Estilo para Administrador = Não */
 .admin-badge.nao {
-    background-color: #a61c00; /* Vermelho escuro (como o "Inativo" da sua imagem) */
+    background-color: #a61c00;
     color: white;
 }
