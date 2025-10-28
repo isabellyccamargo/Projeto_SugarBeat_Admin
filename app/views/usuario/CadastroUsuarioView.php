@@ -15,7 +15,7 @@
             <div class="campos-container">
                 <div class="campos-esquerda-container">
 
-                    <div class="form-row ">
+                    <div class="form-row campos_acima">
                         <div class="campo-grupo id-campo esquerda">
                             <label for="id">ID</label>
                             <input type="text" id="id" name="id" readonly>
@@ -28,14 +28,14 @@
                     </div>
 
                     <div class="form-row">
-                        <div class="campo-grupo esquerda">
-                            <label for="estoque">Email</label>
+                        <div class="campo-grupo  esquerda">
+                            <label for="email">Email</label>
                             <input type="text" id="email" name="email" required>
                         </div>
 
                         <div class="campo-grupo esquerda">
-                            <label for="estoque">Senha</label>
-                            <input type="text" id="email" name="email" required>
+                            <label for="senha">Senha</label>
+                            <input type="password" id="senha" name="senha" required>
                         </div>
 
                         <div class="campo-grupo esquerda campo-toggle">
@@ -51,12 +51,9 @@
                             </label>
                         </div>
 
-
                     </div>
 
                     <div class="form-row">
-
-
 
                     </div>
 
