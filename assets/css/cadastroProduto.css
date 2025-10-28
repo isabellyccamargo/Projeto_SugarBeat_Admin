@@ -53,6 +53,27 @@
     justify-content: center;
     padding: 20px;
     border-radius: 8px;
+
+    overflow: hidden;
+}
+
+.campo-grupo.campo-imagem .imagem-preview {
+    /* Garante que a imagem nunca ultrapasse 100% da largura e altura do seu contêiner pai (.imagem-box) */
+    max-width: 100%;
+    max-height: 100%; 
+    
+    /* Garante que o contêiner de imagem mantenha um bom aspecto visual mesmo que o arquivo não preencha tudo */
+    width: auto; /* Permite que a largura se ajuste automaticamente com base na altura */
+    height: auto; /* Permite que a altura se ajuste automaticamente com base na largura */
+
+    /* Regra para controle de como a imagem preenche o espaço */
+    /* 'object-fit: contain;' garante que a imagem inteira seja visível dentro do contêiner, 
+       sem cortes, mantendo a proporção. Pode deixar barras laterais/topo vazias. */
+    /* Se você quiser que a imagem preencha TODO o box (podendo cortar partes) use 'cover'. */
+    object-fit: contain; 
+    
+    /* Se a imagem for muito pequena e você quiser que ela não fique minúscula no centro */
+    /* object-fit: scale-down; */
 }
 
 .botoes-acao {

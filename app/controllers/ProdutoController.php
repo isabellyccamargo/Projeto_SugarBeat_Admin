@@ -60,11 +60,32 @@ class ProdutoController
         $categorias = $this->categoriaService->listarTodasCategorias();
         $data = ['listaCategorias' => $categorias];
 
+        // NOVIDADE: Verifica se há dados na Query String (modo edição)
+        $produtoId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // 2. Se for POST, chama o método de salvamento
-            $this->salvar($data); // Passa os dados iniciais (categorias) para re-renderizar em caso de erro
+            $this->salvar($data);
+        } elseif ($produtoId) {
+            // Se for GET e houver ID na Query String, carrega os dados
+
+            $produtoEdicao = new Produto();
+            // Preenche o objeto com os dados da Query String
+            $produtoEdicao->setIdProduto($produtoId);
+            $produtoEdicao->setNome($_GET['nome'] ?? null);
+            $produtoEdicao->setPreco($_GET['preco'] ?? null);
+            $produtoEdicao->setIdCategoria($_GET['categoria'] ?? null);
+            $produtoEdicao->setEstoque($_GET['estoque'] ?? null);
+            $produtoEdicao->setAtivo($_GET['ativo'] ?? '0');
+            $produtoEdicao->setImagem($_GET['imagem_path'] ?? null);
+
+            // Passa o produto pré-preenchido para a View
+            $data['produto_existente'] = $produtoEdicao;
+
+            // Renderiza o formulário no modo edição
+            View::renderWithLayout('produto/CadastroProdutoView', 'config/AppLayout', $data);
         } else {
-            // Se for GET, apenas renderiza o formulário
+            // Se for GET e não houver ID, apenas renderiza o formulário (modo cadastro)
             View::renderWithLayout('produto/CadastroProdutoView', 'config/AppLayout', $data);
         }
     }
@@ -73,44 +94,76 @@ class ProdutoController
      * Lógica de salvamento e validação do produto, incluindo upload de imagem.
      * @param array $data Dados iniciais para re-renderização (ex: lista de categorias).
      */
-    private function salvar($data)
+    private function salvar(array $data)
     {
         // VARIÁVEIS PARA LÓGICA DE UPLOAD
         $caminhoImagem = null;
         $uploadErro = null;
 
-        // --- 1. LÓGICA DE UPLOAD DE ARQUIVO (Simulada para ambiente virtual) ---
-        if (isset($_FILES['imagem']) && $_FILES['imagem']['error'] === UPLOAD_ERR_OK) {
-            $arquivo = $_FILES['imagem'];
+        // NOVIDADE: Identifica se é uma edição
+        $produtoId = $_POST['id'] ?? null;
+        $imagemAntigaPath = $_POST['imagem_antiga'] ?? null; // Vamos adicionar este campo na View
 
-            // --- PASSO 1: Verificação e Validação Simplificada ---
+        $diretorioRaiz = dirname(dirname(__DIR__));
+        $diretorioUpload = $diretorioRaiz . '/fotos/';
+
+        if (!is_dir($diretorioUpload)) {
+            // Tenta criar o diretório recursivamente com permissão 0777 (ajuste se necessário)
+            if (!mkdir($diretorioUpload, 0777, true)) {
+                $uploadErro = "Erro interno: Não foi possível criar o diretório de upload: " . $diretorioUpload;
+            }
+        }
+
+        // --- LÓGICA DE UPLOAD DE ARQUIVO ---
+        if (!$uploadErro && isset($_FILES['imagem']) && $_FILES['imagem']['error'] === UPLOAD_ERR_OK) {
+            // NOVO ARQUIVO ENVIADO: Processar o upload e substituir
+
+            $arquivo = $_FILES['imagem'];
+            // ... (PASSO 1: Verificação e Validação Simplificada) ...
             $nomeOriginal = basename($arquivo['name']);
             $extensao = strtolower(pathinfo($nomeOriginal, PATHINFO_EXTENSION));
+            $tiposPermitidos = ['jpg', 'jpeg', 'png'];
 
-            // Permite APENAS jpg e jpeg (alterado conforme solicitação do usuário)
-            $tiposPermitidos = ['jpg']; 
             if (!in_array($extensao, $tiposPermitidos)) {
-                $uploadErro = "Tipo de arquivo não permitido ({$extensao}). Somente arquivos JPG e JPEG são aceitos."; // Mensagem atualizada
+                $uploadErro = "Tipo de arquivo não permitido ({$extensao}). Somente arquivos JPG, JPEG e PNG são aceitos.";
             }
 
-            // --- PASSO 2: Geração de Nome Único e Simulação de Movimentação ---
+            // --- Geração de Nome Único e Movimentação ---
             if (!$uploadErro) {
                 $nomeUnico = uniqid("prod_", true) . '.' . $extensao;
+                $caminhoCompletoDestino = $diretorioUpload . $nomeUnico;
 
-                /* * NOTA: Em um ambiente real com acesso ao sistema de arquivos:
-                 * $diretorio = 'caminho/do/seu/uploads/';
-                 * move_uploaded_file($arquivo['tmp_name'], $diretorio . $nomeUnico);
-                 */
+                if (move_uploaded_file($arquivo['tmp_name'], $caminhoCompletoDestino)) {
+                    $caminhoImagem = 'fotos/' . $nomeUnico;
 
-                // SIMULAÇÃO: Apenas salva o nome único para persistência no banco
-                $caminhoImagem = $nomeUnico; 
+                    // NOVIDADE: Se a imagem antiga existe e não é nula/placeholder, a deletamos
+                    if ($produtoId && $imagemAntigaPath && file_exists($diretorioRaiz . '/' . $imagemAntigaPath)) {
+                        unlink($diretorioRaiz . '/' . $imagemAntigaPath);
+                    }
+                } else {
+                    $uploadErro = "Ocorreu um erro ao tentar salvar o novo arquivo no servidor.";
+                }
             }
-        } 
-        
-        // --- 2. TRATAMENTO DE ERRO DE UPLOAD ---
+        } elseif ($produtoId && $_FILES['imagem']['error'] === UPLOAD_ERR_NO_FILE) {
+            // EDIÇÃO, MAS NENHUM NOVO ARQUIVO ENVIADO: Manter a imagem antiga
+            $caminhoImagem = $imagemAntigaPath;
+        } elseif (isset($_POST['remover_imagem']) && $_POST['remover_imagem'] == '1') {
+            // NOVIDADE: Lógica de remoção (se o botão "remover" for acionado)
+            if ($produtoId && $imagemAntigaPath && file_exists($diretorioRaiz . '/' . $imagemAntigaPath)) {
+                unlink($diretorioRaiz . '/' . $imagemAntigaPath);
+            }
+            $caminhoImagem = null; // Zera o campo no banco
+
+        } elseif (!$uploadErro && isset($_FILES['imagem']) && $_FILES['imagem']['error'] !== UPLOAD_ERR_NO_FILE) {
+            // Tratamento de outros erros de upload do PHP (ex: tamanho excedido)
+            $uploadErro = "Erro no upload do arquivo (Código: " . $_FILES['imagem']['error'] . ").";
+        }
+
+        // // --- 2. TRATAMENTO DE ERRO DE UPLOAD ---
         if ($uploadErro) {
             // Cria um objeto Produto para re-popular o formulário
             $produtoComErro = new Produto();
+            // ... (Preenche os dados do produtoComErro com $_POST)
             $produtoComErro->setNome($_POST['nome'] ?? null);
             $produtoComErro->setPreco($_POST['preco'] ?? null);
             $produtoComErro->setIdCategoria($_POST['categoria'] ?? null);
@@ -119,39 +172,42 @@ class ProdutoController
 
             $_SESSION['alert_message'] = [
                 'type' => 'error',
-                'title' => 'Erro de Upload!',
+                'title' => 'Erro de Cadastro/Upload!',
                 'text' => $uploadErro
             ];
-            
-            // Re-renderiza a View, mantendo as categorias e o produto preenchido
+
+            // Re-renderiza a View
             $data['produto_com_erro'] = $produtoComErro;
             View::renderWithLayout('produto/CadastroProdutoView', 'config/AppLayout', $data);
             exit();
         }
 
-
         // --- 3. COLETA E PREPARAÇÃO DOS DADOS RESTANTES ---
         $dados = [
+            'id' => $produtoId, // O ID do produto
             'nome' => $_POST['nome'] ?? null,
             'preco' => $_POST['preco'] ?? null,
-            'id_categoria' => $_POST['categoria'] ?? null, // Use 'categoria' como nome do campo
+            'id_categoria' => $_POST['categoria'] ?? null,
             'estoque' => $_POST['estoque'] ?? null,
-            'ativo' => $_POST['ativo'] ?? '0', 
-            'imagem' => $caminhoImagem // <<-- AGORA USA O CAMINHO GERADO NO UPLOAD
+            'ativo' => $_POST['ativo'] ?? '0',
+            'imagem' => $caminhoImagem // Caminho novo, antigo ou NULL
         ];
 
         // --- 4. INSTANCIA E PREENCHE O MODEL PRODUTO ---
         $produto = new Produto();
+        if ($dados['id']) {
+            $produto->setIdProduto($dados['id']); // Seta o ID para o Service saber que é UPDATE
+        }
         $produto->setNome($dados['nome']);
         $produto->setPreco($dados['preco']);
         $produto->setIdCategoria($dados['id_categoria']);
         $produto->setEstoque($dados['estoque']);
         $produto->setAtivo($dados['ativo']);
-        $produto->setImagem($dados['imagem']); // Define o nome do arquivo gerado/simulado
+        $produto->setImagem($dados['imagem']);
 
         try {
             // --- 5. VALIDAÇÃO E PERSISTÊNCIA (dentro do Service) ---
-            $novoProduto = $this->produtoService->criarNovoProduto($produto);
+            $novoProduto = $this->produtoService->salvar($produto);
 
             $produtoIdFormatado = str_pad($novoProduto->getIdProduto(), 5, '0', STR_PAD_LEFT);
 
@@ -161,7 +217,7 @@ class ProdutoController
                 'text' => 'Produto cadastrado com sucesso. <br><br>' . '<span style="font-weight:bold; font-size:20px;">#' . $produtoIdFormatado . '</span>'
             ];
 
-            header("Location: /produto");
+            header("Location: /sugarbeat_admin/produto");
             exit();
         } catch (Exception $e) {
 
@@ -177,7 +233,4 @@ class ProdutoController
             View::renderWithLayout('produto/CadastroProdutoView', 'config/AppLayout', $data);
         }
     }
-
-
 }
-?>

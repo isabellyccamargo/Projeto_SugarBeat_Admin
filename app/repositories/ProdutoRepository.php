@@ -35,7 +35,7 @@ class ProdutoRepository implements IProdutoRepository
 
     public function getAll()
     {
-        $stmt = $this->db->query("SELECT pro.id_produto, pro.nome, pro.ativo, pro.preco, pro.imagem, cat.nome_categoria " .
+        $stmt = $this->db->query("SELECT pro.id_produto, pro.nome, pro.ativo, pro.preco, pro.imagem, pro.estoque, cat.nome_categoria " .
             "  FROM produto pro " .
             " INNER JOIN categoria cat on cat.id_categoria = pro.id_categoria;");
         $produtosData = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -46,6 +46,7 @@ class ProdutoRepository implements IProdutoRepository
                 $data['id_produto'],
                 $data['nome'],
                 $data['preco'],
+                $data['estoque'],
                 $data['imagem'],
                 $data['nome_categoria'],
                 $data['ativo']
@@ -63,7 +64,7 @@ class ProdutoRepository implements IProdutoRepository
         $stmt->bindValue(':imagem', $produto->getImagem());
         $stmt->bindValue(':id_categoria', $produto->getIdCategoria(), PDO::PARAM_INT);
         $stmt->bindValue(':estoque', $produto->getEstoque(), PDO::PARAM_INT);
-        $stmt->bindValue(':ativo', $produto->getAtivo()); 
+        $stmt->bindValue(':ativo', $produto->getAtivo());
 
         $stmt->execute();
 
@@ -81,9 +82,10 @@ class ProdutoRepository implements IProdutoRepository
         $stmt->bindValue(':imagem', $produto->getImagem());
         $stmt->bindValue(':id_categoria', $produto->getIdCategoria(), PDO::PARAM_INT);
         $stmt->bindValue(':estoque', $produto->getEstoque(), PDO::PARAM_INT);
-        $stmt->bindValue(':ativo', $produto->getAtivo()); 
+        $stmt->bindValue(':ativo', $produto->getAtivo());
 
-        return $stmt->execute();
+        $stmt->execute();
+        return $produto;
     }
 
     public function delete($id)

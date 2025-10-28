@@ -13,24 +13,28 @@ class ProdutoService
         }
     }
 
-    public function criarNovoProduto(Produto $produto): Produto
+    public function salvar(Produto $produto): Produto
     {
 
         if (empty($produto->getNome())) {
             throw new Exception("O nome do produto é obrigatório.");
         }
         if (!is_numeric($produto->getPreco()) || $produto->getPreco() < 0) {
-             throw new Exception("O preço do produto deve ser um valor numérico positivo.");
+            throw new Exception("O preço do produto deve ser um valor numérico positivo.");
         }
         if (empty($produto->getIdCategoria())) {
-             throw new Exception("A categoria do produto é obrigatória.");
+            throw new Exception("A categoria do produto é obrigatória.");
         }
 
         if (!is_numeric($produto->getEstoque()) || $produto->getEstoque() < 0) {
-             throw new Exception("O estoque deve ser um número inteiro não negativo.");
+            throw new Exception("O estoque deve ser um número inteiro não negativo.");
         }
-        
-        return $this->produtoRepository->save($produto);
+
+        if (empty($produto->getIdProduto()))
+            return $this->produtoRepository->save($produto);
+        else {
+            return $this->produtoRepository->update($produto);
+        }
     }
 
     public function getProduto($id): Produto
@@ -51,9 +55,9 @@ class ProdutoService
 
     public function atualizarProduto(Produto $produto): bool
     {
-       
+
         if (!is_numeric($produto->getEstoque()) || $produto->getEstoque() < 0) {
-             throw new Exception("O estoque deve ser um número inteiro não negativo ao atualizar.");
+            throw new Exception("O estoque deve ser um número inteiro não negativo ao atualizar.");
         }
         // Você poderia adicionar validações aqui antes de chamar o update do repositório
         return $this->produtoRepository->update($produto);
@@ -68,13 +72,13 @@ class ProdutoService
     public function getProdutosPaginados(int $paginaAtual, int $produtosPorPagina): array
     {
         $totalProdutos = $this->produtoRepository->countAll();
-        
+
         // Calcula o total de páginas
         $totalPaginas = $produtosPorPagina > 0 ? ceil($totalProdutos / $produtosPorPagina) : 1;
-        
+
         // Garante que a página atual é válida
         $paginaAtual = max(1, min((int)$paginaAtual, $totalPaginas));
-        
+
         // Calcula o OFFSET
         $offset = ($paginaAtual - 1) * $produtosPorPagina;
 

@@ -106,7 +106,21 @@ function formatarPreco($preco)
                         <td><?= htmlspecialchars($produto->getIdCategoria()) ?></td>
                         <td><?= $preco_formatado ?></td>
                         <td class="produtos__acoes-col">
-                            <a href="/sugarbeat_admin/produto/editar/<?= $produto->getIdProduto() ?>"
+
+                            <?php
+                            // PREPARAÇÃO DOS DADOS PARA PASSAR VIA GET
+                            $query_data = http_build_query([
+                                'id' => $produto->getIdProduto(),
+                                'nome' => $produto->getNome(),
+                                'estoque' => $produto->getEstoque(),
+                                'ativo' => $produto->getAtivo(),
+                                'categoria' => $produto->getIdCategoria(),
+                                'preco' => $produto->getPreco(),
+                                'imagem_path' => $produto->getImagem() // O caminho relativo da imagem
+                            ]);
+                            ?>
+
+                            <a href="/sugarbeat_admin/produto/cadastro?<?= $query_data ?>"
                                 title="Editar" class="editar">
                                 <i class="fa-solid fa-pen"></i>
                             </a>
@@ -150,7 +164,7 @@ function formatarPreco($preco)
 </div>
 
 <script>
-     const btn = document.getElementById('btn-filtrar');
+    const btn = document.getElementById('btn-filtrar');
     const drop = document.getElementById('dropdown-filtro');
 
     // Alterna exibição do dropdown ao clicar no botão
