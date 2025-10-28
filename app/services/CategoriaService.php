@@ -68,7 +68,26 @@ class CategoriaService
         if ($categoriaExistente && $categoriaExistente->getIdCategoria() != $currentId) {
             throw new Exception("Já existe uma categoria com o nome '{$nome}'.");
         }
-        
 
+    }
+
+    public function getCategoriasPaginadas(int $paginaAtual, int $itensPorPagina): array
+    {
+        $totalCategorias = $this->categoriaRepository->countAll();
+        
+        $totalPaginas = $itensPorPagina > 0 ? ceil($totalCategorias / $itensPorPagina) : 1;
+        
+        $paginaAtual = max(1, min((int)$paginaAtual, $totalPaginas));
+        
+        $offset = ($paginaAtual - 1) * $itensPorPagina;
+
+        $categorias = $this->categoriaRepository->getPaginated($itensPorPagina, $offset);
+
+        return [
+            'categorias' => $categorias,
+            'pagina_atual' => $paginaAtual,
+            'total_paginas' => (int) $totalPaginas,
+            'total_categorias' => $totalCategorias
+        ];
     }
 }

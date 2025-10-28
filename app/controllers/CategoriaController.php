@@ -9,7 +9,7 @@ class CategoriaController
         $this->categoriaService = $categoriaService;
     }
 
- 
+
     public function listar($id = null)
     {
         if ($id) {
@@ -24,15 +24,29 @@ class CategoriaController
                 header("Location: /sugarbeat_admin/categoria");
                 exit();
             }
-        } else {
+        }
+        $itensPorPagina = 8; // Define quantos itens por página (pode ser uma constante)
+        $paginaAtual = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
 
-            try {
-                $categorias = $this->categoriaService->listarTodasCategorias();
-                View::renderWithLayout('categoria/ListagemCategoriaView', 'config/AppLayout', ['listaCategorias' => $categorias]);
-            } catch (Exception $e) {
-                $_SESSION['alert_message'] = ['type' => 'error', 'title' => 'Erro!', 'text' => 'Erro ao listar categorias: ' . $e->getMessage()];
-                View::renderWithLayout('categoria/ListagemCategoriaView', 'config/AppLayout', ['listaCategorias' => []]);
-            }
+        try {
+            $dadosPaginacao = $this->categoriaService->getCategoriasPaginadas(
+                $paginaAtual,
+                $itensPorPagina
+            );
+
+            $data = [
+                'listaCategorias' => $dadosPaginacao['categorias'],
+                'pagina_atual' => $dadosPaginacao['pagina_atual'],
+                'total_paginas' => $dadosPaginacao['total_paginas'],
+                'itens_por_pagina' => $itensPorPagina,
+                'total_categorias' => $dadosPaginacao['total_categorias'],
+            ];
+
+            View::renderWithLayout('categoria/ListagemCategoriaView', 'config/AppLayout', $data);
+        } catch (Exception $e) {
+            $_SESSION['alert_message'] = ['type' => 'error', 'title' => 'Erro!', 'text' => 'Erro ao listar categorias: ' . $e->getMessage()];
+
+            View::renderWithLayout('categoria/ListagemCategoriaView', 'config/AppLayout', ['listaCategorias' => []]);
         }
     }
 
@@ -43,17 +57,17 @@ class CategoriaController
             $this->salvar();
         } else {
 
-            
+
             View::renderWithLayout('categoria/CadastroCategoriaView', 'config/AppLayout');
         }
     }
-    
+
     private function salvar()
     {
         try {
             $nome = $_POST['nome_categoria'] ?? '';
             $categoria = new Categoria(null, $nome);
-            
+
             $novaCategoria = $this->categoriaService->criarNovaCategoria($categoria);
 
             $_SESSION['alert_message'] = [
@@ -62,7 +76,7 @@ class CategoriaController
                 'text' => "Categoria '{$novaCategoria->getNomeCategoria()}' cadastrada com sucesso."
             ];
 
-            header("Location: /sugarbeat_admin/categoria"); 
+            header("Location: /sugarbeat_admin/categoria");
             exit();
         } catch (Exception $e) {
             $_SESSION['alert_message'] = [
@@ -75,7 +89,7 @@ class CategoriaController
             exit();
         }
     }
-    
+
 
     public function editar($id)
     {
@@ -100,10 +114,10 @@ class CategoriaController
     {
         try {
             $nome = $_POST['nome_categoria'] ?? $categoriaAtual->getNomeCategoria();
-            
+
 
             $categoria = new Categoria($id, $nome);
-            
+
             $this->categoriaService->atualizarCategoria($categoria);
 
             $_SESSION['alert_message'] = [
@@ -122,16 +136,16 @@ class CategoriaController
             exit();
         }
     }
-    
+
 
     public function deletar($id)
     {
         try {
             $categoria = $this->categoriaService->getCategoria($id);
             $nome = $categoria->getNomeCategoria();
-            
+
             $this->categoriaService->deletarCategoria($id);
-            
+
             $_SESSION['alert_message'] = [
                 'type' => 'success',
                 'title' => 'Sucesso!',

@@ -89,4 +89,37 @@ class CategoriaRepository implements ICategoriaRepository
         
         return $stmt->execute();
     }
+
+    public function countAll(): int
+    {
+        $stmt = $this->db->query("SELECT COUNT(*) FROM categoria;");
+        return (int) $stmt->fetchColumn();
+    }
+
+    public function getPaginated(int $limit, int $offset): array
+    {
+        $sql = "SELECT id_categoria, nome_categoria 
+                FROM categoria 
+                ORDER BY nome_categoria ASC
+                LIMIT :limit OFFSET :offset";
+
+        $stmt = $this->db->prepare($sql);
+        
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        
+        $stmt->execute();
+
+        $categoriasData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $categorias = [];
+
+        foreach ($categoriasData as $data) {
+            $categorias[] = new Categoria(
+                $data['id_categoria'],
+                $data['nome_categoria']
+            );
+        }
+
+        return $categorias;
+    }
 }
