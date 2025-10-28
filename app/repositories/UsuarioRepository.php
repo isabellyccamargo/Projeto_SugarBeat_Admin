@@ -139,53 +139,43 @@ class UsuarioRepository implements IUsuarioRepository
         $sql = "SELECT COUNT(*) FROM usuario";
         $params = [];
 
-        // Converte o filtro string ('true'/'false') para um valor binário (1/0)
-        $adminValue = null;
-        if ($adminFilter !== null) {
-            $adminValue = ($adminFilter === 'true' ? 1 : 0);
-            $sql .= " WHERE is_admin = :is_admin";
-            $params[':is_admin'] = $adminValue;
+        if (in_array($adminFilter, ['S', 'N'])) {
+            $sql .= " WHERE administrador = :administrador";
+            $params[':administrador'] = $adminFilter;
         }
 
         $stmt = $this->db->prepare($sql);
 
-        // Faz o bind condicionalmente
         foreach ($params as $key => $value) {
-            $stmt->bindValue($key, $value, PDO::PARAM_INT);
+            $stmt->bindValue($key, $value, PDO::PARAM_STR);
         }
 
         $stmt->execute();
         return (int) $stmt->fetchColumn();
     }
 
-     public function getPaginated(int $limit, int $offset, ?string $adminFilter): array
+    public function getPaginated(int $limit, int $offset, ?string $adminFilter): array
     {
         $sql = "SELECT id_usuario, nome, email, administrador FROM usuario";
         $params = [
-            ':limit' => $limit, 
+            ':limit' => $limit,
             ':offset' => $offset
         ];
-        
-        // 1. Aplica a cláusula WHERE condicionalmente
-        $adminValue = null;
-        if ($adminFilter !== null) {
-            $adminValue = ($adminFilter === 'true' ? 1 : 0);
+
+        if (in_array($adminFilter, ['S', 'N'])) {
             $sql .= " WHERE administrador = :administrador";
-            $params[':administrador'] = $adminValue;
+            $params[':administrador'] = $adminFilter;
         }
 
-        // 2. Adiciona ordenação e limites
         $sql .= " ORDER BY id_usuario ASC LIMIT :limit OFFSET :offset";
 
         $stmt = $this->db->prepare($sql);
-        
-        // 3. Faz o bind dos valores
+
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-        
-        if ($adminFilter !== null) {
-             // O is_admin é um TINYINT ou BOOLEAN, então usamos PARAM_INT
-            $stmt->bindValue(':administrador', $adminValue, PDO::PARAM_INT); 
+
+        if (in_array($adminFilter, ['S', 'N'])) {
+            $stmt->bindValue(':administrador', $adminFilter, PDO::PARAM_STR); 
         }
 
         $stmt->execute();
@@ -193,19 +183,16 @@ class UsuarioRepository implements IUsuarioRepository
         $usuariosData = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $usuarios = [];
 
-        // 4. Mapeamento para Objetos (Você precisará garantir que seu modelo 'Usuario' tenha um construtor compatível)
         foreach ($usuariosData as $data) {
-            // Supondo que o construtor de Usuario aceita esses campos
             $usuarios[] = new Usuario(
                 $data['id_usuario'],
                 $data['nome'],
                 $data['email'],
-                // etc. (adicione todos os campos necessários do seu modelo Usuario)
-                (bool) $data['administrador'] // Conversão de 1/0 para booleano
+                null, // Não está selecionando a senha no SELECT (correto), passe null
+                $data['administrador']
             );
         }
 
         return $usuarios;
     }
-    
 }

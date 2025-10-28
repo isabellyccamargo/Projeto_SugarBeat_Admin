@@ -67,9 +67,10 @@ $filtroUrl = $adminFilter !== null ? '&admin=' . htmlspecialchars($adminFilter) 
                         <td><?= htmlspecialchars($user->getEmail()) ?></td>
                         <td>
                             <?php
-                            // Nota: Seu modelo Usuario pode estar retornando 'S'/'N' ou boolean.
-                            // Adaptando para 'true'/'false' usado no Controller/Service:
-                            $isAdmin = ($user->getAdministrador() === 'S') || ($user->getAdministrador() === true);
+    
+                            $adminValue = $user->getAdministrador();
+
+                            $isAdmin = strtoupper($adminValue) === 'S';
                             $texto = $isAdmin ? 'Sim' : 'Não';
                             $classe = $isAdmin ? 'sim' : 'nao';
                             ?>
