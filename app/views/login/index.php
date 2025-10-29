@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SugarBeat Admin - Login</title>
     <link rel="stylesheet" href="/sugarbeat_admin/assets/css/login.css">
-    <link rel="icon" type="image/png" href="/sugarbeat_admin/fotos/imgsite.jpg">
+    <link rel="icon" type="image/png" href="../fotos/imgsite.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Ancizar+Serif:ital,wght@0,300..900;1,300..900&family=Bitter:ital,wght@0,100..900;1,100..900&family=Caudex:ital,wght@0,400;0,700;1,400;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Marcellus&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Padauk:wght@400;700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -22,7 +22,7 @@
         <div class="login-box">
 
             <div class="login-logo">
-                <img src="/sugarbeat_admin/fotos/imgsite.jpg" alt="Logo da Empresa">
+                <img src="../fotos/imgsite.jpg" alt="Logo da Empresa">
             </div>
 
             <div class="logo-subtitle">

@@ -90,23 +90,35 @@ function formatarPreco($preco)
                             <div class="produto__info-completa">
 
                                 <?php
-                                $img = $produto->getImagem();
-                                $img = preg_replace('#^\.\./\.\./\.\./#', '', $img);
+                                $img_path_completo = $produto->getImagem();
+                                $nome_do_arquivo = basename($img_path_completo);
+                                $caminho_web = '../fotos/' . $nome_do_arquivo;
                                 ?>
-
-                                <img src="/sugarbeat_admin/<?= htmlspecialchars($img) ?>" width="60" class="produto__img">
+                                <img src="/sugarbeat_admin/<?= htmlspecialchars($caminho_web) ?>" width="60" class="produto__img">
 
                                 <span><?= htmlspecialchars($produto->getNome()) ?></span>
                             </div>
                         </td>
                         <td><?= htmlspecialchars($produto->getEstoque()) ?></td>
-                        <td class="<?= !$is_ativo ? 'status-nao' : '' ?>">
+                        <td class="<?= !$is_ativo ? 'status-nao' : 'status-sim' ?>">
                             <?= $ativo_texto ?>
                         </td>
                         <td><?= htmlspecialchars($produto->getIdCategoria()) ?></td>
                         <td><?= $preco_formatado ?></td>
                         <td class="produtos__acoes-col">
-                            <a href="/sugarbeat_admin/produto/editar/<?= $produto->getIdProduto() ?>"
+                            <?php
+                            // PREPARAÇÃO DOS DADOS PARA PASSAR VIA GET
+                            $query_data = http_build_query([
+                                'id' => $produto->getIdProduto(),
+                                'nome' => $produto->getNome(),
+                                'estoque' => $produto->getEstoque(),
+                                'ativo' => $produto->getAtivo(),
+                                'categoria' => $produto->getIdCategoria(),
+                                'preco' => $produto->getPreco(),
+                                'imagem_path' => $produto->getImagem() // O caminho relativo da imagem
+                            ]);
+                            ?>
+                            <a href="/sugarbeat_admin/produto/cadastro?<?= $query_data ?>"
                                 title="Editar" class="editar">
                                 <i class="fa-solid fa-pen"></i>
                             </a>
@@ -150,7 +162,7 @@ function formatarPreco($preco)
 </div>
 
 <script>
-     const btn = document.getElementById('btn-filtrar');
+    const btn = document.getElementById('btn-filtrar');
     const drop = document.getElementById('dropdown-filtro');
 
     // Alterna exibição do dropdown ao clicar no botão

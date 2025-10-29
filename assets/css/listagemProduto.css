@@ -160,6 +160,7 @@
     /* Verde pro Ativo */
     .status-sim {
         background-color: #28a745;
+        margin-left: 5px;
     }
 
     /* Vermelho pro Inativo */
