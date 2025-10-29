@@ -237,4 +237,6 @@ class ProdutoController
             View::renderWithLayout('produto/CadastroProdutoView', 'config/AppLayout', $data);
         }
     }
+
+    
 }

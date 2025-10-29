@@ -78,10 +78,12 @@ class ProdutoRepository implements IProdutoRepository
 
         $stmt->bindValue(':id', $produto->getIdProduto(), PDO::PARAM_INT);
         $stmt->bindValue(':nome', $produto->getNome());
+        $stmt->bindValue(':preco', $produto->getPreco());
         $stmt->bindValue(':imagem', $produto->getImagem());
         $stmt->bindValue(':id_categoria', $produto->getIdCategoria(), PDO::PARAM_INT);
         $stmt->bindValue(':estoque', $produto->getEstoque(), PDO::PARAM_INT);
         $stmt->bindValue(':ativo', $produto->getAtivo());
+
         
         $stmt->execute();
         return $produto;
