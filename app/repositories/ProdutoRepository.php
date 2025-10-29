@@ -112,7 +112,7 @@ class ProdutoRepository implements IProdutoRepository
         cat.nome_categoria
     FROM produto AS pro
     INNER JOIN categoria AS cat ON pro.id_categoria = cat.id_categoria
-    ORDER BY pro.id_produto DESC
+    ORDER BY pro.id_produto Asc
     LIMIT :limit OFFSET :offset";
 
         $stmt = $this->db->prepare($sql);
@@ -135,7 +135,7 @@ class ProdutoRepository implements IProdutoRepository
                 $data['ativo']
             );
         }
-        
+
         return $produtos;
     }
 }

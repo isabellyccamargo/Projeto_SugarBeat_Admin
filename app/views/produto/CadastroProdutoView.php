@@ -104,10 +104,12 @@ ob_end_flush();
 
                         </div>
 
-                        <div class="campo-grupo esquerda">
+                        <div class="campo-grupo esquerda" style="position: relative; width: 150px;">
                             <label for="preco">Preço</label>
-                            <input type="text" id="preco" name="preco" class="campo-input input-display" placeholder="0.00" required
-                                value="<?= $is_editing ? htmlspecialchars($produto?->getPreco()) : '' ?>">
+                            <span class="prefixo">R$</span>
+                            <input type="text" id="preco" name="preco" class="campo-input input-display"
+                                placeholder="0,00" required
+                                value="<?= $is_editing ? htmlspecialchars(number_format($produto?->getPreco(), 2, ',', '.')) : '' ?>">
                         </div>
                     </div>
 
@@ -163,5 +165,24 @@ ob_end_flush();
         // Volta para a imagem padrão ou um placeholder. 
         // Você deve definir o caminho da imagem padrão (placeholder) aqui.
         imagemPreview.src = "caminho/para/sua/imagem_do_brigadeiro.png";
+    });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // Máscara para formato de moeda
+        $('#preco').mask('000.000.000,00', {
+            reverse: true
+        });
+
+        // Ao enviar o formulário, converte para formato numérico (ex: 1.230,50 -> 1230.50)
+        $('form').on('submit', function() {
+            let val = $('#preco').val();
+            val = val.replace(/\./g, '').replace(',', '.'); // remove pontos e troca vírgula por ponto
+            $('#preco').val(val);
+        });
     });
 </script>

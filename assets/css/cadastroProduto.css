@@ -157,3 +157,19 @@
 .form-row .campo-nome {
     flex-grow: 1;
 }
+
+.campo-grupo .prefixo {
+    position: absolute;
+    top: 24px; 
+    left: 10px; 
+    color: var(--cor-primaria);
+    font-size: 1em;
+    font-weight: bold;
+    pointer-events: none; 
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.campo-grupo input#preco {
+    padding-left: 35px; 
+}
