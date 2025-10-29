@@ -135,12 +135,7 @@ class ProdutoRepository implements IProdutoRepository
                 $data['ativo']
             );
         }
-
-        echo "<pre>";
-        print_r($produtos);
-        echo "</pre>";
-        exit;
-
+        
         return $produtos;
     }
 }
