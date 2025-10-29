@@ -5,5 +5,4 @@ interface IProdutoRepository {
     public function getAll();
     public function save($produto);
     public function update($produto);
-    public function delete($id);
 }

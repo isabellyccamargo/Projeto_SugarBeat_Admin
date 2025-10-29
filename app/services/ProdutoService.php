@@ -61,13 +61,7 @@
             // Você poderia adicionar validações aqui antes de chamar o update do repositório
             return $this->produtoRepository->update($produto);
         }
-
-        public function deletarProduto($id): bool
-        {
-            // Você poderia adicionar lógica de verificação (ex: se o produto está em pedidos) antes de deletar
-            return $this->produtoRepository->delete($id);
-        }
-
+        
         public function getProdutosPaginados(int $paginaAtual, int $produtosPorPagina): array
         {
             $totalProdutos = $this->produtoRepository->countAll();

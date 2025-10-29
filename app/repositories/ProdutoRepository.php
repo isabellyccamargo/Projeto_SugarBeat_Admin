@@ -13,7 +13,7 @@ class ProdutoRepository implements IProdutoRepository
 
     public function getById($id)
     {
-        $stmt = $this->db->prepare("SELECT pro.id_produto, pro.nome, pro.ativo, pro.preco, pro.imagem, cat.nome_categoria " .
+        $stmt = $this->db->prepare("SELECT pro.id_produto, pro.nome, pro.ativo, pro.preco, pro.imagem, pro.estoque, cat.nome_categoria " .
             "  FROM produto pro " .
             " INNER JOIN categoria cat on cat.id_categoria = pro.id_categoria WHERE pro.id_produto = :id");
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
@@ -26,8 +26,10 @@ class ProdutoRepository implements IProdutoRepository
                 $produtoData['nome'],
                 $produtoData['preco'],
                 $produtoData['imagem'],
-                $produtoData['nome_categoria'],
-                $produtoData['ativo']
+                null, // id_categoria (Ausente na query)
+                $produtoData['nome_categoria'], // nome_categoria
+                $produtoData['estoque'],
+                $produtoData['ativo'] // ativo (Última posição)
             );
         }
     }
@@ -46,9 +48,10 @@ class ProdutoRepository implements IProdutoRepository
                 $data['id_produto'],
                 $data['nome'],
                 $data['preco'],
-                $data['estoque'],
                 $data['imagem'],
+                null,
                 $data['nome_categoria'],
+                $data['estoque'],
                 $data['ativo']
             );
         }
@@ -84,17 +87,11 @@ class ProdutoRepository implements IProdutoRepository
         $stmt->bindValue(':estoque', $produto->getEstoque(), PDO::PARAM_INT);
         $stmt->bindValue(':ativo', $produto->getAtivo());
 
-        
+
         $stmt->execute();
         return $produto;
     }
 
-    public function delete($id)
-    {
-        $stmt = $this->db->prepare("DELETE FROM produto WHERE id_produto = :id");
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        return $stmt->execute();
-    }
 
     public function countAll(): int
     {
@@ -105,12 +102,18 @@ class ProdutoRepository implements IProdutoRepository
     // NOVO MÉTODO 2: Busca produtos com Paginação
     public function getPaginated(int $limit, int $offset): array
     {
-        $sql = "SELECT pro.id_produto, pro.nome, pro.ativo, pro.preco, pro.imagem,
-                   pro.estoque, cat.nome_categoria
-            FROM produto pro
-            INNER JOIN categoria cat ON cat.id_categoria = pro.id_categoria
-            ORDER BY pro.id_produto ASC
-            LIMIT :limit OFFSET :offset";
+        $sql = "SELECT 
+        pro.id_produto,
+        pro.nome,
+        pro.ativo,
+        pro.preco,
+        pro.imagem,
+        pro.estoque,
+        cat.nome_categoria
+    FROM produto AS pro
+    INNER JOIN categoria AS cat ON pro.id_categoria = cat.id_categoria
+    ORDER BY pro.id_produto DESC
+    LIMIT :limit OFFSET :offset";
 
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
@@ -126,11 +129,17 @@ class ProdutoRepository implements IProdutoRepository
                 $data['nome'],
                 $data['preco'],
                 $data['imagem'],
+                null,
                 $data['nome_categoria'],
                 $data['estoque'],
                 $data['ativo']
             );
         }
+
+        echo "<pre>";
+        print_r($produtos);
+        echo "</pre>";
+        exit;
 
         return $produtos;
     }

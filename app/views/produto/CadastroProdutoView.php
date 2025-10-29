@@ -14,7 +14,7 @@ if ($produto && $produto->getImagem()) {
     $nome_do_arquivo = basename($produto->getImagem());
 
     // Monta o caminho web correto
-    $caminhoImagemAtual = '../fotos/' . htmlspecialchars($nome_do_arquivo);
+    $caminhoImagemAtual = '../../fotos/' . htmlspecialchars($nome_do_arquivo);
 }
 ob_end_flush();
 ?>

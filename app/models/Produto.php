@@ -25,8 +25,8 @@ class Produto {
         $this->preco = $preco;
         $this->imagem = $imagem;
         $this->id_categoria = $id_categoria;
-        $this->estoque = $estoque; 
         $this->nome_categoria = $nome_categoria;
+        $this->estoque = $estoque; 
         $this->ativo = $ativo;
     }
 

@@ -103,7 +103,7 @@ function formatarPreco($preco)
                         <td class="<?= !$is_ativo ? 'status-nao' : 'status-sim' ?>">
                             <?= $ativo_texto ?>
                         </td>
-                        <td><?= htmlspecialchars($produto->getIdCategoria()) ?></td>
+                       <td><?= htmlspecialchars($produto->getNomeCategoria()) ?></td>
                         <td><?= $preco_formatado ?></td>
                         <td class="produtos__acoes-col">
                             <?php
@@ -123,10 +123,6 @@ function formatarPreco($preco)
                                 <i class="fa-solid fa-pen"></i>
                             </a>
 
-                            <a href="/sugarbeat_admin/produto/deletar/<?= $produto->getIdProduto() ?>"
-                                title="Excluir" class="deletar">
-                                <i class="fa-solid fa-trash"></i>
-                            </a>
                         </td>
 
                     </tr>

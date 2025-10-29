@@ -93,7 +93,6 @@ $router->add('logout', 'AuthController', 'logout');
 $router->add('dashboard', 'AuthController', 'dashboard');
 $router->add('produto', 'ProdutoController', 'listar');
 $router->add('produto/cadastro', 'ProdutoController', 'cadastro');
-$router->add('produto/deletar', 'ProdutoController', 'deletar');
 $router->add('categoria', 'CategoriaController', 'listar');
 $router->add('categoria/cadastro', 'CategoriaController', 'cadastro');
 $router->add('usuario', 'UsuarioController', 'listar');
