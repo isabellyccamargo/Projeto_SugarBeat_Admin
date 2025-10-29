@@ -105,7 +105,7 @@ class ProdutoController
         $produtoId = $_POST['id'] ?? null;
         $imagemAntigaPath = $_POST['imagem_antiga'] ?? null;
 
-        $diretorioRaiz = dirname(dirname(__DIR__));
+       $diretorioRaiz = dirname(dirname(dirname(__DIR__)));;
         $diretorioUpload = $diretorioRaiz . '/fotos/';
 
         if (!is_dir($diretorioUpload)) {
