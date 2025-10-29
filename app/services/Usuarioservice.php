@@ -56,17 +56,6 @@ class UsuarioService
         return $this->usuarioRepository->update($usuario);
     }
 
-    public function deletarUsuario($id): bool
-    {
-        $deletado = $this->usuarioRepository->delete($id);
-
-        if (!$deletado) {
-            throw new Exception("Falha ao deletar usuário. O ID pode não existir.");
-        }
-
-        return $deletado;
-    }
-
     public function autenticarUsuario(string $email, string $senha)
     {
         $usuario = $this->usuarioRepository->getByEmail($email);

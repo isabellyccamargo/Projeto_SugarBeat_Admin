@@ -126,14 +126,6 @@ class UsuarioRepository implements IUsuarioRepository
         return $usuario;
     }
 
-    public function delete($id): bool
-    {
-        $stmt = $this->db->prepare("DELETE FROM usuario WHERE id_usuario = :id");
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-
-        return $stmt->execute();
-    }
-
     public function countAll(?string $adminFilter): int
     {
         $sql = "SELECT COUNT(*) FROM usuario";

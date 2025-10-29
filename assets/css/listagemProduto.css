@@ -197,10 +197,15 @@
         object-fit: cover;
         border: 1px solid rgba(59, 37, 0, 0.5);
     }
+
+    .produtos__acoes-col{
+        width: 40px;
+    }
     
     .produtos__acoes-col a {
         color: var(--cor-primaria);
         font-size: 1.1rem;
+
     }
 
     .produtos__acoes-col a:hover {
@@ -209,6 +214,7 @@
 
     .editar {
         text-decoration: none;
+       margin-left: 10px;
     }
 
     .dropdown-filtro {

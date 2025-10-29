@@ -169,7 +169,7 @@
     }
 
     .usuarios__acoes-col {
-        width: 100px;
+        width: 40px;
     }
 
     .usuarios__acoes-col a {
@@ -183,7 +183,7 @@
     }
 
     .editar {
-        margin-right: 20px;
+        margin-left: 10px;
         text-decoration: none;
     }
 

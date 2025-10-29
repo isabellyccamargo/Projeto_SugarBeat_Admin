@@ -82,10 +82,6 @@ $filtroUrl = $adminFilter !== null ? '&admin=' . htmlspecialchars($adminFilter) 
                             <a href="/sugarbeat_admin/usuario/editar/<?= $user->getIdUsuario() ?>" title="Editar" class="editar">
                                 <i class="fa-solid fa-pen"></i>
                             </a>
-
-                            <a href="/sugarbeat_admin/usuario/deletar/<?= $user->getIdUsuario() ?>" title="Excluir" class="deletar">
-                                <i class="fa-solid fa-trash"></i>
-                            </a>
                         </td>
 
                     </tr>

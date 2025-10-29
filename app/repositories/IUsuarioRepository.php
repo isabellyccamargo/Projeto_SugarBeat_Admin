@@ -6,6 +6,5 @@ interface IUsuarioRepository
     public function getAll(): array;
     public function save(Usuario $usuario): Usuario;
     public function update(Usuario $usuario): Usuario;
-    public function delete($id): bool;
     public function getByEmail($email): ?Usuario;
 }

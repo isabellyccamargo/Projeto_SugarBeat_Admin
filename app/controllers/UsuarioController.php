@@ -143,31 +143,6 @@ class UsuarioController
         }
     }
 
-    public function deletar($id)
-    {
-        try {
-            $usuario = $this->usuarioService->getUsuario($id);
-            $nome = $usuario->getNome();
-
-            $this->usuarioService->deletarUsuario($id);
-
-            $_SESSION['alert_message'] = [
-                'type' => 'success',
-                'title' => 'Sucesso!',
-                'text' => "Usuário '{$nome}' excluído com sucesso."
-            ];
-        } catch (Exception $e) {
-            $_SESSION['alert_message'] = [
-                'type' => 'error',
-                'title' => 'Erro!',
-                'text' => 'Erro ao deletar usuário: ' . $e->getMessage()
-            ];
-        } finally {
-            header("Location: /sugarbeat_admin/usuario");
-            exit();
-        }
-    }
-
     public function logout()
     {
         session_destroy();
