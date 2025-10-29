@@ -42,18 +42,6 @@ class CategoriaService
         
         return $this->categoriaRepository->update($categoria);
     }
-    
-    public function deletarCategoria($id): bool
-    {
-        $deletado = $this->categoriaRepository->delete($id);
-        
-        if (!$deletado) {
-             throw new Exception("Falha ao deletar categoria. O ID pode não existir ou pode haver produtos associados.");
-        }
-        
-        return $deletado;
-    }
-
 
     private function validarNomeCategoria(string $nome, $currentId)
     {

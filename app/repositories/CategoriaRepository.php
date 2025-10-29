@@ -82,14 +82,6 @@ class CategoriaRepository implements ICategoriaRepository
         return $categoria;
     }
 
-    public function delete($id): bool
-    {
-        $stmt = $this->db->prepare("DELETE FROM categoria WHERE id_categoria = :id");
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        
-        return $stmt->execute();
-    }
-
     public function countAll(): int
     {
         $stmt = $this->db->query("SELECT COUNT(*) FROM categoria;");

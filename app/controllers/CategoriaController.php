@@ -137,29 +137,4 @@ class CategoriaController
         }
     }
 
-
-    public function deletar($id)
-    {
-        try {
-            $categoria = $this->categoriaService->getCategoria($id);
-            $nome = $categoria->getNomeCategoria();
-
-            $this->categoriaService->deletarCategoria($id);
-
-            $_SESSION['alert_message'] = [
-                'type' => 'success',
-                'title' => 'Sucesso!',
-                'text' => "Categoria '{$nome}' excluída com sucesso."
-            ];
-        } catch (Exception $e) {
-            $_SESSION['alert_message'] = [
-                'type' => 'error',
-                'title' => 'Erro!',
-                'text' => 'Erro ao deletar categoria: ' . $e->getMessage()
-            ];
-        } finally {
-            header("Location: /sugarbeat_admin/categoria");
-            exit();
-        }
-    }
 }

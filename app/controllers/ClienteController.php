@@ -31,5 +31,4 @@ class ClienteController
         }
     }
     
-    // Outros métodos: cadastro(), editar(), etc.
 }
