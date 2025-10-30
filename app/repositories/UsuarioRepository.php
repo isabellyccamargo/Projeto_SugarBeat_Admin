@@ -11,9 +11,6 @@ class UsuarioRepository implements IUsuarioRepository
         $this->db = $db;
     }
 
-    // ===========================
-    // OBTÉM USUÁRIO POR ID
-    // ===========================
     public function getById($id): ?Usuario
     {
         $stmt = $this->db->prepare("
@@ -38,9 +35,6 @@ class UsuarioRepository implements IUsuarioRepository
         );
     }
 
-    // ===========================
-    // OBTÉM USUÁRIO POR EMAIL
-    // ===========================
     public function getByEmail(string $email): ?Usuario
     {
         $stmt = $this->db->prepare("
@@ -65,9 +59,6 @@ class UsuarioRepository implements IUsuarioRepository
         );
     }
 
-    // ===========================
-    // LISTA TODOS OS USUÁRIOS
-    // ===========================
     public function getAll(?string $adminStatus = null): array
     {
         $sql = "SELECT id_usuario, nome, email, administrador FROM usuario";
@@ -91,7 +82,7 @@ class UsuarioRepository implements IUsuarioRepository
                 $data['id_usuario'],
                 $data['nome'],
                 $data['email'],
-                null, // senha omitida
+                null, 
                 $data['administrador']
             );
         }
@@ -99,9 +90,6 @@ class UsuarioRepository implements IUsuarioRepository
         return $usuarios;
     }
 
-    // ===========================
-    // SALVA NOVO USUÁRIO
-    // ===========================
     public function save(Usuario $usuario): Usuario
     {
         $stmt = $this->db->prepare("
@@ -120,9 +108,6 @@ class UsuarioRepository implements IUsuarioRepository
         return $usuario;
     }
 
-    // ===========================
-    // ATUALIZA USUÁRIO EXISTENTE
-    // ===========================
     public function update(Usuario $usuario): Usuario
     {
         $sql = "UPDATE usuario 
@@ -150,9 +135,6 @@ class UsuarioRepository implements IUsuarioRepository
         return $usuario;
     }
 
-    // ===========================
-    // CONTADOR DE USUÁRIOS
-    // ===========================
     public function countAll(?string $adminFilter = null): int
     {
         $sql = "SELECT COUNT(*) FROM usuario";
@@ -173,9 +155,6 @@ class UsuarioRepository implements IUsuarioRepository
         return (int) $stmt->fetchColumn();
     }
 
-    // ===========================
-    // LISTAGEM PAGINADA
-    // ===========================
     public function getPaginated(int $limit, int $offset, ?string $adminFilter = null): array
     {
         $sql = "

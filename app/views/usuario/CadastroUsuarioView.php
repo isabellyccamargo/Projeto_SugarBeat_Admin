@@ -1,6 +1,6 @@
 <?php
 ob_start();
-$usuario = $usuario_existente ?? null; // Pode vir do GET (edição) ou ser null (cadastro)
+$usuario = $usuario_existente ?? null; 
 $is_editing = $usuario && $usuario->getIdUsuario();
 ob_end_flush();
 ?>

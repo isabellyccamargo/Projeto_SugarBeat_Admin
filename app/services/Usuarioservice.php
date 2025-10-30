@@ -15,17 +15,14 @@ class UsuarioService
 
     public function criarNovoUsuario(Usuario $usuario): Usuario
     {
-        // Valida dados comuns e marca que é novo (para checar email)
         $this->validarDadosComuns($usuario, true);
 
         if (empty($usuario->getSenha())) {
             throw new Exception("A senha é obrigatória para novos usuários.");
         }
 
-        // Hash da senha
         $usuario->setSenha(password_hash($usuario->getSenha(), PASSWORD_DEFAULT));
 
-        // Persiste e retorna o usuário com ID
         return $this->usuarioRepository->save($usuario);
     }
 
@@ -66,7 +63,6 @@ class UsuarioService
         return $usuario;
     }
 
-
     public function getUsuario($id): Usuario
     {
         $usuario = $this->usuarioRepository->getById($id);
@@ -77,12 +73,10 @@ class UsuarioService
         return $usuario;
     }
 
-
     public function listarUsuariosComFiltro(?string $adminStatus = null): array
     {
         return $this->usuarioRepository->getAll($adminStatus);
     }
-
 
     public function getUsuariosPaginados(int $paginaAtual, int $usuariosPorPagina, ?string $adminFilter): array
     {
@@ -118,13 +112,11 @@ class UsuarioService
         }
         $usuario->setEmail($email);
 
-        // Verifica se já existe outro usuário com esse e-mail
         $usuarioExistente = $this->usuarioRepository->getByEmail($email);
         if ($usuarioExistente) {
             if ($isNew) {
                 throw new Exception("E-mail já cadastrado.");
             } else {
-                // Se for update e o usuário encontrado tiver ID diferente, bloqueia
                 if ($usuarioExistente->getIdUsuario() !== $usuario->getIdUsuario()) {
                     throw new Exception("E-mail já cadastrado por outro usuário.");
                 }

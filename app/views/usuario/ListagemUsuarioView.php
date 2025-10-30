@@ -67,7 +67,7 @@ $filtroUrl = $adminFilter !== null ? '&admin=' . htmlspecialchars($adminFilter) 
                         <td><?= htmlspecialchars($user->getEmail()) ?></td>
                         <td>
                             <?php
-    
+
                             $adminValue = $user->getAdministrador();
 
                             $isAdmin = strtoupper($adminValue) === 'S';
@@ -79,7 +79,15 @@ $filtroUrl = $adminFilter !== null ? '&admin=' . htmlspecialchars($adminFilter) 
                             </span>
                         </td>
                         <td class="usuarios__acoes-col">
-                            <a href="/sugarbeat_admin/usuario/editar/<?= $user->getIdUsuario() ?>" title="Editar" class="editar">
+                            <?php
+                            $query_data = http_build_query([
+                                'id' => $user->getIdUsuario(),
+                                'nome' => $user->getNome(),
+                                'email' => $user->getEmail(),
+                                'administrador' => $user->getAdministrador()
+                            ]);
+                            ?>
+                            <a href="/sugarbeat_admin/usuario/cadastro?<?= $query_data ?>" title="Editar" class="editar">
                                 <i class="fa-solid fa-pen"></i>
                             </a>
                         </td>
@@ -139,14 +147,11 @@ $filtroUrl = $adminFilter !== null ? '&admin=' . htmlspecialchars($adminFilter) 
                 const filtroValor = item.getAttribute('data-filtro');
                 let url = '/sugarbeat_admin/usuario';
 
-                // NOVO: Ao aplicar qualquer filtro, a URL deve sempre ir para a página 1.
                 let query = '?page=1';
 
                 if (filtroValor === 'todos') {
-                    // Se 'todos', limpamos o filtro (vai para /usuario?page=1)
                     window.location.href = url + query;
                 } else {
-                    // Se houver filtro, adicionamos o parâmetro 'admin' (vai para /usuario?page=1&admin=true)
                     window.location.href = `${url}${query}&admin=${filtroValor}`;
                 }
             });

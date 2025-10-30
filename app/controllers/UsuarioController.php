@@ -61,13 +61,11 @@ class UsuarioController
 
     public function cadastro()
     {
-        // Se enviou o formulário
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->salvar();
             exit();
         }
 
-        // Se for edição
         $usuarioId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         if ($usuarioId) {
             try {
@@ -83,7 +81,6 @@ class UsuarioController
                 exit();
             }
         } else {
-            // Modo cadastro novo
             View::renderWithLayout('usuario/CadastroUsuarioView', 'config/AppLayout');
         }
     }
@@ -93,7 +90,6 @@ class UsuarioController
         $usuarioId = $_POST['id'] ?? null;
 
         try {
-            // Validação básica
             $nome = trim($_POST['nome'] ?? '');
             $email = trim($_POST['email'] ?? '');
             $senha = trim($_POST['senha'] ?? '');
@@ -103,7 +99,6 @@ class UsuarioController
                 throw new Exception("Preencha todos os campos obrigatórios.");
             }
 
-            // Cria/Atualiza o objeto usuário
             $usuario = new Usuario(
                 $usuarioId,
                 $nome,
@@ -138,7 +133,6 @@ class UsuarioController
                 'text' => 'Erro ao salvar usuário: ' . $e->getMessage()
             ];
 
-            // Recarrega o formulário mantendo os dados
             $usuarioErro = new Usuario(
                 $usuarioId,
                 $_POST['nome'] ?? '',
