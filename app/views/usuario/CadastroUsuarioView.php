@@ -1,6 +1,6 @@
 <?php
 ob_start();
-$usuario = $usuario_existente ?? null; 
+$usuario = $usuario_existente ?? null;
 $is_editing = $usuario && $usuario->getIdUsuario();
 ob_end_flush();
 ?>
@@ -74,10 +74,3 @@ ob_end_flush();
     </div>
 
 </div>
-
-
-
-
-
-
-

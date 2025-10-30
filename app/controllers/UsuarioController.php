@@ -87,7 +87,7 @@ class UsuarioController
 
     private function salvar()
     {
-        $usuarioId = $_POST['id'] ?? null;
+        $usuarioId = !empty($_POST['id']) ? (int)$_POST['id'] : null;
 
         try {
             $nome = trim($_POST['nome'] ?? '');

@@ -214,6 +214,7 @@
         <aside class="sidebar">
 
             <div>
+                
                 <div class="logo-container">
                     <div class="logo">
                         <img src="../../fotos/imgsite.jpg" alt="Logo da Empresa">
