@@ -1,6 +1,5 @@
 <?php
-// ...
-// Lógica de pré-preenchimento
+
 ob_start();
 $produto = $produto_existente ?? null; // Pode vir do GET (edição) ou ser null (cadastro)
 

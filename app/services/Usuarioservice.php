@@ -7,34 +7,25 @@ class UsuarioService
     public function __construct(IUsuarioRepository $usuarioRepository)
     {
         $this->usuarioRepository = $usuarioRepository;
-    }
 
-
-    public function listarUsuariosComFiltro(?string $adminStatus = null): array
-    {
-        return $this->usuarioRepository->getAll($adminStatus);
-    }
-
-    public function getUsuario($id): Usuario
-    {
-        $usuario = $this->usuarioRepository->getById($id);
-
-        if (!$usuario) {
-            throw new Exception("Usuário com ID $id não encontrado.");
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
         }
-        return $usuario;
     }
 
     public function criarNovoUsuario(Usuario $usuario): Usuario
     {
+        // Valida dados comuns e marca que é novo (para checar email)
         $this->validarDadosComuns($usuario, true);
-
 
         if (empty($usuario->getSenha())) {
             throw new Exception("A senha é obrigatória para novos usuários.");
         }
+
+        // Hash da senha
         $usuario->setSenha(password_hash($usuario->getSenha(), PASSWORD_DEFAULT));
 
+        // Persiste e retorna o usuário com ID
         return $this->usuarioRepository->save($usuario);
     }
 
@@ -46,71 +37,104 @@ class UsuarioService
 
         $this->validarDadosComuns($usuario, false);
 
-        if (!empty($usuario->getSenha())) {
-            $usuario->setSenha(password_hash($usuario->getSenha(), PASSWORD_DEFAULT));
-        } else {
-
-            $usuario->setSenha(null);
+        $existente = $this->usuarioRepository->getById($usuario->getIdUsuario());
+        if (!$existente) {
+            throw new Exception("Usuário não encontrado para atualização.");
         }
 
-        return $this->usuarioRepository->update($usuario);
+        $novaSenha = $usuario->getSenha();
+        if (!empty($novaSenha)) {
+            if (strlen($novaSenha) < 6) {
+                throw new Exception("Senha deve ter ao menos 6 caracteres.");
+            }
+            $usuario->setSenha(password_hash($novaSenha, PASSWORD_DEFAULT));
+        } else {
+            $usuario->setSenha($existente->getSenha());
+        }
+
+        $this->usuarioRepository->update($usuario);
+
+        return $this->usuarioRepository->getById($usuario->getIdUsuario());
     }
 
-    public function autenticarUsuario(string $email, string $senha)
+    public function autenticarUsuario(string $email, string $senha): Usuario
     {
         $usuario = $this->usuarioRepository->getByEmail($email);
-
         if (!$usuario || !password_verify($senha, $usuario->getSenha())) {
             throw new Exception("E-mail ou senha inválidos.");
         }
-
         return $usuario;
     }
 
-    private function validarDadosComuns(Usuario $usuario, bool $isNew = false)
+
+    public function getUsuario($id): Usuario
     {
-        if (empty($usuario->getNome())) {
+        $usuario = $this->usuarioRepository->getById($id);
+
+        if (!$usuario) {
+            throw new Exception("Usuário com ID $id não encontrado.");
+        }
+        return $usuario;
+    }
+
+
+    public function listarUsuariosComFiltro(?string $adminStatus = null): array
+    {
+        return $this->usuarioRepository->getAll($adminStatus);
+    }
+
+
+    public function getUsuariosPaginados(int $paginaAtual, int $usuariosPorPagina, ?string $adminFilter): array
+    {
+        $totalUsuarios = $this->usuarioRepository->countAll($adminFilter);
+        $totalPaginas = $usuariosPorPagina > 0 ? ceil($totalUsuarios / $usuariosPorPagina) : 1;
+        $paginaAtual = max(1, min((int)$paginaAtual, $totalPaginas));
+        $offset = ($paginaAtual - 1) * $usuariosPorPagina;
+
+        $usuarios = $this->usuarioRepository->getPaginated($usuariosPorPagina, $offset, $adminFilter);
+
+        return [
+            'usuarios' => $usuarios,
+            'pagina_atual' => $paginaAtual,
+            'total_paginas' => (int)$totalPaginas,
+            'total_usuarios' => $totalUsuarios
+        ];
+    }
+
+    private function validarDadosComuns(Usuario $usuario, bool $isNew): void
+    {
+        if (empty(trim($usuario->getNome()))) {
             throw new Exception("O nome do usuário é obrigatório.");
         }
 
-        $email = strtolower(trim($usuario->getEmail()));
+        $emailRaw = $usuario->getEmail();
+        if (empty($emailRaw)) {
+            throw new Exception("O e-mail é obrigatório.");
+        }
+
+        $email = strtolower(trim($emailRaw));
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new Exception("E-mail inválido.");
         }
         $usuario->setEmail($email);
 
-
+        // Verifica se já existe outro usuário com esse e-mail
         $usuarioExistente = $this->usuarioRepository->getByEmail($email);
-        if ($usuarioExistente && ($isNew || $usuarioExistente->getIdUsuario() !== $usuario->getIdUsuario())) {
-            throw new Exception("E-mail já cadastrado.");
+        if ($usuarioExistente) {
+            if ($isNew) {
+                throw new Exception("E-mail já cadastrado.");
+            } else {
+                // Se for update e o usuário encontrado tiver ID diferente, bloqueia
+                if ($usuarioExistente->getIdUsuario() !== $usuario->getIdUsuario()) {
+                    throw new Exception("E-mail já cadastrado por outro usuário.");
+                }
+            }
         }
 
-        $admin = strtoupper($usuario->getAdministrador());
+        $admin = strtoupper(trim($usuario->getAdministrador() ?? 'N'));
         if ($admin !== 'S' && $admin !== 'N') {
             throw new Exception("O campo 'administrador' deve ser 'S' ou 'N'.");
         }
         $usuario->setAdministrador($admin);
-    }
-
-    public function getUsuariosPaginados(int $paginaAtual, int $usuariosPorPagina, ?string $adminFilter): array
-    {
-        // O método countAll no Repository deve aceitar o filtro para contar apenas os usuários relevantes.
-        $totalUsuarios = $this->usuarioRepository->countAll($adminFilter);
-        // 2. Calcula o total de páginas. Se não houver usuários, o total é 1.
-        $totalPaginas = $usuariosPorPagina > 0 ? ceil($totalUsuarios / $usuariosPorPagina) : 1;
-        // 3. Garante que a página atual é um valor válido (entre 1 e totalPaginas)
-        $paginaAtual = max(1, min((int)$paginaAtual, $totalPaginas));
-        // 4. Calcula o offset (o número de itens que o banco de dados deve pular)
-        $offset = ($paginaAtual - 1) * $usuariosPorPagina;
-        // 5. Busca a lista de usuários da página, aplicando o LIMIT, OFFSET e o FILTRO.
-        $usuarios = $this->usuarioRepository->getPaginated($usuariosPorPagina, $offset, $adminFilter);
-
-        // 6. Retorna um array com todos os metadados e a lista para o Controller
-        return [
-            'usuarios' => $usuarios,
-            'pagina_atual' => $paginaAtual,
-            'total_paginas' => (int) $totalPaginas,
-            'total_usuarios' => $totalUsuarios
-        ];
     }
 }

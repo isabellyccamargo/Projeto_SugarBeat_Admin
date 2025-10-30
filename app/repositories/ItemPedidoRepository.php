@@ -84,11 +84,4 @@ class ItemPedidoRepository implements IItemPedidoRepository
         return $stmt->execute();
     }
 
-    public function delete($id)
-    {
-
-        $stmt = $this->db->prepare("DELETE FROM item_pedido WHERE id = :id");
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        return $stmt->execute();
-    }
 }

@@ -6,5 +6,4 @@ interface IItemPedidoRepository
     public function getByPedidoId($pedidoId);
     public function save($itemPedido);
     public function update($itemPedido);
-    public function delete($id);
 }

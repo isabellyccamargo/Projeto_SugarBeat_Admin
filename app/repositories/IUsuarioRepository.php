@@ -6,5 +6,5 @@ interface IUsuarioRepository
     public function getAll(): array;
     public function save(Usuario $usuario): Usuario;
     public function update(Usuario $usuario): Usuario;
-    public function getByEmail($email): ?Usuario;
+    public function getByEmail(string $email): ?Usuario;
 }

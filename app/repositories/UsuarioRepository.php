@@ -11,14 +11,20 @@ class UsuarioRepository implements IUsuarioRepository
         $this->db = $db;
     }
 
+    // ===========================
+    // OBTÉM USUÁRIO POR ID
+    // ===========================
     public function getById($id): ?Usuario
     {
-        $stmt = $this->db->prepare("SELECT * FROM usuario WHERE id_usuario = :id");
+        $stmt = $this->db->prepare("
+            SELECT id_usuario, nome, email, senha, administrador 
+            FROM usuario 
+            WHERE id_usuario = :id
+        ");
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Criação Direta (como no ClienteRepository)
         if (!$data) {
             return null;
         }
@@ -32,11 +38,16 @@ class UsuarioRepository implements IUsuarioRepository
         );
     }
 
-    public function getByEmail($email): ?Usuario
+    // ===========================
+    // OBTÉM USUÁRIO POR EMAIL
+    // ===========================
+    public function getByEmail(string $email): ?Usuario
     {
-        $stmt = $this->db->prepare("SELECT id_usuario, nome, email, senha, administrador 
+        $stmt = $this->db->prepare("
+            SELECT id_usuario, nome, email, senha, administrador 
             FROM usuario 
-            WHERE email = :email");
+            WHERE email = :email
+        ");
         $stmt->bindValue(':email', $email, PDO::PARAM_STR);
         $stmt->execute();
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -45,21 +56,21 @@ class UsuarioRepository implements IUsuarioRepository
             return null;
         }
 
-        $usuario = new Usuario(); // Instancia o objeto vazio
-
-        // Atribui os valores um por um via Setter
-        $usuario->setIdUsuario($data['id_usuario']);
-        $usuario->setNome($data['nome']); // Garante que o nome é atribuído
-        $usuario->setEmail($data['email']);
-        $usuario->setSenha($data['senha']);
-        $usuario->setAdministrador($data['administrador']);
-
-        return $usuario;
+        return new Usuario(
+            $data['id_usuario'],
+            $data['nome'],
+            $data['email'],
+            $data['senha'],
+            $data['administrador']
+        );
     }
 
+    // ===========================
+    // LISTA TODOS OS USUÁRIOS
+    // ===========================
     public function getAll(?string $adminStatus = null): array
     {
-        $sql = "SELECT * FROM usuario";
+        $sql = "SELECT id_usuario, nome, email, administrador FROM usuario";
         $params = [];
 
         if (in_array($adminStatus, ['S', 'N'])) {
@@ -72,45 +83,57 @@ class UsuarioRepository implements IUsuarioRepository
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
 
-        $dataList = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $usuariosData = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $usuarios = [];
 
-        foreach ($dataList as $data) {
+        foreach ($usuariosData as $data) {
             $usuarios[] = new Usuario(
                 $data['id_usuario'],
                 $data['nome'],
                 $data['email'],
-                $data['senha'],
+                null, // senha omitida
                 $data['administrador']
             );
         }
 
         return $usuarios;
     }
+
+    // ===========================
+    // SALVA NOVO USUÁRIO
+    // ===========================
     public function save(Usuario $usuario): Usuario
     {
-        $sql = "INSERT INTO usuario (nome, email, senha, administrador) 
-                VALUES (:nome, :email, :senha, :administrador)";
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->db->prepare("
+            INSERT INTO usuario (nome, email, senha, administrador)
+            VALUES (:nome, :email, :senha, :administrador)
+        ");
 
         $stmt->bindValue(':nome', $usuario->getNome());
         $stmt->bindValue(':email', $usuario->getEmail());
         $stmt->bindValue(':senha', $usuario->getSenha());
         $stmt->bindValue(':administrador', $usuario->getAdministrador());
-        $stmt->execute();
 
+        $stmt->execute();
         $usuario->setIdUsuario($this->db->lastInsertId());
+
         return $usuario;
     }
 
+    // ===========================
+    // ATUALIZA USUÁRIO EXISTENTE
+    // ===========================
     public function update(Usuario $usuario): Usuario
     {
-        $set = "nome = :nome, email = :email, administrador = :administrador";
+        $sql = "UPDATE usuario 
+                SET nome = :nome, email = :email, administrador = :administrador";
+
         if (!empty($usuario->getSenha())) {
-            $set .= ", senha = :senha";
+            $sql .= ", senha = :senha";
         }
 
-        $sql = "UPDATE usuario SET {$set} WHERE id_usuario = :id";
+        $sql .= " WHERE id_usuario = :id";
+
         $stmt = $this->db->prepare($sql);
 
         $stmt->bindValue(':nome', $usuario->getNome());
@@ -120,13 +143,17 @@ class UsuarioRepository implements IUsuarioRepository
         if (!empty($usuario->getSenha())) {
             $stmt->bindValue(':senha', $usuario->getSenha());
         }
+
         $stmt->bindValue(':id', $usuario->getIdUsuario(), PDO::PARAM_INT);
         $stmt->execute();
 
         return $usuario;
     }
 
-    public function countAll(?string $adminFilter): int
+    // ===========================
+    // CONTADOR DE USUÁRIOS
+    // ===========================
+    public function countAll(?string $adminFilter = null): int
     {
         $sql = "SELECT COUNT(*) FROM usuario";
         $params = [];
@@ -139,16 +166,22 @@ class UsuarioRepository implements IUsuarioRepository
         $stmt = $this->db->prepare($sql);
 
         foreach ($params as $key => $value) {
-            $stmt->bindValue($key, $value, PDO::PARAM_STR);
+            $stmt->bindValue($key, $value);
         }
 
         $stmt->execute();
         return (int) $stmt->fetchColumn();
     }
 
-    public function getPaginated(int $limit, int $offset, ?string $adminFilter): array
+    // ===========================
+    // LISTAGEM PAGINADA
+    // ===========================
+    public function getPaginated(int $limit, int $offset, ?string $adminFilter = null): array
     {
-        $sql = "SELECT id_usuario, nome, email, administrador FROM usuario";
+        $sql = "
+            SELECT id_usuario, nome, email, administrador 
+            FROM usuario
+        ";
         $params = [
             ':limit' => $limit,
             ':offset' => $offset
@@ -162,12 +195,11 @@ class UsuarioRepository implements IUsuarioRepository
         $sql .= " ORDER BY id_usuario ASC LIMIT :limit OFFSET :offset";
 
         $stmt = $this->db->prepare($sql);
-
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 
-        if (in_array($adminFilter, ['S', 'N'])) {
-            $stmt->bindValue(':administrador', $adminFilter, PDO::PARAM_STR); 
+        if (isset($params[':administrador'])) {
+            $stmt->bindValue(':administrador', $params[':administrador'], PDO::PARAM_STR);
         }
 
         $stmt->execute();
@@ -180,7 +212,7 @@ class UsuarioRepository implements IUsuarioRepository
                 $data['id_usuario'],
                 $data['nome'],
                 $data['email'],
-                null, // Não está selecionando a senha no SELECT (correto), passe null
+                null,
                 $data['administrador']
             );
         }

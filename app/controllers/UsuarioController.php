@@ -19,12 +19,15 @@ class UsuarioController
                 View::renderWithLayout('usuario/DetalheUsuarioView', 'config/AppLayout', ['usuario' => $usuario]);
             } catch (Exception $e) {
                 http_response_code(404);
-                $_SESSION['alert_message'] = ['type' => 'error', 'title' => 'Erro!', 'text' => $e->getMessage()];
+                $_SESSION['alert_message'] = [
+                    'type' => 'error',
+                    'title' => 'Erro!',
+                    'text' => 'Usuário não encontrado: ' . $e->getMessage()
+                ];
                 header("Location: /sugarbeat_admin/usuario");
                 exit();
             }
         } else {
-
             $usuariosPorPagina = 8;
             $paginaAtual = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
 
@@ -41,105 +44,112 @@ class UsuarioController
                     'total_paginas' => $dadosPaginacao['total_paginas'],
                     'usuarios_por_pagina' => $usuariosPorPagina,
                     'total_usuarios' => $dadosPaginacao['total_usuarios'],
-                    'adminFilter' => $adminFilter // Passa o filtro atual para que a View possa manter o contexto na navegação
+                    'adminFilter' => $adminFilter
                 ];
 
                 View::renderWithLayout('usuario/ListagemUsuarioView', 'config/AppLayout', $data);
             } catch (Exception $e) {
-                $_SESSION['alert_message'] = ['type' => 'error', 'title' => 'Erro!', 'text' => 'Erro ao listar usuários: ' . $e->getMessage()];
+                $_SESSION['alert_message'] = [
+                    'type' => 'error',
+                    'title' => 'Erro!',
+                    'text' => 'Erro ao listar usuários: ' . $e->getMessage()
+                ];
                 View::renderWithLayout('usuario/ListagemUsuarioView', 'config/AppLayout', ['listaUsuarios' => []]);
             }
         }
     }
+
     public function cadastro()
     {
+        // Se enviou o formulário
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->salvar();
+            exit();
+        }
+
+        // Se for edição
+        $usuarioId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        if ($usuarioId) {
+            try {
+                $usuario = $this->usuarioService->getUsuario($usuarioId);
+                View::renderWithLayout('usuario/CadastroUsuarioView', 'config/AppLayout', ['usuario_existente' => $usuario]);
+            } catch (Exception $e) {
+                $_SESSION['alert_message'] = [
+                    'type' => 'error',
+                    'title' => 'Erro!',
+                    'text' => 'Usuário não encontrado: ' . $e->getMessage()
+                ];
+                header("Location: /sugarbeat_admin/usuario");
+                exit();
+            }
         } else {
+            // Modo cadastro novo
             View::renderWithLayout('usuario/CadastroUsuarioView', 'config/AppLayout');
         }
     }
 
     private function salvar()
     {
+        $usuarioId = $_POST['id'] ?? null;
+
         try {
+            // Validação básica
+            $nome = trim($_POST['nome'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $senha = trim($_POST['senha'] ?? '');
+            $administrador = $_POST['administrador'] ?? 'N';
+
+            if (empty($nome) || empty($email) || (!$usuarioId && empty($senha))) {
+                throw new Exception("Preencha todos os campos obrigatórios.");
+            }
+
+            // Cria/Atualiza o objeto usuário
             $usuario = new Usuario(
-                null,
+                $usuarioId,
+                $nome,
+                $email,
+                $senha,
+                $administrador
+            );
+
+            // Decide se é cadastro novo ou atualização
+            if ($usuarioId) {
+                $this->usuarioService->atualizarUsuario($usuario);
+                $_SESSION['alert_message'] = [
+                    'type' => 'success',
+                    'title' => 'Sucesso!',
+                    'text' => "Usuário <strong>{$usuario->getNome()}</strong> atualizado com sucesso!"
+                ];
+            } else {
+                $novoUsuario = $this->usuarioService->criarNovoUsuario($usuario);
+                $_SESSION['alert_message'] = [
+                    'type' => 'success',
+                    'title' => 'Sucesso!',
+                    'text' => "Usuário <strong>{$novoUsuario->getNome()}</strong> cadastrado com sucesso!"
+                ];
+            }
+
+            header("Location: /sugarbeat_admin/usuario");
+            exit();
+        } catch (Exception $e) {
+            $_SESSION['alert_message'] = [
+                'type' => 'error',
+                'title' => 'Erro!',
+                'text' => 'Erro ao salvar usuário: ' . $e->getMessage()
+            ];
+
+            // Recarrega o formulário mantendo os dados
+            $usuarioErro = new Usuario(
+                $usuarioId,
                 $_POST['nome'] ?? '',
                 $_POST['email'] ?? '',
-                $_POST['senha'] ?? '',
+                '',
                 $_POST['administrador'] ?? 'N'
             );
 
-            $novoUsuario = $this->usuarioService->criarNovoUsuario($usuario);
-
-            $_SESSION['alert_message'] = [
-                'type' => 'success',
-                'title' => 'Sucesso!',
-                'text' => "Usuário '{$novoUsuario->getNome()}' cadastrado com sucesso."
-            ];
-
-            header("Location: /sugarbeat_admin/usuario");
-            exit();
-        } catch (Exception $e) {
-            $_SESSION['alert_message'] = [
-                'type' => 'error',
-                'title' => 'Erro!',
-                'text' => 'Erro ao cadastrar usuário: ' . $e->getMessage()
-            ];
-
-            header("Location: /sugarbeat_admin/usuario/cadastro");
-            exit();
-        }
-    }
-
-    public function editar($id)
-    {
-        try {
-            $usuarioAtual = $this->usuarioService->getUsuario($id);
-
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $this->atualizar($id, $usuarioAtual);
-            } else {
-                View::renderWithLayout('usuario/EdicaoUsuarioView', 'config/AppLayout', ['usuario' => $usuarioAtual]);
-            }
-        } catch (Exception $e) {
-            http_response_code(404);
-            $_SESSION['alert_message'] = ['type' => 'error', 'title' => 'Erro!', 'text' => $e->getMessage()];
-            header("Location: /sugarbeat_admin/usuario");
-            exit();
-        }
-    }
-
-    private function atualizar($id, Usuario $usuarioAtual)
-    {
-        try {
-            $novaSenha = $_POST['senha'] ?? '';
-
-            $usuario = new Usuario(
-                $id,
-                $_POST['nome'] ?? $usuarioAtual->getNome(),
-                $_POST['email'] ?? $usuarioAtual->getEmail(),
-                $novaSenha,
-                $_POST['administrador'] ?? $usuarioAtual->getAdministrador()
-            );
-
-            $this->usuarioService->atualizarUsuario($usuario);
-
-            $_SESSION['alert_message'] = [
-                'type' => 'success',
-                'title' => 'Sucesso!',
-                'text' => "Usuário '{$usuario->getNome()}' atualizado com sucesso."
-            ];
-        } catch (Exception $e) {
-            $_SESSION['alert_message'] = [
-                'type' => 'error',
-                'title' => 'Erro!',
-                'text' => 'Erro ao atualizar usuário: ' . $e->getMessage()
-            ];
-        } finally {
-            header("Location: /sugarbeat_admin/usuario/editar/" . $id);
-            exit();
+            View::renderWithLayout('usuario/CadastroUsuarioView', 'config/AppLayout', [
+                'usuario_com_erro' => $usuarioErro
+            ]);
         }
     }
 

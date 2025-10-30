@@ -86,11 +86,7 @@ class ProdutoController
             View::renderWithLayout('produto/CadastroProdutoView', 'config/AppLayout', $data);
         }
     }
-
-
-
-
-
+    
     /**
      * Lógica de salvamento e validação do produto, incluindo upload de imagem.
      * @param array $data Dados iniciais para re-renderização (ex: lista de categorias).
