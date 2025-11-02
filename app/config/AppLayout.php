@@ -214,13 +214,14 @@
         <aside class="sidebar">
 
             <div>
-                
+                <a href="/sugarbeat_admin/dashboard" style="text-decoration: none;">
                 <div class="logo-container">
                     <div class="logo">
                         <img src="../../fotos/imgsite.jpg" alt="Logo da Empresa">
                     </div>
                     <span class="logo__texto">SugarBeat Admin</span>
                 </div>
+                </a>
                 <nav class="menu">
                     <nav class="menu">
                         <a href="/sugarbeat_admin/dashboard" class="<?= is_active('/sugarbeat_admin/dashboard', $current_uri) ?>">Dashboard</a>
