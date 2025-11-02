@@ -215,12 +215,12 @@
 
             <div>
                 <a href="/sugarbeat_admin/dashboard" style="text-decoration: none;">
-                <div class="logo-container">
-                    <div class="logo">
-                        <img src="../../fotos/imgsite.jpg" alt="Logo da Empresa">
+                    <div class="logo-container">
+                        <div class="logo">
+                            <img src="../../fotos/imgsite.jpg" alt="Logo da Empresa">
+                        </div>
+                        <span class="logo__texto">SugarBeat Admin</span>
                     </div>
-                    <span class="logo__texto">SugarBeat Admin</span>
-                </div>
                 </a>
                 <nav class="menu">
                     <nav class="menu">
@@ -240,9 +240,9 @@
         <div class="main-content">
             <div class="topbar">
                 <?php
-
                 $nome = $_SESSION['user_nome'] ?? 'Visitante';
-                echo "<span>Olá, $nome</span>";
+                $primeiroNome = explode(' ', trim($nome))[0]; // separa o nome pelo espaço
+                echo "<span>Olá, $primeiroNome</span>";
                 ?>
             </div>
 
