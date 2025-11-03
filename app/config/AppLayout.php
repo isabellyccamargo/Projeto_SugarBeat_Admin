@@ -227,7 +227,9 @@
                         <a href="/sugarbeat_admin/dashboard" class="<?= is_active('/sugarbeat_admin/dashboard', $current_uri) ?>">Dashboard</a>
                         <a href="/sugarbeat_admin/produto" class="<?= is_active('/sugarbeat_admin/produto', $current_uri) ?>">Produtos</a>
                         <a href="/sugarbeat_admin/categoria" class="<?= is_active('/sugarbeat_admin/categoria', $current_uri) ?>">Categorias</a>
-                        <a href="/sugarbeat_admin/usuario" class="<?= is_active('/sugarbeat_admin/usuario', $current_uri) ?>">Usuários</a>
+                        <?php if ($_SESSION['user_admin'] === 'S') : ?>
+                            <a href="/sugarbeat_admin/usuario" class="<?= is_active('/sugarbeat_admin/usuario', $current_uri) ?>">Usuários</a>
+                        <?php endif ?>
                     </nav>
             </div>
 

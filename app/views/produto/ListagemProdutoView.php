@@ -78,7 +78,6 @@ function formatarPreco($preco)
                     $is_ativo = $produto->getAtivo() === '1';
                     $ativo_texto = $is_ativo ? 'Ativo' : 'Inativo';
                     $preco_formatado = formatarPreco($produto->getPreco());
-
                 ?>
                     <tr>
                         <td>
