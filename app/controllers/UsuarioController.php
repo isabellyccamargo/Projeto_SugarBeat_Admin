@@ -7,6 +7,16 @@ class UsuarioController
     public function __construct(UsuarioService $usuarioService)
     {
         $this->usuarioService = $usuarioService;
+
+        $requestUri = $_SERVER['REQUEST_URI'];
+        
+        $erroUri = '/sugarbeat_admin/usuario/erro'; 
+
+        // se a URL ATUAL for diferente da URL de erro, executa o filtro
+        // Usamos strpos para maior compatibilidade
+        if (strpos($requestUri, $erroUri) === false) {
+             $this->checkAdminAccess(); 
+        }
     }
 
     public function listar($id = null)
@@ -28,6 +38,7 @@ class UsuarioController
                 exit();
             }
         } else {
+
             $usuariosPorPagina = 8;
             $paginaAtual = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
 
@@ -109,18 +120,38 @@ class UsuarioController
 
             // Decide se é cadastro novo ou atualização
             if ($usuarioId) {
-                $this->usuarioService->atualizarUsuario($usuario);
+                $usuario = $this->usuarioService->atualizarUsuario($usuario);
+                
                 $_SESSION['alert_message'] = [
                     'type' => 'success',
                     'title' => 'Sucesso!',
                     'text' => "Usuário <strong>{$usuario->getNome()}</strong> atualizado com sucesso!"
                 ];
+
+                // verifica se o usuario que esta sendo salvo é o mesmo da sessao
+                if (isset($_SESSION['user_id']) && (int)$_SESSION['user_id'] === $usuarioId) {
+
+                    // Atualiza o status de admin na sessão
+                    $isAdmin = ($usuario->getAdministrador() === 'S');
+                    $_SESSION['is_admin'] = $isAdmin;
+
+                    // Se o próprio usuário editado perdeu o admin ( isAdmin === false )
+                    if (!$isAdmin) {
+                        $_SESSION['alert_message'] = [
+                            'type' => 'warning',
+                            'title' => 'Atenção!',
+                            'text' => 'Seu perfil de administrador foi revogado.'
+                        ];
+                        header("Location: /sugarbeat_admin/usuario/erro");
+                        exit();
+                    }
+                }
             } else {
-                $novoUsuario = $this->usuarioService->criarNovoUsuario($usuario);
+                $$usuario = $this->usuarioService->criarNovoUsuario($usuario);
                 $_SESSION['alert_message'] = [
                     'type' => 'success',
                     'title' => 'Sucesso!',
-                    'text' => "Usuário <strong>{$novoUsuario->getNome()}</strong> cadastrado com sucesso!"
+                    'text' => "Usuário <strong>{$usuario->getNome()}</strong> cadastrado com sucesso!"
                 ];
             }
 
@@ -151,6 +182,33 @@ class UsuarioController
     {
         session_destroy();
         header('Location: /sugarbeat_admin/login');
+        exit;
+    }
+
+    private function checkAdminAccess()
+    {
+        // Verifica se a sessão não existe ou se ela é falsa (diferente de true)
+        if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
+            // 1. Barramento de URL manual (Critério 3)
+            // Redireciona para a página de erro
+            $_SESSION['alert_message'] = [
+                'type' => 'error',
+                'title' => 'Acesso Negado',
+                'text' => 'Você não tem permissão para acessar esta área.'
+            ];
+            header("Location: /sugarbeat_admin/usuario/erro");
+            exit();
+        }
+    }
+
+    public function erroAcesso()
+    {
+        // View::renderWithLayout('usuario/UsuarioNaoAdminView', 'config/AppLayout');
+        
+        // Ajuste o nome da View para a que você mencionou: UsuarioErroView.php
+        View::renderWithLayout('usuario/UsuarioErroView', 'config/AppLayout');
+        
+        // O exit é importante para garantir que nenhuma outra renderização ocorra
         exit;
     }
 }

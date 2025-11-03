@@ -38,7 +38,7 @@ spl_autoload_register(function ($class) {
 
     foreach ($directories as $dir) {
         // Tenta carregar a classe a partir de ROOT_PATH/app/{diretorio}/{Classe}.php
-       $path = ROOT_PATH . "/app/{$dir}/{$filename}";
+        $path = ROOT_PATH . "/app/{$dir}/{$filename}";
 
         if (file_exists($path)) {
             require_once $path;
@@ -64,7 +64,7 @@ if (!$isLoggedIn) {
         header('Location: /sugarbeat_admin/login');
         exit;
     }
-} 
+}
 // 2. REGRA DE CONFORTO: Se o usuário ESTÁ logado.
 else {
     // Se estiver logado E tentar acessar LOGIN ou a RAIZ
@@ -76,12 +76,12 @@ else {
 }
 
 
-$router = new Router(); 
+$router = new Router();
 
 // 🚨 CORREÇÃO CRÍTICA 🚨
 // ROTA RAIZ (Vazia): Mapeia a URL base ('') para o LOGIN. 
 // O Usuário logado será desviado para o dashboard pelo Bloco 2.
-$router->add('', 'AuthController', 'login'); 
+$router->add('', 'AuthController', 'login');
 
 // ROTA: /login
 $router->add('login', 'AuthController', 'login');
@@ -97,10 +97,9 @@ $router->add('categoria', 'CategoriaController', 'listar');
 $router->add('categoria/cadastro', 'CategoriaController', 'cadastro');
 $router->add('usuario', 'UsuarioController', 'listar');
 $router->add('usuario/cadastro', 'UsuarioController', 'cadastro');
+$router->add('usuario/erro', 'UsuarioController', 'erroAcesso');
 
 
 // --- Executa a Rota ---
 
 $router->dispatch();
-
-
