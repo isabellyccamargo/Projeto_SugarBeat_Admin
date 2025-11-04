@@ -239,3 +239,40 @@
         background-color: #a61c00;
         color: white;
     }
+
+    .filtro-ativo-container {
+        margin-top: 15px;
+        margin-bottom: 15px;
+        display: flex;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .filtro-chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 12px;
+        background-color: #f7e9d7;
+        border: 1px solid #d4b88f;
+        color: #4a3e35;
+        margin-left: 1380px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+    
+
+    .remover-filtro {
+        margin-left: 8px;
+        cursor: pointer;
+        color: inherit;
+        font-size: 14px;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .remover-filtro:hover {
+        color: #cc4444;
+    }
+
+ 

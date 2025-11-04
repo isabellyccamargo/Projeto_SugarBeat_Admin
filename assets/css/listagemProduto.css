@@ -198,10 +198,10 @@
         border: 1px solid rgba(59, 37, 0, 0.5);
     }
 
-    .produtos__acoes-col{
+    .produtos__acoes-col {
         width: 40px;
     }
-    
+
     .produtos__acoes-col a {
         color: var(--cor-primaria);
         font-size: 1.1rem;
@@ -214,7 +214,7 @@
 
     .editar {
         text-decoration: none;
-       margin-left: 10px;
+        margin-left: 10px;
     }
 
     .dropdown-filtro {
@@ -252,21 +252,56 @@
     }
 
     .admin-badge {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 5px; 
-    font-weight: 700;
-    font-size: 0.9em;
-    text-align: center;
-    min-width: 60px; 
-}
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 5px;
+        font-weight: 700;
+        font-size: 0.9em;
+        text-align: center;
+        min-width: 60px;
+    }
 
-.admin-badge.sim {
-    background-color: #38761d; 
-    color: white;
-}
+    .admin-badge.sim {
+        background-color: #38761d;
+        color: white;
+    }
 
-.admin-badge.nao {
-    background-color: #a61c00;
-    color: white;
-}
+    .admin-badge.nao {
+        background-color: #a61c00;
+        color: white;
+    }
+
+
+    .filtro-ativo-container {
+        margin-top: 15px;
+        margin-bottom: 15px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .filtro-chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 12px;
+        background-color: #f7e9d7;
+        border: 1px solid #d4b88f;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #4a3e35;
+        margin-left: 1380px;
+    }
+
+  
+    .remover-filtro {
+        margin-left: 8px;
+        cursor: pointer;
+        color: #4a3e35;
+        font-size: 14px;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .remover-filtro:hover {
+        color: #e74c3c;
+    }

@@ -14,6 +14,29 @@ function formatarPreco($preco)
     return 'R$ ' . number_format((float)$preco, 2, ',', '.');
 }
 
+$filtro_ativo_display = null;
+$categoria_id_selecionada = $_GET['categoria'] ?? null;
+
+if (!empty($categoria_id_selecionada) && $categoria_id_selecionada !== '0') {
+
+    $nome_categoria_selecionada = null;
+    $id_selecionado_str = (string)$categoria_id_selecionada;
+
+    foreach ($listaCategorias as $c) {
+        if ((string)$c->getIdCategoria() === $id_selecionado_str) {
+            $nome_categoria_selecionada = $c->getNomeCategoria();
+            break;
+        }
+    }
+
+    if ($nome_categoria_selecionada) {
+        $filtro_ativo_display = [
+            'tipo' => 'Categoria',
+            'valor' => htmlspecialchars($nome_categoria_selecionada),
+            'url_remover' => '/sugarbeat_admin/produto?page=' . $pagina_atual
+        ];
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -41,13 +64,24 @@ function formatarPreco($preco)
             <div class="dropdown-filtro" id="dropdown-filtro" style="display:none;">
                 <div class="categoria" data-id="">Todas</div>
                 <?php foreach ($listaCategorias as $c): ?>
-                    <div class="categoria" data-id="<?= $c->getIdCategoria() ?>">
+                    <div class="categoria" data-id="<?= htmlspecialchars($c->getIdCategoria()) ?>">
                         <?= htmlspecialchars($c->getNomeCategoria()) ?>
                     </div>
                 <?php endforeach; ?>
             </div>
         </div>
     </div>
+
+    <?php if ($filtro_ativo_display): ?>
+        <div class="filtro-ativo-container">
+            <span class="filtro-chip">
+                Filtrado por: <?= $filtro_ativo_display['valor'] ?>
+                <a href="<?= $filtro_ativo_display['url_remover'] ?>" class="remover-filtro" title="Remover Filtro">
+                    <i class="fa-solid fa-xmark"></i>
+                </a>
+            </span>
+        </div>
+    <?php endif; ?>
 
     <?php if ($mensagem_erro): ?>
         <div style="color: red; padding: 15px; background: #ffe0e0; border: 1px solid #ffb3b3; margin-bottom: 20px;">

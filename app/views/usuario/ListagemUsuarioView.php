@@ -7,6 +7,25 @@ $total_paginas = $total_paginas ?? 1;
 $adminFilter = $adminFilter ?? null;
 
 $filtroUrl = $adminFilter !== null ? '&admin=' . htmlspecialchars($adminFilter) : '';
+
+$filtro_ativo_display = null;
+
+if ($adminFilter !== null) {
+    $valor_filtro = '';
+    if (strtoupper($adminFilter) === 'S') {
+        $valor_filtro = 'Administrador (Sim)';
+    } elseif (strtoupper($adminFilter) === 'N') {
+        $valor_filtro = 'Não Administrador (Não)';
+    }
+
+    if (!empty($valor_filtro)) {
+        $filtro_ativo_display = [
+            'tipo' => 'Status Admin',
+            'valor' => $valor_filtro,
+            'url_remover' => '/sugarbeat_admin/usuario?page=1'
+        ];
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -38,6 +57,17 @@ $filtroUrl = $adminFilter !== null ? '&admin=' . htmlspecialchars($adminFilter) 
 
         </div>
     </div>
+
+    <?php if ($filtro_ativo_display): ?>
+        <div class="filtro-ativo-container">
+            <span class="filtro-chip">
+                Filtrado por: <?= $filtro_ativo_display['valor'] ?>
+                <a href="<?= $filtro_ativo_display['url_remover'] ?>" class="remover-filtro" title="Remover Filtro">
+                    <i class="fa-solid fa-xmark"></i>
+                </a>
+            </span>
+        </div>
+    <?php endif; ?>
 
     <table class="usuarios__tabela">
         <thead>
