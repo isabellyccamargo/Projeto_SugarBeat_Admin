@@ -26,10 +26,10 @@ class ProdutoRepository implements IProdutoRepository
                 $produtoData['nome'],
                 $produtoData['preco'],
                 $produtoData['imagem'],
-                null, // id_categoria (Ausente na query)
-                $produtoData['nome_categoria'], // nome_categoria
+                null, 
+                $produtoData['nome_categoria'], 
                 $produtoData['estoque'],
-                $produtoData['ativo'] // ativo (Última posição)
+                $produtoData['ativo']
             );
         }
     }
