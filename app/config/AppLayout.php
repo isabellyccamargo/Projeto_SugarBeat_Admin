@@ -9,6 +9,7 @@
     <link rel="icon" type="image/png" href="../../fotos/imgsite.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Ancizar+Serif:ital,wght@0,300..900;1,300..900&family=Bitter:ital,wght@0,100..900;1,100..900&family=Caudex:ital,wght@0,400;0,700;1,400;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Marcellus&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Padauk:wght@400;700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <?php
     // Define qual é a URI atual (ex: "/sugarbeat_admin/dashboard")
@@ -259,6 +260,50 @@
             </div>
         </div>
     </div>
+    <script>
+        // Utilidade para exibir mensagens personalizadas com SweetAlert2
+        function mostrarMensagem(tipo, titulo, mensagem) {
+            // Cores baseadas no seu tema (substituí cores bootstrap pelas suas)
+            const cores = {
+                success: '#3b2500', // Sua cor primária
+                error: '#b34242', // Vermelho customizado
+                warning: '#e69a00',
+                info: '#3b2500'
+            };
+            Swal.fire({
+                icon: tipo,
+                title: titulo,
+                // Usa 'html' para renderizar quebras de linha (<br>) e negrito (<strong>)
+                html: mensagem,
+                confirmButtonColor: '#3b2500', // Usa sua cor primária
+                background: 'rgb(248, 239, 218)', // Usa seu background claro
+                color: '#3b2500', // Usa sua cor primária para o texto
+                heightAuto: false
+            });
+        }
+
+        <?php
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (isset($_SESSION['alert_message'])) {
+            $msg = $_SESSION['alert_message'];
+            $js_type = htmlspecialchars($msg['type']);
+            $js_title = htmlspecialchars($msg['title']);
+            $js_text = json_encode($msg['text']);
+            echo "mostrarMensagem('{$js_type}', '{$js_title}', {$js_text});";
+            if (isset($msg['redirect_url'])) {
+                echo "
+                    // Cria um evento de 'click' para o botão de confirmação do pop-up
+                    Swal.getConfirmButton().onclick = function() {
+                    window.location.href = '{$msg['redirect_url']}';
+                    };
+                ";
+            }
+            unset($_SESSION['alert_message']);
+        }
+        ?>
+    </script>
 </body>
 
 </html>

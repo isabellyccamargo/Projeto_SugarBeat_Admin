@@ -20,6 +20,7 @@ ob_end_flush();
 
 <head>
     <link rel="stylesheet" href="/sugarbeat_admin/assets/css/cadastroProduto.css">
+    
 </head>
 
 <div class="tela-container">

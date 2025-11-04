@@ -86,11 +86,7 @@ class ProdutoController
             View::renderWithLayout('produto/CadastroProdutoView', 'config/AppLayout', $data);
         }
     }
-    
-    /**
-     * Lógica de salvamento e validação do produto, incluindo upload de imagem.
-     * @param array $data Dados iniciais para re-renderização (ex: lista de categorias).
-     */
+
     private function salvar(array $data)
     {
         // VARIÁVEIS PARA LÓGICA DE UPLOAD
@@ -101,7 +97,7 @@ class ProdutoController
         $produtoId = $_POST['id'] ?? null;
         $imagemAntigaPath = $_POST['imagem_antiga'] ?? null;
 
-       $diretorioRaiz = dirname(dirname(dirname(__DIR__)));;
+        $diretorioRaiz = dirname(dirname(dirname(__DIR__)));;
         $diretorioUpload = $diretorioRaiz . '/fotos/';
 
         if (!is_dir($diretorioUpload)) {
@@ -159,9 +155,7 @@ class ProdutoController
 
         // --- 2. TRATAMENTO DE ERRO DE UPLOAD ---
         if ($uploadErro) {
-            // Cria um objeto Produto para re-popular o formulário
             $produtoComErro = new Produto();
-            // ... (Preenche os dados do produtoComErro com $_POST)
             $produtoComErro->setNome($_POST['nome'] ?? null);
             $produtoComErro->setPreco($_POST['preco'] ?? null);
             $produtoComErro->setIdCategoria($_POST['categoria'] ?? null);
@@ -171,7 +165,6 @@ class ProdutoController
             $_SESSION['alert_message'] = [
                 'type' => 'error',
                 'title' => 'Erro de Upload!',
-                'title' => 'Erro de Cadastro/Upload!',
                 'text' => $uploadErro
             ];
 
@@ -204,35 +197,32 @@ class ProdutoController
         $produto->setImagem($dados['imagem']);
 
         try {
-            // --- 5. VALIDAÇÃO E PERSISTÊNCIA (dentro do Service) ---
             $novoProduto = $this->produtoService->salvar($produto);
 
             $produtoIdFormatado = str_pad($novoProduto->getIdProduto(), 5, '0', STR_PAD_LEFT);
+            $acao = $produtoId ? 'atualizado' : 'cadastrado';
 
+            // O uso de tags HTML no 'text' é para o Swal.fire que usa 'html'
             $_SESSION['alert_message'] = [
                 'type' => 'success',
                 'title' => 'Sucesso!',
-                'text' => 'Produto cadastrado com sucesso. <br><br>' . '<span style="font-weight:bold; font-size:20px;">#' . $produtoIdFormatado . '</span>'
+                'text' => "Produto {$acao} com sucesso. <br><br>Código: <strong>#{$produtoIdFormatado}</strong>"
             ];
 
+            // NOVO: Redireciona para a listagem. O SweetAlert aparecerá na página de destino!
             header("Location: /sugarbeat_admin/produto");
             exit();
         } catch (Exception $e) {
 
-            echo "DEBUG: Exceção Capturada! Mensagem: " . $e->getMessage();
-
-            // --- 6. TRATAMENTO DE ERROS DE VALIDAÇÃO/PERSISTÊNCIA ---
             $_SESSION['alert_message'] = [
                 'type' => 'error',
                 'title' => 'Erro!',
-                'text' => 'Erro ao cadastrar produto: ' . $e->getMessage()
+                'text' => 'Erro ao salvar produto: ' . $e->getMessage()
             ];
 
-            // Mantém os dados no formulário em caso de erro. 
             $data['produto_com_erro'] = $produto;
+            // RENDERIZA A VIEW: O SweetAlert aparece na tela de Cadastro/Edição
             View::renderWithLayout('produto/CadastroProdutoView', 'config/AppLayout', $data);
         }
     }
-
-    
 }

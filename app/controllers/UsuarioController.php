@@ -9,13 +9,13 @@ class UsuarioController
         $this->usuarioService = $usuarioService;
 
         $requestUri = $_SERVER['REQUEST_URI'];
-        
-        $erroUri = '/sugarbeat_admin/usuario/erro'; 
+
+        $erroUri = '/sugarbeat_admin/usuario/erro';
 
         // se a URL ATUAL for diferente da URL de erro, executa o filtro
         // Usamos strpos para maior compatibilidade
         if (strpos($requestUri, $erroUri) === false) {
-             $this->checkAdminAccess(); 
+            $this->checkAdminAccess();
         }
     }
 
@@ -98,6 +98,10 @@ class UsuarioController
 
     private function salvar()
     {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
         $usuarioId = !empty($_POST['id']) ? (int)$_POST['id'] : null;
 
         try {
@@ -118,10 +122,11 @@ class UsuarioController
                 $administrador
             );
 
+
             // Decide se é cadastro novo ou atualização
             if ($usuarioId) {
                 $usuario = $this->usuarioService->atualizarUsuario($usuario);
-                
+
                 $_SESSION['alert_message'] = [
                     'type' => 'success',
                     'title' => 'Sucesso!',
@@ -147,7 +152,7 @@ class UsuarioController
                     }
                 }
             } else {
-                $$usuario = $this->usuarioService->criarNovoUsuario($usuario);
+                $usuario = $this->usuarioService->criarNovoUsuario($usuario);
                 $_SESSION['alert_message'] = [
                     'type' => 'success',
                     'title' => 'Sucesso!',
@@ -204,10 +209,10 @@ class UsuarioController
     public function erroAcesso()
     {
         // View::renderWithLayout('usuario/UsuarioNaoAdminView', 'config/AppLayout');
-        
+
         // Ajuste o nome da View para a que você mencionou: UsuarioErroView.php
         View::renderWithLayout('usuario/UsuarioErroView', 'config/AppLayout');
-        
+
         // O exit é importante para garantir que nenhuma outra renderização ocorra
         exit;
     }
