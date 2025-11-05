@@ -14,7 +14,8 @@ class ProdutoController
 
     public function listar($id = null)
     {
-        if ($id) {
+            
+        if ($id !== null && is_numeric($id)) {
             try {
                 $produto = $this->produtoService->getProduto($id);
 
@@ -26,18 +27,16 @@ class ProdutoController
                     'title' => 'Erro!',
                     'text' => 'Produto não encontrado: ' . $e->getMessage()
                 ];
-                header("Location: /produto");
+                header("Location: /sugarbeat_admin/produto");
                 exit();
             }
         } else {
-            $produtosPorPagina = 8; // <<--- DEFINA AQUI QUANTOS PRODUTOS POR PÁGINA
+            // ✅ Entra aqui quando não há ID (ou é texto)
+            $produtosPorPagina = 8;
 
-            // Pega a página atual da URL (Query String ?page=X)
             $paginaAtual = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
 
-            // Chama o novo método paginado
             $dadosPaginacao = $this->produtoService->getProdutosPaginados($paginaAtual, $produtosPorPagina);
-
             $categorias = $this->categoriaService->listarTodasCategorias();
 
             $data = [
@@ -49,7 +48,6 @@ class ProdutoController
                 'listaCategorias' => $categorias
             ];
 
-            // Renderiza a View, passando todos os dados necessários
             View::renderWithLayout('produto/ListagemProdutoView', 'config/AppLayout', $data);
         }
     }
