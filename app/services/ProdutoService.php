@@ -62,9 +62,9 @@
             return $this->produtoRepository->update($produto);
         }
         
-        public function getProdutosPaginados(int $paginaAtual, int $produtosPorPagina): array
+        public function getProdutosPaginados(int $paginaAtual, int $produtosPorPagina , ?int $categoriaId = null): array
         {
-            $totalProdutos = $this->produtoRepository->countAll();
+            $totalProdutos = $this->produtoRepository->countAll($categoriaId);
 
             // Calcula o total de páginas
             $totalPaginas = $produtosPorPagina > 0 ? ceil($totalProdutos / $produtosPorPagina) : 1;
@@ -76,14 +76,15 @@
             $offset = ($paginaAtual - 1) * $produtosPorPagina;
 
             // Busca a lista de produtos da página
-            $produtos = $this->produtoRepository->getPaginated($produtosPorPagina, $offset);
+            $produtos = $this->produtoRepository->getPaginated($produtosPorPagina, $offset, $categoriaId);
 
             // Retorna um array com tudo o que o Controller precisa
             return [
                 'produtos' => $produtos,
                 'pagina_atual' => $paginaAtual,
                 'total_paginas' => (int) $totalPaginas,
-                'total_produtos' => $totalProdutos
+                'total_produtos' => $totalProdutos,
+                'categoria_id_selecionada' => $categoriaId
             ];
         }
     }

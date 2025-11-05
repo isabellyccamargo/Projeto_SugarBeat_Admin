@@ -8,6 +8,7 @@ $pagina_atual = $pagina_atual ?? 1;
 $total_paginas = $total_paginas ?? 1;
 $total_produtos = $total_produtos ?? 0;
 $produtos_por_pagina = $produtos_por_pagina ?? 8;
+$listaCategorias = $listaCategorias ?? [];
 
 function formatarPreco($preco)
 {
@@ -15,9 +16,16 @@ function formatarPreco($preco)
 }
 
 $filtro_ativo_display = null;
-$categoria_id_selecionada = $_GET['categoria'] ?? null;
+// ✅ VÁRIAVEL DO FILTRO: Captura o ID da categoria que está ativa (ou null se não houver)
+$categoria_id_selecionada = filter_input(INPUT_GET, 'categoria', FILTER_VALIDATE_INT) ?: null;
 
-if (!empty($categoria_id_selecionada) && $categoria_id_selecionada !== '0') {
+// ✅ VÁRIAVEL DE BASE: String que conterá o parâmetro do filtro para ser adicionado aos links de paginação.
+$base_url_params = '';
+
+if (!empty($categoria_id_selecionada) && $categoria_id_selecionada !== 0) {
+    
+    // Constrói a string de filtro para a paginação
+    $base_url_params = '&categoria=' . $categoria_id_selecionada;
 
     $nome_categoria_selecionada = null;
     $id_selecionado_str = (string)$categoria_id_selecionada;
@@ -30,6 +38,7 @@ if (!empty($categoria_id_selecionada) && $categoria_id_selecionada !== '0') {
     }
 
     if ($nome_categoria_selecionada) {
+        // O link para remover o filtro deve apenas remover o parâmetro 'categoria', mantendo a página atual
         $filtro_ativo_display = [
             'tipo' => 'Categoria',
             'valor' => htmlspecialchars($nome_categoria_selecionada),
@@ -62,7 +71,7 @@ if (!empty($categoria_id_selecionada) && $categoria_id_selecionada !== '0') {
             <button class="btn__acao btn__filtrar" id="btn-filtrar">Filtrar <span>&#9660;</span></button>
 
             <div class="dropdown-filtro" id="dropdown-filtro" style="display:none;">
-                <div class="categoria" data-id="">Todas</div>
+                <div class="categoria" data-id="0">Todas</div>
                 <?php foreach ($listaCategorias as $c): ?>
                     <div class="categoria" data-id="<?= htmlspecialchars($c->getIdCategoria()) ?>">
                         <?= htmlspecialchars($c->getNomeCategoria()) ?>
@@ -123,11 +132,11 @@ if (!empty($categoria_id_selecionada) && $categoria_id_selecionada !== '0') {
                             <div class="produto__info-completa">
 
                                 <?php
-                                $img_path_completo = $produto->getImagem();
-                                $nome_do_arquivo = basename($img_path_completo);
-                                $caminho_web = '../fotos/' . $nome_do_arquivo;
+                                // CORRIGIDO: O caminho da imagem deve usar o caminho completo (URL)
+                                // Removendo a lógica desnecessária de manipulação de string para usar o caminho do objeto
+                                $caminho_web = $produto->getImagem() ?? '/sugarbeat_admin/assets/img/placeholder.png'; // Usando placeholder se nulo
                                 ?>
-                                <img src="/sugarbeat_admin/<?= htmlspecialchars($caminho_web) ?>" width="60" class="produto__img">
+                                <img src="<?= htmlspecialchars($caminho_web) ?>" width="60" class="produto__img">
 
                                 <span><?= htmlspecialchars($produto->getNome()) ?></span>
                             </div>
@@ -173,14 +182,16 @@ if (!empty($categoria_id_selecionada) && $categoria_id_selecionada !== '0') {
 
                         <div class="paginacao__botoes">
 
-                            <a href="?page=<?= max(1, $pagina_atual - 1) ?>"
+                            <!-- ✅ CORRIGIDO: Adiciona $base_url_params para manter o filtro -->
+                            <a href="?page=<?= max(1, $pagina_atual - 1) . $base_url_params ?>"
                                 <?= $pagina_atual <= 1 ? 'disabled style="pointer-events: none; opacity: 0.7;"' : '' ?>>Ant</a>
 
                             <span class="active-page-number">
                                 <?= $pagina_atual ?>
                             </span>
 
-                            <a href="?page=<?= min($total_paginas, $pagina_atual + 1) ?>"
+
+                            <a href="?page=<?= min($total_paginas, $pagina_atual + 1) . $base_url_params ?>"
                                 <?= $pagina_atual >= $total_paginas ? 'disabled style="pointer-events: none; opacity: 0.7;"' : '' ?>>Seg</a>
                         </div>
                     </div>
@@ -210,7 +221,8 @@ if (!empty($categoria_id_selecionada) && $categoria_id_selecionada !== '0') {
     document.querySelectorAll('.dropdown-filtro .categoria').forEach(item => {
         item.addEventListener('click', () => {
             const categoriaId = item.getAttribute('data-id');
-            window.location.href = `?categoria=${categoriaId}`;
+            // Ao clicar, sempre volta para a página 1 da nova categoria selecionada
+            window.location.href = `?page=1&categoria=${categoriaId}`;
         });
     });
 </script>

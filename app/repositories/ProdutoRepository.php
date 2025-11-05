@@ -26,8 +26,8 @@ class ProdutoRepository implements IProdutoRepository
                 $produtoData['nome'],
                 $produtoData['preco'],
                 $produtoData['imagem'],
-                null, 
-                $produtoData['nome_categoria'], 
+                null,
+                $produtoData['nome_categoria'],
                 $produtoData['estoque'],
                 $produtoData['ativo']
             );
@@ -93,14 +93,29 @@ class ProdutoRepository implements IProdutoRepository
     }
 
 
-    public function countAll(): int
+    public function countAll(?int $categoriaId = null): int
     {
-        $stmt = $this->db->query("SELECT COUNT(*) FROM produto;");
+        $sql = "SELECT COUNT(*) FROM produto";
+        $params = [];
+
+        if ($categoriaId !== null) {
+            $sql .= " WHERE id_categoria = :categoriaId";
+            $params[':categoriaId'] = $categoriaId;
+        }
+
+        $stmt = $this->db->prepare($sql);
+
+        if ($categoriaId !== null) {
+            $stmt->bindValue(':categoriaId', $categoriaId, PDO::PARAM_INT);
+        }
+
+        $stmt->execute();
         return (int) $stmt->fetchColumn();
     }
 
+
     // NOVO MÉTODO 2: Busca produtos com Paginação
-    public function getPaginated(int $limit, int $offset): array
+    public function getPaginated(int $limit, int $offset, ?int $categoriaId = null): array
     {
         $sql = "SELECT 
         pro.id_produto,
@@ -109,27 +124,40 @@ class ProdutoRepository implements IProdutoRepository
         pro.preco,
         pro.imagem,
         pro.estoque,
+        pro.id_categoria,
         cat.nome_categoria
     FROM produto AS pro
-    INNER JOIN categoria AS cat ON pro.id_categoria = cat.id_categoria
-    ORDER BY pro.id_produto Asc
-    LIMIT :limit OFFSET :offset";
+    INNER JOIN categoria AS cat ON pro.id_categoria = cat.id_categoria";
+
+        // Adiciona WHERE se houver filtro
+        if ($categoriaId !== null) {
+            $sql .= " WHERE pro.id_categoria = :categoriaId";
+        }
+
+        $sql .= " ORDER BY pro.id_produto Asc
+        LIMIT :limit OFFSET :offset";
 
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+
+        // Bind condicional do filtro
+        if ($categoriaId !== null) {
+            $stmt->bindValue(':categoriaId', $categoriaId, PDO::PARAM_INT);
+        }
+
         $stmt->execute();
 
         $produtosData = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $produtos = [];
 
+        $produtos = [];
         foreach ($produtosData as $data) {
             $produtos[] = new Produto(
                 $data['id_produto'],
                 $data['nome'],
                 $data['preco'],
                 $data['imagem'],
-                null,
+                $data['id_categoria'],
                 $data['nome_categoria'],
                 $data['estoque'],
                 $data['ativo']

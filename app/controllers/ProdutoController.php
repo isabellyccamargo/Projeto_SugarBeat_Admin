@@ -14,7 +14,7 @@ class ProdutoController
 
     public function listar($id = null)
     {
-            
+
         if ($id !== null && is_numeric($id)) {
             try {
                 $produto = $this->produtoService->getProduto($id);
@@ -31,12 +31,14 @@ class ProdutoController
                 exit();
             }
         } else {
-            // ✅ Entra aqui quando não há ID (ou é texto)
             $produtosPorPagina = 8;
 
             $paginaAtual = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
 
-            $dadosPaginacao = $this->produtoService->getProdutosPaginados($paginaAtual, $produtosPorPagina);
+            $categoriaId = filter_input(INPUT_GET, 'categoria', FILTER_VALIDATE_INT) ?: null;
+
+            $dadosPaginacao = $this->produtoService->getProdutosPaginados($paginaAtual, $produtosPorPagina, $categoriaId);
+
             $categorias = $this->categoriaService->listarTodasCategorias();
 
             $data = [
