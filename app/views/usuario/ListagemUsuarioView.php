@@ -137,7 +137,7 @@ if ($adminFilter !== null) {
                             </span>
 
                             <div class="paginacao__botoes">
-                                <?php $prevPage = max(1, $pagina_atual - 1); ?>
+                                <?php $prevPage = max(1, $pagina_atual - 1) ; ?>
                                 <a href="/sugarbeat_admin/usuario?page=<?= $prevPage ?><?= $filtroUrl ?>"
                                     <?= $pagina_atual <= 1 ? 'disabled style="pointer-events: none; opacity: 0.7;"' : '' ?>>Ant</a>
 

@@ -182,7 +182,6 @@ if (!empty($categoria_id_selecionada) && $categoria_id_selecionada !== 0) {
 
                         <div class="paginacao__botoes">
 
-                            <!-- ✅ CORRIGIDO: Adiciona $base_url_params para manter o filtro -->
                             <a href="?page=<?= max(1, $pagina_atual - 1) . $base_url_params ?>"
                                 <?= $pagina_atual <= 1 ? 'disabled style="pointer-events: none; opacity: 0.7;"' : '' ?>>Ant</a>
 
