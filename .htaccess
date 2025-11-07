@@ -3,7 +3,7 @@
 # Liga o motor de reescrita
 RewriteEngine On
 
-# Define a pasta raiz (essencial quando em subdiretório)
+# Define a pasta raiz (CORRIGIDO para o nome atual: sugarbeat_admin)
 RewriteBase /sugarbeat_admin/
 
 # 1. Se o arquivo ou diretório solicitado existir, usa-o (para assets como CSS, JS, imagens)
@@ -11,5 +11,5 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
 # 2. Caso contrário, redireciona a requisição para index.php 
-#    A regra está mais concisa e funciona melhor com o RewriteBase.
+# A regra está mais concisa e funciona melhor com o RewriteBase.
 RewriteRule . index.php [L]
