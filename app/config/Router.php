@@ -47,12 +47,7 @@ class Router
             $controllerName = $matchedRoute['controller'];
             $methodName = $matchedRoute['method'];
 
-            echo "<pre>🚨 DEBUG DE ROTA CASADA 🚨\n";
-            echo "URI (Correta): **" . $uri . "**\n";
-            echo "Controller Casado: **" . $controllerName . "**\n";
-            echo "Método Casado: **" . $methodName . "**\n";
-            echo "Argumentos Casados: " . print_r($args, true);
-            echo "\n</pre>";
+          
 
             if (class_exists($controllerName)) {
 
