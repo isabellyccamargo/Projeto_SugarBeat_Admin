@@ -6,7 +6,7 @@ class Connection
     {
         $dsn = 'mysql:host=localhost;dbname=sugarbeat';
         $user = 'root';
-        $password = '';
+        $password = 'ADMIN';
         try {
             $pdo = new PDO($dsn, $user, $password);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
