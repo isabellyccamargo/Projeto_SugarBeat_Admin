@@ -47,6 +47,13 @@ class Router
             $controllerName = $matchedRoute['controller'];
             $methodName = $matchedRoute['method'];
 
+            echo "<pre>🚨 DEBUG DE ROTA CASADA 🚨\n";
+            echo "URI (Correta): **" . $uri . "**\n";
+            echo "Controller Casado: **" . $controllerName . "**\n";
+            echo "Método Casado: **" . $methodName . "**\n";
+            echo "Argumentos Casados: " . print_r($args, true);
+            echo "\n</pre>";
+
             if (class_exists($controllerName)) {
 
                 $controller = null;
@@ -54,9 +61,9 @@ class Router
                 $factoryName = $controllerName . 'Factory';
 
                 if (class_exists($factoryName) && method_exists($factoryName, 'create')) {
-                    $controller = $factoryName::create(); 
-                } 
-                
+                    $controller = $factoryName::create();
+                }
+
                 if ($controller === null) {
                     try {
                         $controller = new $controllerName();
@@ -82,18 +89,19 @@ class Router
 
     protected function getCurrentUri(): string
     {
+        // 1. Obtém o caminho da URL (ex: /sugarbeat_admin/produto/historico)
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
+        // 2. Obtém o caminho do script (ex: /sugarbeat_admin)
         $basePath = dirname($_SERVER['SCRIPT_NAME']);
-
-        if ($basePath !== '\\' && $basePath !== '/') {
-            $basePath = rtrim($basePath, '/') . '/';
-        } else {
-            $basePath = '/';
+        
+        // Se o basePath não for apenas '/' ou '\', remove-o da URI
+        if ($basePath !== '/' && $basePath !== '\\') {
+            // Garante que o basePath (ex: /sugarbeat_admin) seja removido da URI
+            $uri = str_replace($basePath, '', $uri);
         }
 
-        $uri = str_replace($basePath, '', $uri);
-
+        // 3. Remove barras extras no início ou fim
         $uri = trim($uri, '/');
 
         return $uri;

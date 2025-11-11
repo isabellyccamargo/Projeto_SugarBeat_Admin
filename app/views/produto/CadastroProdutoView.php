@@ -20,13 +20,18 @@ ob_end_flush();
 
 <head>
     <link rel="stylesheet" href="/sugarbeat_admin/assets/css/cadastroProduto.css">
-    
+
 </head>
 
 <div class="tela-container">
 
     <div class="cadastro-header">
         <h2>Dados do Produto</h2>
+   <a href="/sugarbeat_admin/produto/historico?id_produto=<?= $produto?->getIdProduto() ?>" 
+   title="Ver Histórico" 
+   class="btn btn-historico">
+    <i class="fa-solid fa-clock-rotate-left"></i> Ver Histórico
+</a>
     </div>
 
     <div class=" window-container container-produto">
@@ -129,6 +134,7 @@ ob_end_flush();
                     <div class="botoes-acao">
                         <a href="/sugarbeat_admin/produto/" class="botao botao-cancelar">Cancelar</a>
                         <button type="submit" class="botao botao-salvar">Salvar</button>
+                        
                     </div>
                 </div>
 

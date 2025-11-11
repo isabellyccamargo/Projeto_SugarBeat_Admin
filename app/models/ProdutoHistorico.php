@@ -9,6 +9,7 @@ class ProdutoHistorico
     private $valor_antigo;
     private $valor_atual;
     private $id_produto;
+    private $campo;
 
     public function __construct(
         $id_historico = null,
@@ -17,7 +18,8 @@ class ProdutoHistorico
         $operacao = null,
         $valor_antigo = null,
         $valor_atual = null,
-        $id_produto = null
+        $id_produto = null,
+        $campo = null
     ) {
         $this->id_historico = $id_historico;
         $this->data = $data;
@@ -26,6 +28,7 @@ class ProdutoHistorico
         $this->valor_antigo = $valor_antigo;
         $this->valor_atual = $valor_atual;
         $this->id_produto = $id_produto;
+        $this->campo = $campo;
     }
 
 
@@ -97,5 +100,15 @@ class ProdutoHistorico
     public function setIdProduto($id_produto)
     {
         $this->id_produto = $id_produto;
+    }
+
+    public function getCampo()
+    {
+        return $this->campo;
+    }
+
+    public function setCampo($campo)
+    {
+        $this->campo = $campo;
     }
 }
