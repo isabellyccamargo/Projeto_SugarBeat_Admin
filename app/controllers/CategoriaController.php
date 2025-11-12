@@ -12,12 +12,13 @@ class CategoriaController
 
     public function listar($id = null)
     {
+        // Se um ID for passado, redirecionamos para o método de edição/detalhe
         if ($id) {
-
             try {
                 $categoria = $this->categoriaService->getCategoria($id);
-
+                // Renderizar detalhe/edição (se este listar for a rota de detalhe)
                 View::renderWithLayout('categoria/DetalheCategoriaView', 'config/AppLayout', ['categoria' => $categoria]);
+                return; // Importante para sair após renderizar o detalhe
             } catch (Exception $e) {
                 http_response_code(404);
                 $_SESSION['alert_message'] = ['type' => 'error', 'title' => 'Erro!', 'text' => $e->getMessage()];
@@ -25,7 +26,9 @@ class CategoriaController
                 exit();
             }
         }
-        $itensPorPagina = 8; // Define quantos itens por página (pode ser uma constante)
+
+        // Lógica de listagem e paginação (usada quando NÃO há ID)
+        $itensPorPagina = 8;
         $paginaAtual = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
 
         try {
@@ -53,86 +56,80 @@ class CategoriaController
 
     public function cadastro()
     {
+        $categoriaId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        $categoriaExistente = null;
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Se for POST, tenta salvar (o salvar decidirá se é INSERT ou UPDATE)
             $this->salvar();
-        } else {
-
-
-            View::renderWithLayout('categoria/CadastroCategoriaView', 'config/AppLayout');
+            // É importante dar exit() no POST
+            exit(); 
         }
+
+        // Se for GET: Checa se é uma EDIÇÃO
+        if ($categoriaId) {
+            try {
+                // Tenta buscar a categoria existente para preencher o formulário
+                $categoriaExistente = $this->categoriaService->getCategoria($categoriaId);
+            } catch (Exception $e) {
+                // Erro ao buscar (Categoria não encontrada)
+                $_SESSION['alert_message'] = [
+                    'type' => 'error',
+                    'title' => 'Erro!',
+                    'text' => 'Categoria não encontrada: ' . $e->getMessage()
+                ];
+                header("Location: /sugarbeat_admin/categoria");
+                exit();
+            }
+        }
+
+        // Renderiza a View de cadastro/edição
+        $data = $categoriaExistente ? ['categoria_existente' => $categoriaExistente] : [];
+        View::renderWithLayout('categoria/CadastroCategoriaView', 'config/AppLayout', $data);
     }
 
     private function salvar()
     {
+        // 1. Tenta pegar o ID, se existir (para UPDATE)
+        $categoriaId = !empty($_POST['id']) ? (int)$_POST['id'] : null;
+        $locationError = $categoriaId ? "/sugarbeat_admin/categoria/cadastro?id=" . $categoriaId : "/sugarbeat_admin/categoria/cadastro";
+
         try {
-            $nome = $_POST['nome_categoria'] ?? '';
-            $categoria = new Categoria(null, $nome);
+            $nome = trim($_POST['nome_categoria'] ?? '');
 
-            $novaCategoria = $this->categoriaService->criarNovaCategoria($categoria);
-
-            $_SESSION['alert_message'] = [
-                'type' => 'success',
-                'title' => 'Sucesso!',
-                'text' => "Categoria '{$novaCategoria->getNomeCategoria()}' cadastrada com sucesso."
-            ];
-
-            header("Location: /sugarbeat_admin/categoria");
-            exit();
-        } catch (Exception $e) {
-            $_SESSION['alert_message'] = [
-                'type' => 'error',
-                'title' => 'Erro!',
-                'text' => 'Erro ao cadastrar categoria: ' . $e->getMessage()
-            ];
-
-            header("Location: /sugarbeat_admin/categoria/cadastro");
-            exit();
-        }
-    }
-
-
-    public function editar($id)
-    {
-        try {
-            $categoriaAtual = $this->categoriaService->getCategoria($id);
-
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $this->atualizar($id, $categoriaAtual);
-            } else {
-
-                View::renderWithLayout('categoria/EdicaoCategoriaView', 'config/AppLayout', ['categoria' => $categoriaAtual]);
+            if (empty($nome)) {
+                 throw new Exception("O nome da categoria é obrigatório.");
             }
-        } catch (Exception $e) {
-            http_response_code(404);
-            $_SESSION['alert_message'] = ['type' => 'error', 'title' => 'Erro!', 'text' => $e->getMessage()];
-            header("Location: /sugarbeat_admin/categoria");
-            exit();
-        }
-    }
+            
+            $categoria = new Categoria($categoriaId, $nome);
+            $mensagemSucesso = "Categoria '{$nome}' cadastrada com sucesso.";
 
-    private function atualizar($id, Categoria $categoriaAtual)
-    {
-        try {
-            $nome = $_POST['nome_categoria'] ?? $categoriaAtual->getNomeCategoria();
-
-
-            $categoria = new Categoria($id, $nome);
-
-            $this->categoriaService->atualizarCategoria($categoria);
+            // 2. Decide se é CREATE ou UPDATE
+            if ($categoriaId) {
+                $this->categoriaService->atualizarCategoria($categoria);
+                $mensagemSucesso = "Categoria '{$nome}' atualizada com sucesso.";
+            } else {
+                $this->categoriaService->criarNovaCategoria($categoria);
+            }
 
             $_SESSION['alert_message'] = [
                 'type' => 'success',
                 'title' => 'Sucesso!',
-                'text' => "Categoria '{$nome}' atualizada com sucesso."
+                'text' => $mensagemSucesso
             ];
+
+            header("Location: /sugarbeat_admin/categoria");
+            exit();
+
         } catch (Exception $e) {
             $_SESSION['alert_message'] = [
                 'type' => 'error',
                 'title' => 'Erro!',
-                'text' => 'Erro ao atualizar categoria: ' . $e->getMessage()
+                'text' => 'Erro ao salvar categoria: ' . $e->getMessage()
             ];
-        } finally {
-            header("Location: /sugarbeat_admin/categoria/editar/" . $id);
+            
+            
+            header("Location: " . $locationError);
             exit();
         }
     }

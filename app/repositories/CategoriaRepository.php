@@ -48,7 +48,7 @@ class CategoriaRepository implements ICategoriaRepository
 
     public function getAll(): array
     {
-        $stmt = $this->db->query("SELECT id_categoria, nome_categoria FROM categoria ORDER BY nome_categoria ASC");
+        $stmt = $this->db->query("SELECT id_categoria, nome_categoria FROM categoria ORDER BY id_categoria ASC");
         $dataList = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $categorias = [];
 
@@ -92,7 +92,7 @@ class CategoriaRepository implements ICategoriaRepository
     {
         $sql = "SELECT id_categoria, nome_categoria 
                 FROM categoria 
-                ORDER BY nome_categoria ASC
+                ORDER BY id_categoria ASC
                 LIMIT :limit OFFSET :offset";
 
         $stmt = $this->db->prepare($sql);
