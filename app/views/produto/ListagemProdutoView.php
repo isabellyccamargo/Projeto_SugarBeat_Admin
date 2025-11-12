@@ -16,10 +16,7 @@ function formatarPreco($preco)
 }
 
 $filtro_ativo_display = null;
-// ✅ VÁRIAVEL DO FILTRO: Captura o ID da categoria que está ativa (ou null se não houver)
 $categoria_id_selecionada = filter_input(INPUT_GET, 'categoria', FILTER_VALIDATE_INT) ?: null;
-
-// ✅ VÁRIAVEL DE BASE: String que conterá o parâmetro do filtro para ser adicionado aos links de paginação.
 $base_url_params = '';
 
 if (!empty($categoria_id_selecionada) && $categoria_id_selecionada !== 0) {

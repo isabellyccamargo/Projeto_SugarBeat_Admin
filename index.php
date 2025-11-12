@@ -78,9 +78,6 @@ else {
 
 $router = new Router();
 
-// 🚨 CORREÇÃO CRÍTICA 🚨
-// ROTA RAIZ (Vazia): Mapeia a URL base ('') para o LOGIN. 
-// O Usuário logado será desviado para o dashboard pelo Bloco 2.
 $router->add('', 'AuthController', 'login');
 
 // ROTA: /login
