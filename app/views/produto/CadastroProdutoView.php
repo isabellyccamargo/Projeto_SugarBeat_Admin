@@ -1,6 +1,9 @@
 <?php
 
 ob_start();
+
+$produto_historico = $produto_historico["listaProdutoHistorico"] ?? []; 
+
 $produto = $produto_existente ?? null; // Pode vir do GET (edição) ou ser null (cadastro)
 
 // Definimos uma variável para facilitar a verificação se estamos editando
@@ -20,130 +23,194 @@ ob_end_flush();
 
 <head>
     <link rel="stylesheet" href="/sugarbeat_admin/assets/css/cadastroProduto.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <div class="tela-container">
 
     <div class="cadastro-header">
         <h2>Dados do Produto</h2>
-   <a href="/sugarbeat_admin/produto/historico?id_produto=<?= $produto?->getIdProduto() ?>" 
-   title="Ver Histórico" 
-   class="btn btn-historico">
-    <i class="fa-solid fa-clock-rotate-left"></i> Ver Histórico
-</a>
-    </div>
+        </div>
 
-    <div class=" window-container container-produto">
+    <div class="tabs-container">
+        <div class="tab-menu">
+            <button class="tab-button active" data-tab="tab-cadastro">Cadastro</button>
+            <?php if ($is_editing): ?>
+                <button class="tab-button" data-tab="tab-auditoria">Auditoria</button>
+            <?php endif; ?>
+        </div>
 
-        <form action="/sugarbeat_admin/produto/cadastro" method="POST" enctype="multipart/form-data" class="formulario">
+        <div id="tab-cadastro" class="tab-content active window-container container-produto">
 
-            <div class="campos-container">
-                <div class="campos-esquerda-container">
+            <form action="/sugarbeat_admin/produto/cadastro" method="POST" enctype="multipart/form-data" class="formulario">
 
-                    <div class="form-row ">
-                        <div class="campo-grupo id-campo esquerda">
-                            <label for="id">ID</label>
-                            <input type="text" id="id" name="id" readonly
-                                value="<?= htmlspecialchars($produto?->getIdProduto() ?? '') ?>">
+                <div class="campos-container">
+                    <div class="campos-esquerda-container">
 
-                            <input type="hidden" name="imagem_antiga" value="<?= $produto ? htmlspecialchars($produto->getImagem()) : '' ?>">
+                        <div class="form-row ">
+                            <div class="campo-grupo id-campo esquerda">
+                                <label for="id">ID</label>
+                                <input type="text" id="id" name="id" readonly
+                                    value="<?= htmlspecialchars($produto?->getIdProduto() ?? '') ?>">
+
+                                <input type="hidden" name="imagem_antiga" value="<?= $produto ? htmlspecialchars($produto->getImagem()) : '' ?>">
+                            </div>
+
+                            <div class="campo-grupo campo-nome esquerda">
+                                <label for="nome">Nome</label>
+                                <input type="text" id="nome" name="nome" required
+                                    value="<?= $is_editing ? htmlspecialchars($produto?->getNome()) : '' ?>">
+                            </div>
                         </div>
 
-                        <div class="campo-grupo campo-nome esquerda">
-                            <label for="nome">Nome</label>
-                            <input type="text" id="nome" name="nome" required
-                                value="<?= $is_editing ? htmlspecialchars($produto?->getNome()) : '' ?>">
+                        <div class="form-row">
+                            <div class="campo-grupo esquerda">
+                                <label for="estoque">Estoque</label>
+                                <input type="number" id="estoque" name="estoque" min="0" required
+                                    value="<?= $is_editing ? htmlspecialchars($produto?->getEstoque()) : '' ?>">
+                            </div>
+
+                            <div class="campo-grupo esquerda">
+                                <label for="ativo">Ativo</label>
+                                <select id="ativo" name="ativo" class="campo-select input-display" required>
+                                    <option value="" disabled <?= !$is_editing ? 'selected' : '' ?>>Selecione</option>
+
+                                    <?php
+                                    $ativo_value = (isset($produto_com_erro) ? $produto_com_erro->getAtivo() : null)
+                                        ?? ($is_editing ? $produto?->getAtivo() : null);
+                                    ?>
+
+                                    <option value="1" <?= $ativo_value == '1' ? 'selected' : '' ?>>Sim</option>
+                                    <option value="0" <?= $ativo_value == '0' ? 'selected' : '' ?>>Não</option>
+                                </select>
+                            </div>
                         </div>
+
+                        <div class="form-row">
+                            <div class="campo-grupo esquerda">
+                                <label for="categoria">Categoria</label>
+                                <select id="categoria" name="categoria" class="campo-select input-display" required>
+                                    <option value="" disabled <?= !$is_editing ? 'selected' : '' ?>>Selecione</option>
+                                    <?php
+                                    $categoria_selecionada_id = (isset($produto_com_erro) ? $produto_com_erro->getIdCategoria() : null)
+                                        ?? ($is_editing ? $produto?->getIdCategoria() : null);
+                                    if (isset($listaCategorias) && is_array($listaCategorias)):
+                                        foreach ($listaCategorias as $categoria):
+                                            $selected = '';
+
+                                            if ($categoria_selecionada_id == $categoria->getIdCategoria()) {
+                                                $selected = 'selected';
+                                            }
+                                    ?>
+                                            <option value="<?= htmlspecialchars($categoria->getIdCategoria()) ?>" <?= $selected ?>>
+                                                <?= htmlspecialchars($categoria->getNomeCategoria()) ?>
+                                            </option>
+                                    <?php
+                                        endforeach;
+                                    endif;
+                                    ?>
+                                </select>
+
+                            </div>
+
+                            <div class="campo-grupo esquerda" style="position: relative; width: 150px;">
+                                <label for="preco">Preço</label>
+                                <span class="prefixo">R$</span>
+                                <input type="text" id="preco" name="preco" class="campo-input input-display"
+                                    placeholder="0,00" required
+                                    value="<?= $is_editing ? htmlspecialchars(number_format($produto?->getPreco(), 2, ',', '.')) : '' ?>">
+                            </div>
+                        </div>
+
                     </div>
 
-                    <div class="form-row">
-                        <div class="campo-grupo esquerda">
-                            <label for="estoque">Estoque</label>
-                            <input type="number" id="estoque" name="estoque" min="0" required
-                                value="<?= $is_editing ? htmlspecialchars($produto?->getEstoque()) : '' ?>">
+                    <div class="campo-grupo campo-imagem">
+                        <label>Imagem do Produto</label>
+                        <div class="imagem-box">
+                            <img id="imagem-preview" src="<?= $caminhoImagemAtual ?>" alt="Imagem do Produto" class="imagem-preview" required>
+                            <input type="file" id="input-imagem" name="imagem" accept="image/jpeg" style="display: none;">
+
+                            <div class="icones-imagem">
+                                <button type="button" class="icone-btn" title="Substituir Imagem" id="btn-substituir">&#x1F4C4;</button>
+                                <button type="button" class="icone-btn lixeira" title="Remover Imagem" id="btn-remover">&#x1F5D1;</button>
+                            </div>
                         </div>
+                        <div class="botoes-acao">
+                            <a href="/sugarbeat_admin/produto/" class="botao botao-cancelar">Cancelar</a>
+                            <button type="submit" class="botao botao-salvar">Salvar</button>
 
-                        <div class="campo-grupo esquerda">
-                            <label for="ativo">Ativo</label>
-                            <select id="ativo" name="ativo" class="campo-select input-display" required>
-                                <option value="" disabled <?= !$is_editing ? 'selected' : '' ?>>Selecione</option>
-
-                                <?php
-                                // Pega o valor atual de 'ativo' (que pode ser '1' ou '0')
-                                // Prioriza o produto com erro se houver, senão usa o produto existente
-                                $ativo_value = (isset($produto_com_erro) ? $produto_com_erro->getAtivo() : null)
-                                    ?? ($is_editing ? $produto?->getAtivo() : null);
-                                ?>
-
-                                <option value="1" <?= $ativo_value == '1' ? 'selected' : '' ?>>Sim</option>
-                                <option value="0" <?= $ativo_value == '0' ? 'selected' : '' ?>>Não</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="campo-grupo esquerda">
-                            <label for="categoria">Categoria</label>
-                            <select id="categoria" name="categoria" class="campo-select input-display" required>
-                                <option value="" disabled <?= !$is_editing ? 'selected' : '' ?>>Selecione</option>
-                                <?php
-                                $categoria_selecionada_id = (isset($produto_com_erro) ? $produto_com_erro->getIdCategoria() : null)
-                                    ?? ($is_editing ? $produto?->getIdCategoria() : null);
-                                if (isset($listaCategorias) && is_array($listaCategorias)):
-                                    foreach ($listaCategorias as $categoria):
-                                        $selected = '';
-
-                                        if ($categoria_selecionada_id == $categoria->getIdCategoria()) {
-                                            $selected = 'selected';
-                                        }
-                                ?>
-                                        <option value="<?= htmlspecialchars($categoria->getIdCategoria()) ?>" <?= $selected ?>>
-                                            <?= htmlspecialchars($categoria->getNomeCategoria()) ?>
-                                        </option>
-                                <?php
-                                    endforeach;
-                                endif;
-                                ?>
-                            </select>
-
-                        </div>
-
-                        <div class="campo-grupo esquerda" style="position: relative; width: 150px;">
-                            <label for="preco">Preço</label>
-                            <span class="prefixo">R$</span>
-                            <input type="text" id="preco" name="preco" class="campo-input input-display"
-                                placeholder="0,00" required
-                                value="<?= $is_editing ? htmlspecialchars(number_format($produto?->getPreco(), 2, ',', '.')) : '' ?>">
                         </div>
                     </div>
 
                 </div>
-
-                <div class="campo-grupo campo-imagem">
-                    <label>Imagem do Produto</label>
-                    <div class="imagem-box">
-                        <img id="imagem-preview" src="<?= $caminhoImagemAtual ?>" alt="Imagem do Produto" class="imagem-preview" required>
-                        <input type="file" id="input-imagem" name="imagem" accept="image/jpeg" style="display: none;">
-
-                        <div class="icones-imagem">
-                            <button type="button" class="icone-btn" title="Substituir Imagem" id="btn-substituir">&#x1F4C4;</button>
-                            <button type="button" class="icone-btn lixeira" title="Remover Imagem" id="btn-remover">&#x1F5D1;</button>
-                        </div>
-                    </div>
-                    <div class="botoes-acao">
-                        <a href="/sugarbeat_admin/produto/" class="botao botao-cancelar">Cancelar</a>
-                        <button type="submit" class="botao botao-salvar">Salvar</button>
-                        
-                    </div>
-                </div>
-
+            </form>
             </div>
 
-        </form>
+        <?php if ($is_editing): ?>
+            <div id="tab-auditoria" class="tab-content window-container">
+                <h3>Histórico de Alterações</h3>
+                <table class="grid-auditoria">
+                    <thead>
+                        <tr>
+                            <th>Data/Hora</th>
+                            <th>Operação</th>
+                            <th>Campo Alterado</th>
+                            <th>Valor Antigo</th>
+                            <th>Novo Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        if (isset($produto_historico) && is_array($produto_historico)) {
+                            foreach ($produto_historico as $item) {
+                            ?>
+                            <tr>
+                                <td><?= htmlspecialchars($item->getData())?></td>
+                                <td><?= htmlspecialchars($item->getOperacao())?></td>
+                                <td><?= htmlspecialchars($item->getCampo())?></td>
+                                <td><?= htmlspecialchars($item->getValorAntigo())?></td>
+                                <td><?= htmlspecialchars($item->getValorAtual())?></td>
+                            </tr>
+                            <?php
+                            }
+                        } else {
+                            echo '<tr><td colspan="5">Nenhuma alteração registrada.</td></tr>';
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
+        
     </div>
-
 </div>
+
+<script>
+    // Se o produto não estiver em edição (cadastrando um novo), 
+    // a aba de auditoria não será exibida.
+
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const targetId = button.dataset.tab;
+
+            // 1. Desativa todas as abas e conteúdos
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            // 2. Ativa o botão clicado
+            button.classList.add('active');
+
+            // 3. Ativa o conteúdo correspondente
+            const targetContent = document.getElementById(targetId);
+            if (targetContent) {
+                targetContent.classList.add('active');
+            }
+        });
+    });
+</script>
 
 <script>
     const inputImagem = document.getElementById('input-imagem');

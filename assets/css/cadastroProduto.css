@@ -173,3 +173,159 @@
 .campo-grupo input#preco {
     padding-left: 35px; 
 }
+
+/* ------------------------------------------------------------------- */
+/* --- NOVOS ESTILOS PARA ABAS E AUDITORIA --- */
+/* ------------------------------------------------------------------- */
+
+.tabs-container {
+    margin-top: 20px;
+}
+
+.tab-menu {
+    display: flex;
+    /* Linha divisória de base */
+    border-bottom: 2px solid var(--cor-terceira); 
+    margin-bottom: 0px; /* Reduzi a margem para ficar mais próximo do conteúdo */
+    
+}
+
+.tab-button {
+    padding: 10px 25px;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    font-size: 17px;
+    font-weight: bold;
+    color: var(--cor-primaria);
+    transition: all 0.3s;
+    border-bottom: 2px solid transparent; 
+    margin-bottom: -2px; /* Compensa o border-bottom do menu para alinhar */
+    opacity: 0.6;
+}
+
+.tab-button:hover {
+    opacity: 0.8;
+}
+
+.tab-button.active {
+    color: var(--cor-primaria); 
+    /* Linha que destaca a aba ativa */
+    border-bottom: 2px solid var(--cor-primaria);
+    opacity: 1;
+}
+
+.tab-content {
+    /* Garante que o conteúdo de abas inativas não seja exibido */
+    display: none;
+    /* O padding já é definido pela classe .window-container que você já tem */
+}
+
+/* O conteúdo ativo sobrepõe o display: none */
+.tab-content.active {
+    display: block;
+}
+
+/* --- Estilos para a Grid de Auditoria --- */
+
+.grid-auditoria {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    /* Estilo para arredondar cantos da tabela, se desejado */
+    overflow: hidden; 
+    border-radius: 5px;
+}
+
+.grid-auditoria th, 
+.grid-auditoria td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--cor-secundaria);
+    font-size: 0.95em;
+    color: var(--cor-primaria);
+}
+
+.grid-auditoria th {
+    background-color: var(--cor-primaria); /* Fundo escuro para cabeçalho */
+    color: var(--cor-secundaria); /* Texto claro no cabeçalho */
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.grid-auditoria tbody tr:nth-child(even) {
+    /* Fundo levemente diferente para linhas pares para melhor leitura (zebra stripes) */
+    background-color: rgba(255, 255, 255, 0.5); 
+}
+
+.grid-auditoria tbody tr:hover {
+    /* Efeito de destaque ao passar o mouse */
+    background-color: var(--cor-secundaria);
+    cursor: default;
+}
+
+/* Estilo para a mensagem de placeholder */
+.grid-auditoria td[colspan="5"] {
+    text-align: center;
+    font-style: italic;
+    opacity: 0.7;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Responsividade Básica (Opcional, mas recomendado) */
+@media (max-width: 768px) {
+    .campos-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .window-container {
+        padding: 30px 20px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .form-row .id-campo:first-child,
+    .form-row .campo-nome {
+        max-width: 100%;
+    }
+    
+    .grid-auditoria, 
+    .grid-auditoria tbody, 
+    .grid-auditoria tr, 
+    .grid-auditoria td {
+        /* Transforma a tabela em uma lista em telas pequenas, melhorando a visualização */
+        display: block;
+    }
+    
+    .grid-auditoria thead {
+        /* Esconde o cabeçalho original */
+        display: none;
+    }
+    
+    .grid-auditoria td {
+        /* Adiciona margem entre os blocos de dados */
+        border: none;
+        border-bottom: 1px solid var(--cor-secundaria);
+        position: relative;
+        padding-left: 50%; /* Espaço para o rótulo */
+        text-align: right;
+    }
+    
+    /* Adiciona rótulos para cada célula em telas pequenas */
+    .grid-auditoria td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 45%;
+        padding-left: 10px;
+        font-weight: bold;
+        text-align: left;
+        color: var(--cor-primaria);
+    }
+}

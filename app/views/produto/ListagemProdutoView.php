@@ -1,9 +1,6 @@
 <?php
 $produtos = $produtos ?? [];
 $mensagem_erro = $mensagem_erro ?? null;
-
-$produtos = $produtos ?? [];
-$mensagem_erro = $mensagem_erro ?? null;
 $pagina_atual = $pagina_atual ?? 1;
 $total_paginas = $total_paginas ?? 1;
 $total_produtos = $total_produtos ?? 0;

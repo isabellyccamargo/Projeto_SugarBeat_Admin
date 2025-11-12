@@ -2,14 +2,13 @@
 
 class ProdutoHistoricoControllerFactory
 {
-    public static function create(): ProdutoHistoricoControllerFactory
+    public static function create(): ProdutoHistoricoController
     {
         $pdo = Connection::connect();
         $historicoRepository = new ProdutoHistoricoRepository($pdo);
         $historicoService = new ProdutoHistoricoService($historicoRepository);
-        $produtoRepository = new ProdutoRepository($pdo);
-        $produtoService = new ProdutoService($produtoRepository);
-        return new ProdutoHistoricoControllerFactory($historicoService, $produtoService);
+        
+        return new ProdutoHistoricoController($historicoService);
     }
 }
 ?>

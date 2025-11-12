@@ -11,33 +11,12 @@ class ProdutoHistoricoRepository implements IProdutoHistoricoRepository
         $this->db = $db;
     }
 
-    private function criarObjetoHistorico(array $data): ProdutoHistorico
+    public function getHistoricoByProdutoId($id_produto, int $limit, int $offset): array
     {
-        return new ProdutoHistorico(
-            $data['id_historico'],
-            $data['data'],
-            $data['id_usuario'],
-            $data['operacao'],
-            $data['valor_antigo'],
-            $data['valor_atual'],
-            $data['id_produto']
-        );
-    }
-
-    public function getById($id): ?ProdutoHistorico
-    {
-        $stmt = $this->db->prepare("SELECT * FROM produto_historico WHERE id_historico = :id");
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $data ? $this->criarObjetoHistorico($data) : null;
-    }
-    
-    public function getByProdutoId($id_produto): array
-    {
-        $stmt = $this->db->prepare("SELECT * FROM produto_historico WHERE id_produto = :id_produto ORDER BY data DESC");
+        $stmt = $this->db->prepare("SELECT * FROM produto_historico WHERE id_produto = :id_produto ORDER BY id_historico DESC LIMIT :limit OFFSET :offset");
         $stmt->bindValue(':id_produto', $id_produto, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
         $dataList = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $historicos = [];
@@ -49,21 +28,24 @@ class ProdutoHistoricoRepository implements IProdutoHistoricoRepository
         return $historicos;
     }
 
-    public function save(ProdutoHistorico $historico): ProdutoHistorico
+    public function countHistoricoByProdutoId(int $id_produto): int
     {
-        $sql = "INSERT INTO produto_historico (data, id_usuario, operacao, valor_antigo, valor_atual, id_produto) 
-                VALUES (:data, :id_usuario, :operacao, :valor_antigo, :valor_atual, :id_produto)";
-        $stmt = $this->db->prepare($sql);
-        
-        $stmt->bindValue(':data', $historico->getData());
-        $stmt->bindValue(':id_usuario', $historico->getIdUsuario(), PDO::PARAM_INT);
-        $stmt->bindValue(':operacao', $historico->getOperacao());
-        $stmt->bindValue(':valor_antigo', $historico->getValorAntigo());
-        $stmt->bindValue(':valor_atual', $historico->getValorAtual());
-        $stmt->bindValue(':id_produto', $historico->getIdProduto(), PDO::PARAM_INT);
+        $stmt = $this->db->prepare("SELECT count(1) FROM produto_historico WHERE id_produto = :id_produto");
+        $stmt->bindValue(':id_produto', $id_produto, PDO::PARAM_INT);
         $stmt->execute();
+        return (int) $stmt->fetchColumn();
+    }
 
-        $historico->setIdHistorico($this->db->lastInsertId());
-        return $historico;
+    private function criarObjetoHistorico(array $data): ProdutoHistorico
+    {
+        return new ProdutoHistorico(
+            $data['id_historico'],
+            $data['data'],
+            $data['operacao'],
+            $data['valor_antigo'],
+            $data['valor_atual'],
+            $data['id_produto'],
+            $data['campo']
+        );
     }
 }

@@ -79,6 +79,10 @@ class ProdutoController
             // Passa o produto pré-preenchido para a View
             $data['produto_existente'] = $produtoEdicao;
 
+            $produtoHistoricoController = ProdutoHistoricoControllerFactory::create();
+            $produtoHistorico = $produtoHistoricoController->listar($produtoId);
+
+            $data['produto_historico'] = $produtoHistorico;
             // Renderiza o formulário no modo edição
             View::renderWithLayout('produto/CadastroProdutoView', 'config/AppLayout', $data);
         } else {

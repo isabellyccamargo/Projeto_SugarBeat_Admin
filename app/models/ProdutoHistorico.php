@@ -4,7 +4,6 @@ class ProdutoHistorico
 {
     private $id_historico;
     private $data;
-    private $id_usuario;
     private $operacao;
     private $valor_antigo;
     private $valor_atual;
@@ -14,7 +13,6 @@ class ProdutoHistorico
     public function __construct(
         $id_historico = null,
         $data = null,
-        $id_usuario = null,
         $operacao = null,
         $valor_antigo = null,
         $valor_atual = null,
@@ -23,7 +21,6 @@ class ProdutoHistorico
     ) {
         $this->id_historico = $id_historico;
         $this->data = $data;
-        $this->id_usuario = $id_usuario;
         $this->operacao = $operacao;
         $this->valor_antigo = $valor_antigo;
         $this->valor_atual = $valor_atual;
@@ -50,16 +47,6 @@ class ProdutoHistorico
     public function setData($data)
     {
         $this->data = $data;
-    }
-
-    public function getIdUsuario()
-    {
-        return $this->id_usuario;
-    }
-
-    public function setIdUsuario($id_usuario)
-    {
-        $this->id_usuario = $id_usuario;
     }
 
     public function getOperacao()
