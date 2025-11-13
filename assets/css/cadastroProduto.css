@@ -59,26 +59,13 @@
     overflow: hidden;
 }
 
-
 .campo-grupo.campo-imagem .imagem-preview {
-    /* Garante que a imagem nunca ultrapasse 100% da largura e altura do seu contêiner pai (.imagem-box) */
     max-width: 100%;
     max-height: 100%;
-
-    /* Garante que o contêiner de imagem mantenha um bom aspecto visual mesmo que o arquivo não preencha tudo */
     width: auto;
-    /* Permite que a largura se ajuste automaticamente com base na altura */
     height: auto;
-    /* Permite que a altura se ajuste automaticamente com base na largura */
-
-    /* Regra para controle de como a imagem preenche o espaço */
-    /* 'object-fit: contain;' garante que a imagem inteira seja visível dentro do contêiner, 
-       sem cortes, mantendo a proporção. Pode deixar barras laterais/topo vazias. */
-    /* Se você quiser que a imagem preencha TODO o box (podendo cortar partes) use 'cover'. */
     object-fit: contain;
 
-    /* Se a imagem for muito pequena e você quiser que ela não fique minúscula no centro */
-    /* object-fit: scale-down; */
 }
 
 .botao-salvar {
@@ -160,18 +147,18 @@
 
 .campo-grupo .prefixo {
     position: absolute;
-    top: 24px; 
-    left: 10px; 
+    top: 24px;
+    left: 10px;
     color: var(--cor-primaria);
     font-size: 1em;
     font-weight: bold;
-    pointer-events: none; 
+    pointer-events: none;
     padding-top: 10px;
     padding-bottom: 10px;
 }
 
 .campo-grupo input#preco {
-    padding-left: 35px; 
+    padding-left: 35px;
 }
 
 /* ------------------------------------------------------------------- */
@@ -185,9 +172,10 @@
 .tab-menu {
     display: flex;
     /* Linha divisória de base */
-    border-bottom: 2px solid var(--cor-terceira); 
-    margin-bottom: 0px; /* Reduzi a margem para ficar mais próximo do conteúdo */
-    
+    border-bottom: 2px solid var(--cor-terceira);
+    margin-bottom: 0px;
+    /* Reduzi a margem para ficar mais próximo do conteúdo */
+
 }
 
 .tab-button {
@@ -199,8 +187,9 @@
     font-weight: bold;
     color: var(--cor-primaria);
     transition: all 0.3s;
-    border-bottom: 2px solid transparent; 
-    margin-bottom: -2px; /* Compensa o border-bottom do menu para alinhar */
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    /* Compensa o border-bottom do menu para alinhar */
     opacity: 0.6;
 }
 
@@ -209,7 +198,7 @@
 }
 
 .tab-button.active {
-    color: var(--cor-primaria); 
+    color: var(--cor-primaria);
     /* Linha que destaca a aba ativa */
     border-bottom: 2px solid var(--cor-primaria);
     opacity: 1;
@@ -230,16 +219,14 @@
 
 .grid-auditoria {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    /* Estilo para arredondar cantos da tabela, se desejado */
-    overflow: hidden; 
     border-radius: 5px;
+    overflow: hidden;
+    border-spacing: 0;
 }
 
-.grid-auditoria th, 
+.grid-auditoria th,
 .grid-auditoria td {
-    padding: 12px 15px;
+    padding: 30px 15px;
     text-align: left;
     border-bottom: 1px solid var(--cor-secundaria);
     font-size: 0.95em;
@@ -247,8 +234,10 @@
 }
 
 .grid-auditoria th {
-    background-color: var(--cor-primaria); /* Fundo escuro para cabeçalho */
-    color: var(--cor-secundaria); /* Texto claro no cabeçalho */
+    background-color: var(--cor-primaria);
+    /* Fundo escuro para cabeçalho */
+    color: var(--cor-secundaria);
+    /* Texto claro no cabeçalho */
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -256,7 +245,7 @@
 
 .grid-auditoria tbody tr:nth-child(even) {
     /* Fundo levemente diferente para linhas pares para melhor leitura (zebra stripes) */
-    background-color: rgba(255, 255, 255, 0.5); 
+    background-color: rgba(255, 255, 255, 0.5);
 }
 
 .grid-auditoria tbody tr:hover {
@@ -273,6 +262,7 @@
     padding: 20px;
     background-color: rgba(255, 255, 255, 0.3);
 }
+    
 
 /* Responsividade Básica (Opcional, mas recomendado) */
 @media (max-width: 768px) {
@@ -280,7 +270,7 @@
         flex-direction: column;
         gap: 20px;
     }
-    
+
     .window-container {
         padding: 30px 20px;
     }
@@ -294,29 +284,30 @@
     .form-row .campo-nome {
         max-width: 100%;
     }
-    
-    .grid-auditoria, 
-    .grid-auditoria tbody, 
-    .grid-auditoria tr, 
+
+    .grid-auditoria,
+    .grid-auditoria tbody,
+    .grid-auditoria tr,
     .grid-auditoria td {
         /* Transforma a tabela em uma lista em telas pequenas, melhorando a visualização */
         display: block;
     }
-    
+
     .grid-auditoria thead {
         /* Esconde o cabeçalho original */
         display: none;
     }
-    
+
     .grid-auditoria td {
         /* Adiciona margem entre os blocos de dados */
         border: none;
         border-bottom: 1px solid var(--cor-secundaria);
         position: relative;
-        padding-left: 50%; /* Espaço para o rótulo */
+        padding-left: 50%;
+        /* Espaço para o rótulo */
         text-align: right;
     }
-    
+
     /* Adiciona rótulos para cada célula em telas pequenas */
     .grid-auditoria td::before {
         content: attr(data-label);

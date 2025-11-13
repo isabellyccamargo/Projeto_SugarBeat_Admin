@@ -12,7 +12,7 @@ class ProdutoHistoricoController
     public function listar($id_produto): array
     {
 
-        $registrosPorPagina = 8;
+        $registrosPorPagina = 10;
         $paginaAtual = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
 
         try {
