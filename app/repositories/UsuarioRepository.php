@@ -108,6 +108,13 @@ class UsuarioRepository implements IUsuarioRepository
         return $usuario;
     }
 
+    public function delete(int $id): bool
+    {
+        $stmt = $this->db->prepare("DELETE FROM usuario WHERE id_usuario = :id");
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
     public function update(Usuario $usuario): Usuario
     {
         $sql = "UPDATE usuario 

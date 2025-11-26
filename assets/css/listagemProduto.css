@@ -305,3 +305,23 @@
     .remover-filtro:hover {
         color: #e74c3c;
     }
+
+    .produtos__tabela td.produtos__acoes-col { 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    gap: 10px; 
+    padding: 6px 0; 
+    margin-top: 17px;
+    margin-left: 10px;
+}
+
+.produtos__acoes-col a {
+    color: var(--cor-primaria);
+    font-size: 1.1rem;
+    margin-left: 0; 
+}
+
+.produtos__tabela thead th.produtos__acoes-col {
+    text-align: center;
+}

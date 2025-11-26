@@ -129,4 +129,21 @@ class UsuarioService
         }
         $usuario->setAdministrador($admin);
     }
+
+    public function excluirUsuario(int $id): void
+    {
+        if (empty($id)) {
+            throw new Exception("ID do usuário para exclusão é obrigatório.");
+        }
+        
+        if (isset($_SESSION['user_id']) && (int)$_SESSION['user_id'] === $id) {
+            throw new Exception("Você não pode excluir a si mesmo.");
+        }
+
+        $excluido = $this->usuarioRepository->delete($id);
+
+        if (!$excluido) {
+            throw new Exception("Usuário com ID $id não encontrado para exclusão.");
+        }
+    }
 }

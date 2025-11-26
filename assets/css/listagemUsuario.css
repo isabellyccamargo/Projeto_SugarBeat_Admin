@@ -275,4 +275,21 @@
         color: #cc4444;
     }
 
+    .usuarios__tabela th.usuarios__acoes-col {
+    text-align: center;
+}
+
+.usuarios__tabela td.usuarios__acoes-col {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px; 
+}
+
+.usuarios__acoes-col a {
+    color: var(--cor-primaria);
+    margin-left: 0; 
+    font-size: 1.1rem;
+}
+
  

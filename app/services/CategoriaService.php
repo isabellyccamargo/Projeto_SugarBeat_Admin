@@ -78,4 +78,20 @@ class CategoriaService
             'total_categorias' => $totalCategorias
         ];
     }
+
+    public function excluirCategoria(int $id): void
+    {
+        $categoria = $this->categoriaRepository->getById($id);
+        
+        if (!$categoria) {
+            throw new Exception("Categoria com ID $id não encontrada para exclusão.");
+        }
+        $sucesso = $this->categoriaRepository->delete($id);
+
+        if (!$sucesso) {
+            throw new Exception("Falha ao excluir a categoria.");
+        }
+    }
+
+    
 }

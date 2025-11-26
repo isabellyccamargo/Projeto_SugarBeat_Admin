@@ -91,11 +91,14 @@ $router->add('dashboard', 'AuthController', 'dashboard');
 $router->add('produto', 'ProdutoController', 'listar');
 $router->add('produto/cadastro', 'ProdutoController', 'cadastro');
 $router->add('produto/historico', 'ProdutoHistoricoController', 'listar');
+$router->add('produto/excluir/{id}', 'ProdutoController', 'excluir');
 $router->add('categoria', 'CategoriaController', 'listar');
 $router->add('categoria/cadastro', 'CategoriaController', 'cadastro');
+$router->add('categoria/excluir/{id}', 'CategoriaController', 'excluir');
 $router->add('usuario', 'UsuarioController', 'listar');
 $router->add('usuario/cadastro', 'UsuarioController', 'cadastro');
 $router->add('usuario/erro', 'UsuarioController', 'erroAcesso');
+$router->add('usuario/excluir/{id}', 'UsuarioController', 'excluir');
 
 
 // --- Executa a Rota ---

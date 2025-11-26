@@ -34,7 +34,7 @@
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 5px; 
+    gap: 5px;
     cursor: pointer;
     border: none;
     transition: background-color 0.3s ease;
@@ -81,7 +81,7 @@
     padding: 12px 12px;
     text-align: left;
     height: 38px;
-    font-weight: 600; 
+    font-weight: 600;
     text-transform: none;
     font-size: 17px;
 }
@@ -102,25 +102,25 @@
 }
 
 .categoria__tabela td {
-    padding: 20px 15px; 
+    padding: 20px 15px;
     font-size: 0.95rem;
 }
 
 
 .categorias__acoes-col {
-    width: 40px; 
-    text-align: center; 
+    width: 40px;
+    text-align: center;
 }
 
 .categorias__acoes-col .editar i {
     color: var(--cor-primaria);
-    font-size: 1rem; 
+    font-size: 1rem;
     transition: color 0.2s;
 }
 
 .categorias__acoes-col .editar {
     text-decoration: none;
-    margin-left: 0; 
+    margin-left: 0;
 }
 
 .categorias__acoes-col .editar:hover i {
@@ -145,7 +145,7 @@
 .paginacao__info {
     font-weight: 600;
     margin-left: 10px;
-    font-size: 0.95rem; 
+    font-size: 0.95rem;
 }
 
 .paginacao__botoes {
@@ -243,4 +243,27 @@
 .dropdown-filtro .categoria:hover {
     background-color: var(--cor-terceira);
     border-radius: 8px;
+}
+
+.categoria__tabela tbody td.categorias__acoes-col {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 20px 0;
+}
+
+.categorias__acoes-col .editar {
+    text-decoration: none;
+    margin-left: 0;
+}
+
+.categorias__acoes-col .excluir {
+    margin-left: 0;
+}
+
+.categorias__acoes-col .excluir i {
+    color: var(--cor-primaria); /* Define a cor marrom escuro */
+    font-size: 1rem;
+    transition: color 0.2s;
 }

@@ -9,16 +9,14 @@ class CategoriaController
         $this->categoriaService = $categoriaService;
     }
 
-
     public function listar($id = null)
     {
-        // Se um ID for passado, redirecionamos para o método de edição/detalhe
         if ($id) {
             try {
                 $categoria = $this->categoriaService->getCategoria($id);
                 // Renderizar detalhe/edição (se este listar for a rota de detalhe)
                 View::renderWithLayout('categoria/DetalheCategoriaView', 'config/AppLayout', ['categoria' => $categoria]);
-                return; // Importante para sair após renderizar o detalhe
+                return;
             } catch (Exception $e) {
                 http_response_code(404);
                 $_SESSION['alert_message'] = ['type' => 'error', 'title' => 'Erro!', 'text' => $e->getMessage()];
@@ -63,7 +61,7 @@ class CategoriaController
             // Se for POST, tenta salvar (o salvar decidirá se é INSERT ou UPDATE)
             $this->salvar();
             // É importante dar exit() no POST
-            exit(); 
+            exit();
         }
 
         // Se for GET: Checa se é uma EDIÇÃO
@@ -98,9 +96,9 @@ class CategoriaController
             $nome = trim($_POST['nome_categoria'] ?? '');
 
             if (empty($nome)) {
-                 throw new Exception("O nome da categoria é obrigatório.");
+                throw new Exception("O nome da categoria é obrigatório.");
             }
-            
+
             $categoria = new Categoria($categoriaId, $nome);
             $mensagemSucesso = "Categoria '{$nome}' cadastrada com sucesso.";
 
@@ -120,18 +118,60 @@ class CategoriaController
 
             header("Location: /sugarbeat_admin/categoria");
             exit();
-
         } catch (Exception $e) {
             $_SESSION['alert_message'] = [
                 'type' => 'error',
                 'title' => 'Erro!',
                 'text' => 'Erro ao salvar categoria: ' . $e->getMessage()
             ];
-            
-            
+
+
             header("Location: " . $locationError);
             exit();
         }
     }
 
+    public function excluir($id)
+    {
+        $id = filter_var($id, FILTER_VALIDATE_INT);
+
+        if (!$id) {
+            http_response_code(400);
+            $_SESSION['alert_message'] = ['type' => 'error', 'title' => 'Erro!', 'text' => 'ID da categoria inválido ou não fornecido.'];
+            header("Location: /sugarbeat_admin/categoria");
+            exit();
+        }
+
+        try {
+            $this->categoriaService->excluirCategoria($id);
+
+            $_SESSION['alert_message'] = [
+                'type' => 'success',
+                'title' => 'Sucesso!',
+                'text' => "Categoria excluída com sucesso."
+            ];
+
+            header("Location: /sugarbeat_admin/categoria");
+            exit();
+        } catch (Exception $e) {
+            http_response_code(400);
+        
+        $errorMessage = 'Erro interno ao tentar a exclusão. Tente novamente ou contate o suporte.';
+        
+        if (str_contains($e->getMessage(), '1451 Cannot delete or update a parent row') || $e->getCode() == '23000') {
+            
+            $errorMessage = "⚠️ Esta categoria **não pode ser excluída**! Ela possui produtos vinculados. Por favor, remova ou mova todos os produtos desta categoria e tente novamente.";
+        }
+        
+        $_SESSION['alert_message'] = [
+            'type' => 'error', 
+            'title' => 'Atenção: Violação de Regra!', 
+            'text' => $errorMessage
+        ];
+        
+        header("Location: /sugarbeat_admin/categoria");
+        exit();
+    
+        }
+    }
 }

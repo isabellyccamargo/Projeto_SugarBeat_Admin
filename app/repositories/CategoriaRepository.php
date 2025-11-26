@@ -72,6 +72,13 @@ class CategoriaRepository implements ICategoriaRepository
         return $categoria;
     }
 
+    public function delete(int $id): bool
+    {
+        $stmt = $this->db->prepare("DELETE FROM categoria WHERE id_categoria = :id");
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
     public function update(Categoria $categoria): Categoria
     {
         $stmt = $this->db->prepare("UPDATE categoria SET nome_categoria = :nome WHERE id_categoria = :id");
@@ -114,4 +121,6 @@ class CategoriaRepository implements ICategoriaRepository
 
         return $categorias;
     }
+
+    
 }

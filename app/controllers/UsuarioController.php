@@ -101,7 +101,7 @@ class UsuarioController
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        
+
         $usuarioId = !empty($_POST['id']) ? (int)$_POST['id'] : null;
 
         try {
@@ -208,12 +208,59 @@ class UsuarioController
 
     public function erroAcesso()
     {
-        // View::renderWithLayout('usuario/UsuarioNaoAdminView', 'config/AppLayout');
-
-        // Ajuste o nome da View para a que você mencionou: UsuarioErroView.php
         View::renderWithLayout('usuario/UsuarioErroView', 'config/AppLayout');
-
-        // O exit é importante para garantir que nenhuma outra renderização ocorra
         exit;
+    }
+
+    public function excluir($id = null)
+    {
+        $usuarioId = filter_var($id, FILTER_VALIDATE_INT);
+
+        if (!$usuarioId) {
+            http_response_code(400);
+            $_SESSION['alert_message'] = ['type' => 'error', 'title' => 'Erro!', 'text' => 'ID do usuário inválido ou não fornecido.'];
+            header("Location: /sugarbeat_admin/usuario");
+            exit();
+        }
+
+        try {
+            $this->usuarioService->excluirUsuario($usuarioId);
+
+            $_SESSION['alert_message'] = [
+                'type' => 'success',
+                'title' => 'Sucesso!',
+                'text' => "Usuário excluído com sucesso."
+            ];
+
+            header("Location: /sugarbeat_admin/usuario");
+            exit();
+        } catch (Exception $e) {
+            http_response_code(400);
+
+            $errorMessage = 'Erro interno ao tentar a exclusão. Tente novamente ou contate o suporte.';
+
+            if (str_contains($e->getMessage(), '1451 Cannot delete or update a parent row') || $e->getCode() == '23000') {
+
+                // 🎯 Mensagem amigável para FK
+                $errorMessage = "⚠️ Este usuário **não pode ser excluído** porque está vinculado a outras informações no sistema (ex: pedidos ou produtos criados por ele).";
+                $errorTitle = 'Atenção: Dependências Encontradas';
+            } elseif ($e->getMessage() === "Você não pode excluir a si mesmo.") {
+
+                $errorMessage = "🛑 **Erro de Segurança:** Você não tem permissão para excluir sua própria conta de usuário logado.";
+                $errorTitle = 'Acesso Negado';
+            } else {
+                $errorMessage = $e->getMessage();
+                $errorTitle = 'Erro de Exclusão';
+            }
+
+            $_SESSION['alert_message'] = [
+                'type' => 'error',
+                'title' => $errorTitle,
+                'text' => $errorMessage
+            ];
+
+            header("Location: /sugarbeat_admin/usuario");
+            exit();
+        }
     }
 }

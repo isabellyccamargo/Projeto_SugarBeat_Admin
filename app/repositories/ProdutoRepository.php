@@ -166,4 +166,32 @@ class ProdutoRepository implements IProdutoRepository
 
         return $produtos;
     }
+
+    public function delete($id): bool
+    {
+        $stmt = $this->db->prepare("DELETE FROM produto WHERE id_produto = :id");
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+    public function hasAssociatedPedidos($id): bool
+    {
+        $stmt = $this->db->prepare("
+        SELECT COUNT(id_produto) 
+        FROM item_pedido 
+        WHERE id_produto = :id
+    ");
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return (int)$stmt->fetchColumn() > 0;
+    }
+
+    public function deleteHistoricoByProdutoId($id): bool
+    {
+        $stmt = $this->db->prepare("DELETE FROM produto_historico WHERE id_produto = :id");
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
 }

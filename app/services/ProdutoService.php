@@ -34,7 +34,6 @@
             else {
                 return $this->produtoRepository->update($produto);
             }
-
         }
 
         public function getProduto($id): Produto
@@ -61,8 +60,8 @@
             // Você poderia adicionar validações aqui antes de chamar o update do repositório
             return $this->produtoRepository->update($produto);
         }
-        
-        public function getProdutosPaginados(int $paginaAtual, int $produtosPorPagina , ?int $categoriaId = null): array
+
+        public function getProdutosPaginados(int $paginaAtual, int $produtosPorPagina, ?int $categoriaId = null): array
         {
             $totalProdutos = $this->produtoRepository->countAll($categoriaId);
 
@@ -86,5 +85,34 @@
                 'total_produtos' => $totalProdutos,
                 'categoria_id_selecionada' => $categoriaId
             ];
+        }
+
+        public function deleteProduto(int $id): void
+        {
+            $produto = $this->getProduto($id);
+            $caminhoImagem = $produto->getImagem();
+
+            if ($this->produtoRepository->hasAssociatedPedidos($id)) {
+                throw new Exception("O produto **não pode ser excluído** pois já está associado a pedidos históricos. Para manter a integridade do histórico de vendas, use a função de Inativação (ativo = 0).");
+            }
+
+            if (!$this->produtoRepository->deleteHistoricoByProdutoId($id)) {
+                error_log("Aviso: Falha ao deletar registros históricos do produto ID: " . $id);
+            }
+
+            if (!$this->produtoRepository->delete($id)) {
+                throw new Exception("Falha ao deletar o produto no banco de dados.");
+            }
+
+            if (!empty($caminhoImagem)) {
+                $diretorioRaiz = dirname(dirname(dirname(__DIR__)));
+                $caminhoAbsoluto = $diretorioRaiz . $caminhoImagem;
+
+                if (file_exists($caminhoAbsoluto)) {
+                    if (!unlink($caminhoAbsoluto)) {
+                        error_log("Aviso: Falha ao deletar o arquivo de imagem: " . $caminhoAbsoluto);
+                    }
+                }
+            }
         }
     }

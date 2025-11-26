@@ -126,9 +126,7 @@ if (!empty($categoria_id_selecionada) && $categoria_id_selecionada !== 0) {
                             <div class="produto__info-completa">
 
                                 <?php
-                                // CORRIGIDO: O caminho da imagem deve usar o caminho completo (URL)
-                                // Removendo a lógica desnecessária de manipulação de string para usar o caminho do objeto
-                                $caminho_web = $produto->getImagem() ?? '/sugarbeat_admin/assets/img/placeholder.png'; // Usando placeholder se nulo
+                                $caminho_web = $produto->getImagem() ?? '/sugarbeat_admin/assets/img/placeholder.png'; 
                                 ?>
                                 <img src="<?= htmlspecialchars($caminho_web) ?>" width="60" class="produto__img">
 
@@ -157,6 +155,13 @@ if (!empty($categoria_id_selecionada) && $categoria_id_selecionada !== 0) {
                             <a href="/sugarbeat_admin/produto/cadastro?<?= $query_data ?>"
                                 title="Editar" class="editar">
                                 <i class="fa-solid fa-pen"></i>
+                            </a>
+
+                            <a href="/sugarbeat_admin/produto/excluir/<?= htmlspecialchars($produto->getIdProduto()) ?>"
+                                title="Excluir" 
+                                class="excluir-produto" 
+                                onclick="return confirm('Tem certeza que deseja excluir o produto <?= htmlspecialchars($produto->getNome()) ?>?');">
+                                <i class="fa-solid fa-trash-can"></i>
                             </a>
 
                         </td>

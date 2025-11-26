@@ -24,20 +24,14 @@ class Router
         if (array_key_exists($uri, $this->routes)) {
             $matchedRoute = $this->routes[$uri];
         } else {
-            $uriParts = explode('/', $uri);
+            foreach ($this->routes as $routeUriPattern => $routeInfo) {
+                $pattern = str_replace(['/', '{id}'], ['\/', '(\d+)'], $routeUriPattern);
+                $pattern = '#^' . $pattern . '$#';
 
-            if (count($uriParts) >= 2) {
-                $baseUri = $uriParts[0];
-                if (array_key_exists($baseUri, $this->routes)) {
-                    $matchedRoute = $this->routes[$baseUri];
-                    $args[] = $uriParts[1] ?? null;
-                }
-                if (count($uriParts) >= 3) {
-                    $methodUri = $uriParts[0] . '/' . $uriParts[1];
-                    if (array_key_exists($methodUri, $this->routes)) {
-                        $matchedRoute = $this->routes[$methodUri];
-                        $args[] = $uriParts[2] ?? null;
-                    }
+                if (preg_match($pattern, $uri, $matches)) {
+                    $matchedRoute = $routeInfo;
+                    $args = array_slice($matches, 1);
+                    break;
                 }
             }
         }
@@ -47,12 +41,9 @@ class Router
             $controllerName = $matchedRoute['controller'];
             $methodName = $matchedRoute['method'];
 
-          
-
             if (class_exists($controllerName)) {
-
+                // ... (Lógica de Factory e Instanciação)
                 $controller = null;
-
                 $factoryName = $controllerName . 'Factory';
 
                 if (class_exists($factoryName) && method_exists($factoryName, 'create')) {
@@ -69,7 +60,7 @@ class Router
                 }
 
                 if ($controller && method_exists($controller, $methodName)) {
-
+                    // CHAMADA CORRETA: Passa os argumentos extraídos ($args)
                     call_user_func_array([$controller, $methodName], $args);
                     return;
                 }
@@ -89,7 +80,7 @@ class Router
 
         // 2. Obtém o caminho do script (ex: /sugarbeat_admin)
         $basePath = dirname($_SERVER['SCRIPT_NAME']);
-        
+
         // Se o basePath não for apenas '/' ou '\', remove-o da URI
         if ($basePath !== '/' && $basePath !== '\\') {
             // Garante que o basePath (ex: /sugarbeat_admin) seja removido da URI

@@ -43,7 +43,7 @@ $total_paginas = $total_paginas ?? 1;
                                 <span><?= htmlspecialchars($categoria->getNomeCategoria()) ?></span>
                             </div>
                         </td>
-                    
+
                         <td class="categorias__acoes-col">
                             <?php
                             $query_data = http_build_query([
@@ -53,6 +53,12 @@ $total_paginas = $total_paginas ?? 1;
                             ?>
                             <a href="/sugarbeat_admin/categoria/cadastro?<?= $query_data ?>" title="Editar" class="editar">
                                 <i class="fa-solid fa-pen"></i>
+                            </a>
+                            <a href="/sugarbeat_admin/categoria/excluir/<?= $categoria->getIdCategoria() ?>"
+                                title="Excluir"
+                                class="excluir"
+                                onclick="return confirm('Tem certeza que deseja excluir a categoria <?= htmlspecialchars($categoria->getNomeCategoria()) ?>?');">
+                                <i class="fa-solid fa-trash-can"></i>
                             </a>
                         </td>
 
@@ -71,7 +77,7 @@ $total_paginas = $total_paginas ?? 1;
                             </span>
 
                             <div class="paginacao__botoes">
-                                <?php $prevPage = max(1, $pagina_atual - 1) ; ?>
+                                <?php $prevPage = max(1, $pagina_atual - 1); ?>
                                 <a href="/sugarbeat_admin/usuario?page=<?= $prevPage ?><?= $filtroUrl ?>"
                                     <?= $pagina_atual <= 1 ? 'disabled style="pointer-events: none; opacity: 0.7;"' : '' ?>>Ant</a>
 
