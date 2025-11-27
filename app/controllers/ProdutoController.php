@@ -73,7 +73,7 @@ class ProdutoController
             $_SESSION['alert_message'] = [
                 'type' => 'success',
                 'title' => 'Sucesso!',
-                'text' => "Produto {id} excluído com sucesso."
+                'text' => "Produto **#{$id}** excluído com sucesso."
             ];
 
         } catch (Exception $e) {
@@ -147,6 +147,7 @@ class ProdutoController
             }
 
 
+            // --- Geração de Nome Único e Movimentação ---
             if (!$uploadErro) {
                 $nomeUnico = uniqid("prod_", true) . '.' . $extensao;
                 $caminhoCompletoDestino = $diretorioUpload . $nomeUnico;
@@ -154,6 +155,7 @@ class ProdutoController
                 if (move_uploaded_file($arquivo['tmp_name'], $caminhoCompletoDestino)) {
                     $prefixoAntigo = '../../../../fotos/';
                     $caminhoImagem = $prefixoAntigo . $nomeUnico;
+                    // NOVIDADE: Se a imagem antiga existe e não é nula/placeholder, a deletamos
                     if ($produtoId && $imagemAntigaPath && file_exists($diretorioRaiz . '/' . $imagemAntigaPath)) {
                         unlink($diretorioRaiz . '/' . $imagemAntigaPath);
                     }
@@ -171,10 +173,12 @@ class ProdutoController
             }
             $caminhoImagem = null;
         } elseif (!$uploadErro && isset($_FILES['imagem']) && $_FILES['imagem']['error'] !== UPLOAD_ERR_NO_FILE) {
+            // Tratamento de outros erros de upload do PHP (ex: tamanho excedido)
             $uploadErro = "Erro no upload do arquivo (Código: " . $_FILES['imagem']['error'] . ").";
         }
 
 
+        // --- 2. TRATAMENTO DE ERRO DE UPLOAD ---
         if ($uploadErro) {
             $produtoComErro = new Produto();
             $produtoComErro->setNome($_POST['nome'] ?? null);
@@ -194,6 +198,7 @@ class ProdutoController
             exit();
         }
 
+        // --- 3. COLETA E PREPARAÇÃO DOS DADOS RESTANTES ---
         $dados = [
             'id' => $produtoId,
             'nome' => $_POST['nome'] ?? null,
@@ -204,9 +209,10 @@ class ProdutoController
             'imagem' => $caminhoImagem
         ];
 
+        // --- 4. INSTANCIA E PREENCHE O MODEL PRODUTO ---
         $produto = new Produto();
         if ($dados['id']) {
-            $produto->setIdProduto($dados['id']); 
+            $produto->setIdProduto($dados['id']); // Seta o ID para o Service saber que é UPDATE
         }
         $produto->setNome($dados['nome']);
         $produto->setPreco($dados['preco']);
