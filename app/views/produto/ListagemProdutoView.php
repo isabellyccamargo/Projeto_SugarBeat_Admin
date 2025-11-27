@@ -17,7 +17,7 @@ $categoria_id_selecionada = filter_input(INPUT_GET, 'categoria', FILTER_VALIDATE
 $base_url_params = '';
 
 if (!empty($categoria_id_selecionada) && $categoria_id_selecionada !== 0) {
-    
+
     // Constrói a string de filtro para a paginação
     $base_url_params = '&categoria=' . $categoria_id_selecionada;
 
@@ -55,6 +55,7 @@ if (!empty($categoria_id_selecionada) && $categoria_id_selecionada !== 0) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Ancizar+Serif:ital,wght@0,300..900;1,300..900&family=Bitter:ital,wght@0,100..900;1,100..900&family=Caudex:ital,wght@0,400;0,700;1,400;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Marcellus&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Padauk:wght@400;700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <div class="produtos__container">
@@ -126,7 +127,7 @@ if (!empty($categoria_id_selecionada) && $categoria_id_selecionada !== 0) {
                             <div class="produto__info-completa">
 
                                 <?php
-                                $caminho_web = $produto->getImagem() ?? '/sugarbeat_admin/assets/img/placeholder.png'; 
+                                $caminho_web = $produto->getImagem() ?? '/sugarbeat_admin/assets/img/placeholder.png';
                                 ?>
                                 <img src="<?= htmlspecialchars($caminho_web) ?>" width="60" class="produto__img">
 
@@ -157,10 +158,10 @@ if (!empty($categoria_id_selecionada) && $categoria_id_selecionada !== 0) {
                                 <i class="fa-solid fa-pen"></i>
                             </a>
 
-                            <a href="/sugarbeat_admin/produto/excluir/<?= htmlspecialchars($produto->getIdProduto()) ?>"
-                                title="Excluir" 
-                                class="excluir-produto" 
-                                onclick="return confirm('Tem certeza que deseja excluir o produto <?= htmlspecialchars($produto->getNome()) ?>?');">
+                            <a href="/sugarbeat_admin/produto/excluir/<?= $produto->getIdProduto() ?>"
+                                title="Excluir"
+                                class="excluir-produto"
+                                id="link-excluir-<?= $produto->getIdProduto() ?>" data-nome-produto="<?= htmlspecialchars($produto->getNome()) ?>">
                                 <i class="fa-solid fa-trash-can"></i>
                             </a>
 
@@ -221,6 +222,39 @@ if (!empty($categoria_id_selecionada) && $categoria_id_selecionada !== 0) {
             const categoriaId = item.getAttribute('data-id');
             // Ao clicar, sempre volta para a página 1 da nova categoria selecionada
             window.location.href = `?page=1&categoria=${categoriaId}`;
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const linksExcluir = document.querySelectorAll('a.excluir-produto');
+
+        linksExcluir.forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                const urlExclusao = this.getAttribute('href');
+                const nomeProduto = this.getAttribute('data-nome-produto');
+
+                Swal.fire({
+                    title: 'Tem certeza?',
+                    html: `Você realmente deseja excluir o produto **${nomeProduto}**?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#b34242',
+                    cancelButtonColor: '#3b2500',
+                    confirmButtonText: 'Sim, excluir!',
+                    cancelButtonText: 'Cancelar',
+                    background: 'rgb(248, 239, 218)',
+                    color: '#3b2500',
+                    heightAuto: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = urlExclusao;
+                    }
+                });
+            });
         });
     });
 </script>

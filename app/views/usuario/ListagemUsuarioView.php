@@ -34,6 +34,7 @@ if ($adminFilter !== null) {
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/sugarbeat_admin/assets/css/listagemUsuario.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <div class="usuarios__container">
@@ -121,10 +122,10 @@ if ($adminFilter !== null) {
                                 <i class="fa-solid fa-pen"></i>
                             </a>
 
-                            <a href="/sugarbeat_admin/usuario/excluir/<?= htmlspecialchars($user->getIdUsuario()) ?>"
+                            <a href="/sugarbeat_admin/usuario/excluir/<?= $user->getIdUsuario() ?>"
                                 title="Excluir"
                                 class="excluir"
-                                onclick="return confirm('Tem certeza que deseja excluir o usuário <?= addslashes($user->getNome()) ?>? Esta ação não pode ser desfeita.');">
+                                id="link-excluir-<?= $user->getIdUsuario() ?>" data-nome-usuario="<?= htmlspecialchars($user->getNome()) ?>">
                                 <i class="fa-solid fa-trash-can"></i>
                             </a>
                         </td>
@@ -162,35 +163,68 @@ if ($adminFilter !== null) {
             </tfoot>
         <?php endif; ?>
     </table>
+</div>
 
+<script>
+    const btnFiltrar = document.getElementById('btn-filtrar');
+    const dropFiltro = document.getElementById('dropdown-filtro');
 
-    <script>
-        const btnFiltrar = document.getElementById('btn-filtrar');
-        const dropFiltro = document.getElementById('dropdown-filtro');
+    btnFiltrar.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropFiltro.style.display = (dropFiltro.style.display === 'none' || dropFiltro.style.display === '') ? 'block' : 'none';
+    });
 
-        btnFiltrar.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropFiltro.style.display = (dropFiltro.style.display === 'none' || dropFiltro.style.display === '') ? 'block' : 'none';
-        });
+    document.addEventListener('click', (e) => {
+        if (!btnFiltrar.contains(e.target) && !dropFiltro.contains(e.target)) {
+            dropFiltro.style.display = 'none';
+        }
+    });
 
-        document.addEventListener('click', (e) => {
-            if (!btnFiltrar.contains(e.target) && !dropFiltro.contains(e.target)) {
-                dropFiltro.style.display = 'none';
+    document.querySelectorAll('#dropdown-filtro .categoria').forEach(item => {
+        item.addEventListener('click', () => {
+            const filtroValor = item.getAttribute('data-filtro');
+            let url = '/sugarbeat_admin/usuario';
+
+            let query = '?page=1';
+
+            if (filtroValor === 'todos') {
+                window.location.href = url + query;
+            } else {
+                window.location.href = `${url}${query}&admin=${filtroValor}`;
             }
         });
+    });
+</script>
 
-        document.querySelectorAll('#dropdown-filtro .categoria').forEach(item => {
-            item.addEventListener('click', () => {
-                const filtroValor = item.getAttribute('data-filtro');
-                let url = '/sugarbeat_admin/usuario';
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const linksExcluir = document.querySelectorAll('a.excluir');
 
-                let query = '?page=1';
+        linksExcluir.forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
 
-                if (filtroValor === 'todos') {
-                    window.location.href = url + query;
-                } else {
-                    window.location.href = `${url}${query}&admin=${filtroValor}`;
-                }
+                const urlExclusao = this.getAttribute('href');
+                const nomeUsuario = this.getAttribute('data-nome-usuario');
+
+                Swal.fire({
+                    title: 'Tem certeza?',
+                    html: `Você realmente deseja excluir o usuário **${nomeUsuario}**?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#b34242',
+                    cancelButtonColor: '#3b2500',
+                    confirmButtonText: 'Sim, excluir!',
+                    cancelButtonText: 'Cancelar',
+                    background: 'rgb(248, 239, 218)',
+                    color: '#3b2500',
+                    heightAuto: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = urlExclusao;
+                    }
+                });
             });
         });
-    </script>
+    });
+</script>

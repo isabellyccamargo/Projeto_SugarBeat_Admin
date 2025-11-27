@@ -10,6 +10,7 @@ $total_paginas = $total_paginas ?? 1;
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/sugarbeat_admin/assets/css/listagemCategoria.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <div class="categorias__container">
@@ -54,10 +55,11 @@ $total_paginas = $total_paginas ?? 1;
                             <a href="/sugarbeat_admin/categoria/cadastro?<?= $query_data ?>" title="Editar" class="editar">
                                 <i class="fa-solid fa-pen"></i>
                             </a>
+
                             <a href="/sugarbeat_admin/categoria/excluir/<?= $categoria->getIdCategoria() ?>"
                                 title="Excluir"
                                 class="excluir"
-                                onclick="return confirm('Tem certeza que deseja excluir a categoria <?= htmlspecialchars($categoria->getNomeCategoria()) ?>?');">
+                                id="link-excluir-<?= $categoria->getIdCategoria() ?>" data-nome-categoria="<?= htmlspecialchars($categoria->getNomeCategoria()) ?>">
                                 <i class="fa-solid fa-trash-can"></i>
                             </a>
                         </td>
@@ -124,6 +126,39 @@ $total_paginas = $total_paginas ?? 1;
                 } else {
                     window.location.href = `${url}${query}&admin=${filtroValor}`;
                 }
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const linksExcluir = document.querySelectorAll('a.excluir');
+
+            linksExcluir.forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+
+                    const urlExclusao = this.getAttribute('href');
+                    const nomeCategoria = this.getAttribute('data-nome-categoria');
+
+                    Swal.fire({
+                        title: 'Tem certeza?',
+                        html: `Você realmente deseja excluir a categoria **${nomeCategoria}**?`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#b34242',
+                        cancelButtonColor: '#3b2500',
+                        confirmButtonText: 'Sim, excluir!',
+                        cancelButtonText: 'Cancelar',
+                        background: 'rgb(248, 239, 218)',
+                        color: '#3b2500',
+                        heightAuto: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = urlExclusao;
+                        }
+                    });
+                });
             });
         });
     </script>
